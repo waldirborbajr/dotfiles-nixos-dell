@@ -136,8 +136,8 @@
   programs = {
     firefox.enable = true;
 
-#    zsh = {
-#      enable = true;
+    zsh = {
+      enable = true;
 
 #      shellAliases = {
 #        tm = "tmux";
@@ -151,7 +151,7 @@
 #        export PATH="${pkgs.tmuxifier}/bin:$PATH"
 #        eval "$(tmuxifier init -)"
 #      '';
-#    };
+    };
 
     zoxide = {
       enable = true;
