@@ -1,5 +1,5 @@
 # Edit this configuration file to define what should be installed on
-# your system.  Help is available in the configuration.nix(5) man page
+# your system. Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
 
 { config, pkgs, ... }:
@@ -22,7 +22,7 @@
   networking.networkmanager.enable = true;
 
   ############################################
-  # Nix Garbage Collection (optimized)
+  # Nix Garbage Collection (2 days max)
   ############################################
   nix.gc = {
     automatic = true;
@@ -101,6 +101,12 @@
   programs = {
     firefox.enable = true;
     zsh.enable = true;
+
+    # zoxide shell integration
+    zoxide = {
+      enable = true;
+      enableZshIntegration = true;
+    };
   };
 
   ############################################
@@ -120,24 +126,32 @@
   # System Packages
   ############################################
   environment.systemPackages = with pkgs; [
+    # Core
     wget
+    coreutils
+    git
+    gh
+    stow
+    tmux
+    xclip
+    lshw
+    iwd
+
+    # Modern CLI tools
+    fd
+    ripgrep
+    zoxide
+    yazi
     eza
     btop
     htop
-    iwd
-    git
-    lazygit
-    gh
-    lshw
-    stow
-    ripgrep
+
+    # UI / Utils
     rofi
     keepassxc
     waybar
     networkmanagerapplet
-    xclip
-    coreutils
-    tmux
+    lazygit
 
     # Go
     go
@@ -161,9 +175,9 @@
   ############################################
   fonts = {
     packages = with pkgs; [
+      nerd-fonts.jetbrains-mono
       nerd-fonts.terminess-ttf
       nerd-fonts.blex-mono
-      nerd-fonts.jetbrains-mono
       ibm-plex
       openmoji-color
     ];
