@@ -50,7 +50,7 @@
   };
 
   ############################################
-  # Wayland + GNOME (Wayland-first)
+  # Wayland + GNOME
   ############################################
   services.xserver.enable = true;
 
@@ -93,10 +93,11 @@
     MOZ_ENABLE_WAYLAND = "1";
     NIXOS_OZONE_WL = "1";
     TERMINAL = "alacritty";
+    TMUXIFIER_LAYOUT_PATH = "$HOME/.config/tmuxifier/layouts";
   };
 
   ############################################
-  # XDG Portals (REQUIRED for Wayland apps)
+  # XDG Portals
   ############################################
   xdg.portal = {
     enable = true;
@@ -115,6 +116,7 @@
     extraGroups = [
       "networkmanager"
       "wheel"
+      "docker"
     ];
     shell = pkgs.zsh;
     packages = with pkgs; [
@@ -133,25 +135,23 @@
   ############################################
   programs = {
     firefox.enable = true;
-    zsh.enable = true;
 
-    # zsh = {
-    #   enable = true;
-    #
-    #   shellAliases = {
-    #     tm = "tmux";
-    #     tl = "tmuxifier load-session";
-    #     tn = "tmuxifier new-session";
-    #     te = "tmuxifier edit-session";
-    #     ts = "tmuxifier list-sessions";
-    #   };
-    #
-    #   initExtra = ''
-    #     # tmuxifier
-    #     export PATH="${pkgs.tmuxifier}/bin:$PATH"
-    #     eval "$(tmuxifier init -)"
-    #   '';
-    # };
+#    zsh = {
+#      enable = true;
+
+#      shellAliases = {
+#        tm = "tmux";
+#        tl = "tmuxifier load-session";
+#        tn = "tmuxifier new-session";
+#        te = "tmuxifier edit-session";
+#        ts = "tmuxifier list-sessions";
+#      };
+
+      initExtra = ''
+        export PATH="${pkgs.tmuxifier}/bin:$PATH"
+        eval "$(tmuxifier init -)"
+      '';
+    };
 
     zoxide = {
       enable = true;
@@ -160,7 +160,15 @@
   };
 
   ############################################
-  # Default Terminal (Wayland-native)
+  # Docker
+  ############################################
+  virtualisation.docker = {
+    enable = true;
+    enableOnBoot = true;
+  };
+
+  ############################################
+  # Default Terminal
   ############################################
   xdg.mime.defaultApplications = {
     "application/x-terminal-emulator" = "alacritty.desktop";
@@ -194,13 +202,17 @@
     gh
     lazygit
     stow
-    tmuxifier
     tmux
+    tmuxifier
     lshw
     iwd
     networkmanagerapplet
 
-    # Wayland-native
+    # Containers
+    docker
+    docker-compose
+
+    # Wayland
     alacritty
     waybar
     rofi
@@ -208,8 +220,8 @@
 
     # Modern CLI tools
     eza
-    bat
     btop
+    bat
     htop
     fd
     ripgrep
