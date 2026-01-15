@@ -132,6 +132,24 @@
     firefox.enable = true;
     zsh.enable = true;
 
+    zsh = {
+      enable = true;
+
+      shellAliases = {
+        tm = "tmux";
+        tl = "tmuxifier load-session";
+        tn = "tmuxifier new-session";
+        te = "tmuxifier edit-session";
+        ts = "tmuxifier list-sessions";
+      };
+
+      initExtra = ''
+        # tmuxifier
+        export PATH="${pkgs.tmuxifier}/bin:$PATH"
+        eval "$(tmuxifier init -)"
+      '';
+    };
+
     zoxide = {
       enable = true;
       enableZshIntegration = true;
@@ -173,6 +191,7 @@
     gh
     lazygit
     stow
+    tmuxifier
     tmux
     lshw
     iwd
