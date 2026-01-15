@@ -112,7 +112,10 @@
   users.users.borba = {
     isNormalUser = true;
     description = "BORBA JR W";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = [
+      "networkmanager"
+      "wheel"
+    ];
     shell = pkgs.zsh;
     packages = with pkgs; [
       neovim
@@ -132,23 +135,23 @@
     firefox.enable = true;
     zsh.enable = true;
 
-    zsh = {
-      enable = true;
-
-      shellAliases = {
-        tm = "tmux";
-        tl = "tmuxifier load-session";
-        tn = "tmuxifier new-session";
-        te = "tmuxifier edit-session";
-        ts = "tmuxifier list-sessions";
-      };
-
-      initExtra = ''
-        # tmuxifier
-        export PATH="${pkgs.tmuxifier}/bin:$PATH"
-        eval "$(tmuxifier init -)"
-      '';
-    };
+    # zsh = {
+    #   enable = true;
+    #
+    #   shellAliases = {
+    #     tm = "tmux";
+    #     tl = "tmuxifier load-session";
+    #     tn = "tmuxifier new-session";
+    #     te = "tmuxifier edit-session";
+    #     ts = "tmuxifier list-sessions";
+    #   };
+    #
+    #   initExtra = ''
+    #     # tmuxifier
+    #     export PATH="${pkgs.tmuxifier}/bin:$PATH"
+    #     eval "$(tmuxifier init -)"
+    #   '';
+    # };
 
     zoxide = {
       enable = true;
