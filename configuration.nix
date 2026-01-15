@@ -107,8 +107,6 @@
     # Modern CLI tools (native NixOS modules)
     ##########################################
 
-    ripgrep.enable = true;
-
     zoxide = {
       enable = true;
       enableZshIntegration = true;
@@ -172,6 +170,7 @@
     btop
     htop
     fd
+    ripgrep
 
     # Go
     go
