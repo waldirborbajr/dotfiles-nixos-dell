@@ -139,18 +139,18 @@
     zsh = {
       enable = true;
 
-#      shellAliases = {
-#        tm = "tmux";
-#        tl = "tmuxifier load-session";
-#        tn = "tmuxifier new-session";
-#        te = "tmuxifier edit-session";
-#        ts = "tmuxifier list-sessions";
-#      };
+      #      shellAliases = {
+      #        tm = "tmux";
+      #        tl = "tmuxifier load-session";
+      #        tn = "tmuxifier new-session";
+      #        te = "tmuxifier edit-session";
+      #        ts = "tmuxifier list-sessions";
+      #      };
 
-#      initExtra = ''
-#        export PATH="${pkgs.tmuxifier}/bin:$PATH"
-#        eval "$(tmuxifier init -)"
-#      '';
+      #      initExtra = ''
+      #        export PATH="${pkgs.tmuxifier}/bin:$PATH"
+      #        eval "$(tmuxifier init -)"
+      #      '';
     };
 
     zoxide = {
@@ -211,6 +211,7 @@
     # Containers
     docker
     docker-compose
+    devpod
 
     # Wayland
     alacritty
