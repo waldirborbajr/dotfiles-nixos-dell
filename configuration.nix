@@ -50,10 +50,15 @@
   };
 
   ############################################
-  # X11 + GNOME
+  # Wayland + GNOME (Wayland-first)
   ############################################
   services.xserver.enable = true;
-  services.xserver.displayManager.gdm.enable = true;
+
+  services.xserver.displayManager.gdm = {
+    enable = true;
+    wayland = true;
+  };
+
   services.xserver.desktopManager.gnome.enable = true;
 
   services.xserver.xkb = {
@@ -70,11 +75,35 @@
 
   services.pulseaudio.enable = false;
   security.rtkit.enable = true;
+
   services.pipewire = {
     enable = true;
     alsa.enable = true;
     alsa.support32Bit = true;
     pulse.enable = true;
+  };
+
+  ############################################
+  # Wayland Environment Variables
+  ############################################
+  environment.sessionVariables = {
+    XDG_SESSION_TYPE = "wayland";
+    QT_QPA_PLATFORM = "wayland";
+    QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
+    MOZ_ENABLE_WAYLAND = "1";
+    NIXOS_OZONE_WL = "1";
+    TERMINAL = "alacritty";
+  };
+
+  ############################################
+  # XDG Portals (REQUIRED for Wayland apps)
+  ############################################
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome
+      xdg-desktop-portal-gtk
+    ];
   };
 
   ############################################
@@ -103,10 +132,6 @@
     firefox.enable = true;
     zsh.enable = true;
 
-    ##########################################
-    # Modern CLI tools (native NixOS modules)
-    ##########################################
-
     zoxide = {
       enable = true;
       enableZshIntegration = true;
@@ -114,12 +139,8 @@
   };
 
   ############################################
-  # Default Terminal
+  # Default Terminal (Wayland-native)
   ############################################
-  environment.variables = {
-    TERMINAL = "alacritty";
-  };
-
   xdg.mime.defaultApplications = {
     "application/x-terminal-emulator" = "alacritty.desktop";
   };
@@ -142,9 +163,10 @@
   nixpkgs.config.allowUnfree = true;
 
   ############################################
-  # System Packages (no duplicates)
+  # System Packages
   ############################################
   environment.systemPackages = with pkgs; [
+    # Core
     wget
     coreutils
     git
@@ -152,13 +174,15 @@
     lazygit
     stow
     tmux
-    xclip
     lshw
     iwd
-    rofi
-    keepassxc
-    waybar
     networkmanagerapplet
+
+    # Wayland-native
+    alacritty
+    waybar
+    rofi-wayland
+    wl-clipboard
 
     # Modern CLI tools
     eza
