@@ -107,8 +107,6 @@
     # Modern CLI tools (native NixOS modules)
     ##########################################
 
-    fd.enable = true;
-
     ripgrep.enable = true;
 
     zoxide = {
@@ -173,6 +171,7 @@
     eza
     btop
     htop
+    fd
 
     # Go
     go
