@@ -1,0 +1,10 @@
+[user]
+  name = Waldir Borba Junior
+  email = wborbajr@gmail.com
+[core]
+	editor = nvim
+	pager = bat
+[init]
+	defaultBranch = main
+[pull]
+	rebase = true

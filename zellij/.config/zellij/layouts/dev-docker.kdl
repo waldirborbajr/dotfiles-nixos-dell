@@ -1,0 +1,14 @@
+// dev-layout.kdl
+layout {
+    pane size="80%" {
+        // Painel principal para logs do Docker Compose
+        command "docker-compose" args=["logs", "-f"]
+    }
+    pane split_direction="vertical" size="20%" {
+        // Painel inferior para comandos interativos
+        pane {}
+        pane {
+            command "bash"
+        }
+    }
+}
