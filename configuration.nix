@@ -108,16 +108,6 @@
     zsh.enable = true;
   };
 
-  #   programs.git = {
-  #   enable = true;
-  #   settings = {
-  #     user = {
-  #       name = "waldirborbajr";
-  #       email = "wborbajr@gmail.com";
-  #     };
-  #   };
-  # };
-
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
@@ -126,10 +116,12 @@
   environment.systemPackages = with pkgs; [
   #  vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     wget
+    eza
     btop
     htop
     iwd
     git
+    lazygit
     gh
     lshw
     stow
