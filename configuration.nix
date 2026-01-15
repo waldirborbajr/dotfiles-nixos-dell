@@ -25,6 +25,12 @@
   # Enable networking
   networking.networkmanager.enable = true;
 
+  nix.gc = {
+    automatic = true;
+    dates = "weekly";
+    options = "--delete-older-than 7d";
+  };
+
   # Set your time zone.
   time.timeZone = "America/Sao_Paulo";
 
