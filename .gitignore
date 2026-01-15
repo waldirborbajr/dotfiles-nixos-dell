@@ -6,3 +6,5 @@ nvim/.config/nvim/lazy-lock.json
 zsh/.config/zsh/.zcompdump
 nvim/.config/nvim/plugins/tpm
 tmux/.config/tmux/plugins
+files/configs/nvim/lazy-lock.json
+files/configs/nvim/lazyvim.json

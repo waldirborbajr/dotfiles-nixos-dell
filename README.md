@@ -1,54 +1,47 @@
+# My NixOS Configuration
 
-These are my dotfiles. Feel free to use or copy what you need from this repo.
+## ❄️ Overview
 
-## Setup Instructions
+This is my personal NixOS system configuration flake. There are many like it, but this one is mine. I don't do anything particularly special, but you're free to look around and use what you want.
 
-I manage these dotfiles with `stow`, which is a symlink manager. Clone this
-repository to the root of your home directory, `~/.dotfiles` for example.
+## 📁 Organization
 
-> [!Note]
-> There may be submodules contained inside this repo (see
-> [.gitmodules](.gitmodules) for a list of them). Use the `--recures-submodules`
-> option while cloning to check out the submodules.
-
-[Contribution guidelines for this project](docs/CONTRIBUTING.md)
-Each sub-directory can be individually linked to its correct location using
-`stow directory_name` inside the root of this repository. To set up the
-dotfiles for `git` just run `stow git`, for example.
-
-To remove the links that were created by `stow`, run `stow -D directory_name`.
-
-You can of course create the symlinks yourself with `ln` or just copy files to
-the correct location, if you don't want to use `stow`.
-
-
-# Configuration for Chirp
-
-```sh
-sudo apt remove brltty
-```
-
-```sh
-sudo usermod -a -G dialout $USER
-```
-
-## MacBook WiFi - Linux (#1)
-
-```sh
-sudo apt install broadcom-sta-dkms
-sudo sed -i 's/wifi.powersave = 3/wifi.powersave = 2/' /etc/NetworkManager/conf.d/default-wifi-powersave-on.conf
-```
-
-## Write ISO to device
+The basic organization is something like this:
 
 ```
-sudo dd bs=4M if=/path/to/file.iso of=/dev/sdX status=progress oflag=sync
+nixos
+├─── README.md
+├─── assets
+│   ╰─── desktop.jpg
+├─── home
+│   ├─── default.nix
+│   ╰─── <username>
+│       ╰─── <user home-manager config>
+├─── host
+│   ├─── default.nix
+│   ╰─── <hostname>
+│       ╰─── <host machine config>
+╰─── secrets
+    ├─── secrets.nix
+    ╰─── <program_secret.age>
 ```
 
-## Installing Nerd Fonts on Ubuntu: A Comprehensive Guide
+### 🖼️ Assets
 
-```
-https://linuxvox.com/blog/install-nerd-fonts-ubuntu/
-```
+Contains assets for the system, such as a desktop background image or profile picture.
+
+### 🏡 Home
+
+User environment definition via [home-manager](https://github.com/nix-community/home-manager). Currently only one user defined, since I am the only one using these machines.
+
+### 🖥️ Host
+
+Contains host machine configuration. Basically what would be in configuration.nix on a non-flake system.
+
+### 🔐 Secrets
+
+Nix friendly secrets storage using [agenix](https://github.com/ryantm/agenix).
 
 
+ref: https://github.com/AlexNabokikh/nix-config
+grok: https://grok.com/c/eb9c2be6-3df9-43c3-9845-02a0f78393f7?rid=09479c4f-008d-4f93-87fe-7fb8d3339e1b
