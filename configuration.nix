@@ -147,11 +147,11 @@
 #        ts = "tmuxifier list-sessions";
 #      };
 
-      initExtra = ''
-        export PATH="${pkgs.tmuxifier}/bin:$PATH"
-        eval "$(tmuxifier init -)"
-      '';
-    };
+#      initExtra = ''
+#        export PATH="${pkgs.tmuxifier}/bin:$PATH"
+#        eval "$(tmuxifier init -)"
+#      '';
+#    };
 
     zoxide = {
       enable = true;
