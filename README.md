@@ -41,3 +41,7 @@ Contains host machine configuration. Basically what would be in configuration.ni
 ### 🔐 Secrets
 
 Nix friendly secrets storage using [agenix](https://github.com/ryantm/agenix).
+
+
+ref: https://github.com/AlexNabokikh/nix-config
+grok: https://grok.com/c/eb9c2be6-3df9-43c3-9845-02a0f78393f7?rid=09479c4f-008d-4f93-87fe-7fb8d3339e1b
