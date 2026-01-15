@@ -112,12 +112,6 @@
       enableZshIntegration = true;
     };
 
-    yazi = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-  };
-
   ############################################
   # Default Terminal
   ############################################
@@ -171,6 +165,7 @@
     htop
     fd
     ripgrep
+    yazi
 
     # Go
     go
