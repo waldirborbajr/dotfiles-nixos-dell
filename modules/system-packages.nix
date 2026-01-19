@@ -1,9 +1,7 @@
 { pkgs, ... }:
 
 let
-  # Canal unstable (precisa adicionar nixpkgs-unstable ao NIX_PATH):
-  # sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
-  # sudo nix-channel --update
+  # Canal unstable (adicionado via nix-channel)
   unstable = import <nixpkgs-unstable> {};
 in
 {
@@ -28,13 +26,13 @@ in
     k9s                        # Kubernetes CLI TUI
 
     # Podman (rootless) - comentado enquanto Docker está ativo
-    # unstable.lazypodman
     # podman
     # podman-compose
     # buildah
     # skopeo
     # cri-tools
     # Motivo: Podman não deve ser ativado junto com Docker, pois dockerCompat entra em conflito.
+    # Para ativar no futuro, descomente estas linhas e comente Docker.
 
     ##########################################
     # Virtualization (clients & tools)
@@ -183,7 +181,6 @@ in
     brave
     discord
     flameshot
-    # anydesk removido pois estava causando erro
     chirp
   ];
 }
