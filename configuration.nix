@@ -57,6 +57,8 @@
     ./modules/user-borba.nix
 
     ././modules/k3s.nix
+
+./modules/hardware-radio-chirp.nix
   ];
 
   ############################################
