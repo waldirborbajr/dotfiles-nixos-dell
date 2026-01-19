@@ -1,62 +1,77 @@
-# Variables (override these as needed)
+# =========================================================
+# NixOS Makefile (Flake-based, no Home Manager)
+# =========================================================
+
+# -------------------------
+# Variables
+# -------------------------
 HOSTNAME ?= $(shell hostname)
 FLAKE ?= .#$(HOSTNAME)
-HOME_TARGET ?= $(FLAKE)
 EXPERIMENTAL ?= --extra-experimental-features "nix-command flakes"
 
-.PHONY: help install-nix install-nix-darwin darwin-rebuild nixos-rebuild \
-	home-manager-switch nix-gc flake-update flake-check bootstrap-mac
+# -------------------------
+# Phony targets
+# -------------------------
+.PHONY: help switch switch-impure build build-impure check update \
+        rollback gc-soft gc-hard
 
+# -------------------------
+# Help
+# -------------------------
 help:
-	@echo "Available targets:"
-	@echo "  install-nix          - Install the Nix package manager"
-	@echo "  install-nix-darwin   - Install nix-darwin using flake $(FLAKE)"
-	@echo "  darwin-rebuild       - Rebuild the nix-darwin configuration"
-	@echo "  nixos-rebuild        - Rebuild the NixOS configuration"
-	@echo "  home-manager-switch  - Switch the Home Manager configuration using flake $(HOME_TARGET)"
-	@echo "  nix-gc               - Run Nix garbage collection"
-	@echo "  flake-update         - Update flake inputs"
-	@echo "  flake-check          - Check the flake for issues"
-	@echo "  bootstrap-mac        - Install Nix and nix-darwin sequentially"
+	@echo ""
+	@echo "NixOS Makefile targets:"
+	@echo ""
+	@echo "  switch           - Rebuild & switch (pure flake)"
+	@echo "  switch-impure    - Rebuild & switch (impure, uses host env)"
+	@echo "  build            - Build system (pure, no switch)"
+	@echo "  build-impure     - Build system (impure, no switch)"
+	@echo "  check            - Run flake checks"
+	@echo "  update           - Update flake inputs"
+	@echo ""
+	@echo "Maintenance:"
+	@echo "  rollback         - Rollback to previous generation"
+	@echo "  gc-soft          - Garbage collection (older than 7 days)"
+	@echo "  gc-hard          - Aggressive garbage collection"
+	@echo ""
 
-install-nix:
-	@echo "Installing Nix..."
-	@sudo curl -L https://nixos.org/nix/install | sh -s -- --daemon --yes
-	@echo "Nix installation complete."
+# -------------------------
+# Build / Switch
+# -------------------------
+switch:
+	sudo nixos-rebuild switch --flake $(FLAKE)
 
-install-nix-darwin:
-	@echo "Installing nix-darwin..."
-	@sudo nix run nix-darwin $(EXPERIMENTAL) -- switch --flake $(FLAKE)
-	@echo "nix-darwin installation complete."
+switch-impure:
+	sudo nixos-rebuild switch --flake $(FLAKE) --impure
 
-darwin-rebuild:
-	@echo "Rebuilding darwin configuration..."
-	@sudo darwin-rebuild switch --flake $(FLAKE)
-	@echo "Darwin rebuild complete."
+build:
+	nix build $(FLAKE)
 
-nixos-rebuild:
-	@echo "Rebuilding NixOS configuration..."
-	@sudo nixos-rebuild switch --flake $(FLAKE)
-	@echo "NixOS rebuild complete."
+build-impure:
+	nix build $(FLAKE) --impure
 
-home-manager-switch:
-	@echo "Switching Home Manager configuration..."
-	@home-manager switch --flake $(HOME_TARGET)
-	@echo "Home Manager switch complete."
+# -------------------------
+# Flake
+# -------------------------
+check:
+	nix flake check
 
-nix-gc:
-	@echo "Collecting Nix garbage..."
-	@nix-collect-garbage -d
-	@echo "Garbage collection complete."
+update:
+	nix flake update
 
-flake-update:
-	@echo "Updating flake inputs..."
-	@nix flake update
-	@echo "Flake update complete."
+# ---------------------------------------------------------
+# Maintenance
+# ---------------------------------------------------------
 
-flake-check:
-	@echo "Checking flake..."
-	@nix flake check
-	@echo "Flake check complete."
+## ↩️ Rollback system
+rollback:
+	sudo nixos-rebuild switch --rollback
 
-bootstrap-mac: install-nix install-nix-darwin
+## 🧹 Garbage collection (safe)
+gc-soft:
+	sudo nix-collect-garbage --delete-older-than 7d
+
+## 💣 Garbage collection (aggressive)
+gc-hard:
+	sudo nix-collect-garbage -d
+	sudo nix-store --gc
