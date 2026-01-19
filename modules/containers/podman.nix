@@ -6,12 +6,28 @@
   ############################################
   virtualisation.podman = {
     enable = true;
+
+    # Enable Docker-compatible CLI and socket
+    # Allows using Docker tools against Podman
     dockerCompat = true;
-    defaultNetwork.settings.dns_enabled = true;
+
+    # Enable default Podman bridge with DNS
+    defaultNetwork.settings = {
+      dns_enabled = true;
+    };
   };
 
   ############################################
-  # Enable cgroups v2 (required for podman)
+  # Rootless Podman requirements
   ############################################
-  boot.kernelParams = [ "systemd.unified_cgroup_hierarchy=1" ];
+
+  # Allow user services to run without active login
+  users.users.borba.linger = true;
+
+  ############################################
+  # Firewall (Podman default bridge)
+  ############################################
+  networking.firewall.trustedInterfaces = [
+    "podman0"
+  ];
 }

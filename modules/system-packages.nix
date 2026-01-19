@@ -18,13 +18,15 @@
     docker-compose
     lazydocker
 
+    # Kubernet
+    k9s             # Kubernetes / k3s TUI
+
     podman
     podman-compose
     buildah
     skopeo
     cri-tools
-
-    k3s
+    lazypodman
 
     ##########################################
     # Virtualization (clients & tools)
