@@ -61,6 +61,14 @@
     docker-compose
     lazydocker
 
+    # podeman
+  virt-manager
+  anydesk
+
+  docker-compose
+  podman-compose
+
+
     # -------------------------
     # Languages / Toolchains
     # -------------------------
