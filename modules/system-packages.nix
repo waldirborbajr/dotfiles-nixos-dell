@@ -18,8 +18,8 @@
     docker-compose
     lazydocker
 
-    # Kubernet
-    k9s             # Kubernetes / k3s TUI
+    # Kubernetes CLI/TUI
+    k9s
 
     podman
     podman-compose
@@ -61,6 +61,7 @@
 
     ##########################################
     # Editors / Git
+    ##########################################
     unstable.neovim
     lazygit
     git
@@ -112,11 +113,10 @@
     fd
     ripgrep
     yazi
-    xclip
-    wl-clipboard # Wayland moderno
-    # gerenciadores de clipboard
-    clipster
-    greenclip
+    xclip          # Clipboard X11
+    wl-clipboard   # Clipboard Wayland
+    clipster       # Optional clipboard manager
+    greenclip      # Optional clipboard manager
 
     ##########################################
     # Core UNIX Utilities
@@ -179,4 +179,20 @@
     anydesk
     chirp
   ];
+
+  ############################################
+  # Clipboard helper aliases (optional)
+  ############################################
+  # This adds shell functions to make wl-clipboard / xclip usage seamless.
+  # Does not override existing zsh aliases; the user can still define their own.
+  environment.etc."profile.d/clipboard.sh".text = ''
+    # Detect Wayland vs X11
+    if command -v wl-copy >/dev/null 2>&1 && command -v wl-paste >/dev/null 2>&1; then
+      alias copy='wl-copy'
+      alias paste='wl-paste'
+    elif command -v xclip >/dev/null 2>&1; then
+      alias copy='xclip -selection clipboard'
+      alias paste='xclip -selection clipboard -o'
+    fi
+  '';
 }
