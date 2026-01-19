@@ -167,5 +167,13 @@
     brave
     discord
     flameshot
+    brave
+    firefox-developer-edition
+    chromium
+    discord
+    flameshot
+    kitty
+    anydesk
+    chirp
   ];
 }
