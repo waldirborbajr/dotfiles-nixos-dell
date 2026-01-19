@@ -1,36 +1,14 @@
 { config, pkgs, ... }:
 
 {
-  # imports = [
-  #   ./hardware-configuration.nix
-
-  #   # Core system
-  #   ./modules/system-programs.nix
-  #   ./modules/system-packages.nix
-
-  #   ./modules/maintenance.nix
-  #   ./modules/maintenance-hm.nix
-
-  #   # User
-  #   ./modules/user-borba.nix
-
-  #   # Desktop (ESCOLHA UM)
-  #   ./modules/desktop-gnome.nix
-  #   # ./modules/desktop-cosmic.nix
-
-  #   # Kernel / Boot tuning
-  #   ./modules/kernel-tuning.nix
-  # ];
-
+  ############################################
+  # Imports
+  ############################################
   imports = [
+    # Hardware
     ./hardware-configuration-dell.nix
-
-    # Hardware profile
     ./modules/hardware-dell.nix
-
-    # MacBook profile
-    # ./modules/hardware-macbook.nix
-    # ./modules/hardware-macbook-efi.nix    
+    ./modules/hardware-radio-chirp.nix
 
     # Kernel / performance
     ./modules/kernel-tuning.nix
@@ -45,7 +23,8 @@
     ./modules/system-programs.nix
     ./modules/system-packages.nix
 
-    # Virtualization
+    # Containers / Virtualization
+    ./modules/k3s.nix
     # ./modules/virtualisation-bridge.nix
     # ./modules/virt-wayland-tuning.nix
 
@@ -55,10 +34,6 @@
 
     # Users
     ./modules/user-borba.nix
-
-    ././modules/k3s.nix
-
-./modules/hardware-radio-chirp.nix
   ];
 
   ############################################
@@ -80,18 +55,14 @@
   i18n.defaultLocale = "en_US.UTF-8";
 
   ############################################
-  # Docker (system service)
-  ############################################
-  virtualisation.docker.enable = true;
-
-  ############################################
   # Nix
   ############################################
   nixpkgs.config.allowUnfree = true;
 
-  nix.extraOptions = ''
-    experimental-features = nix-command flakes
-  '';
+  nix.settings.experimental-features = [
+    "nix-command"
+    "flakes"
+  ];
 
   ############################################
   # SSH
@@ -99,5 +70,8 @@
   services.openssh.enable = true;
   networking.firewall.allowedTCPPorts = [ 22 ];
 
+  ############################################
+  # State version
+  ############################################
   system.stateVersion = "25.11";
 }
