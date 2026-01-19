@@ -15,7 +15,8 @@
       "wheel"
       "networkmanager"
       "docker"
-      "libvirtd"      
+      "libvirtd"    
+       "dialout"   # required for CHIRP / serial radios
     ];
   };
 
