@@ -6,15 +6,19 @@
   ############################################
 
   ############################################
-  # EFI bootloader
+  # Bootloader (EFI - MacBook)
   ############################################
   boot.loader = {
     systemd-boot.enable = true;
     efi = {
       canTouchEfiVariables = true;
-      efiSysMountPoint = "/boot";
     };
   };
+
+  ############################################
+  # Faster EFI boot
+  ############################################
+  boot.loader.timeout = 1;
 
   ############################################
   # systemd-boot tuning
