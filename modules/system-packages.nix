@@ -111,10 +111,14 @@
     fd
     ripgrep
     yazi
-    xclip
-    wl-clipboard            # Wayland clipboard
-    clipster
-    greenclip
+
+    ##########################################
+    # Clipboard / copy-paste support
+    ##########################################
+    xclip                 # X11 clipboard
+    wl-clipboard           # Wayland clipboard
+    clipster               # Clipboard manager
+    greenclip              # Clipboard manager daemon
 
     ##########################################
     # Core UNIX Utilities
@@ -177,4 +181,19 @@
     anydesk
     chirp
   ];
+
+  ############################################
+  # Clipboard Aliases (safe, X11/Wayland)
+  ############################################
+  environment.etc."profile.d/clipboard.sh".text = ''
+    #!/usr/bin/env sh
+    # Auto-select X11 or Wayland clipboard commands
+    if [ -n "$WAYLAND_DISPLAY" ]; then
+      export CLIP_CMD="wl-copy"
+      export PASTE_CMD="wl-paste"
+    else
+      export CLIP_CMD="xclip -selection clipboard"
+      export PASTE_CMD="xclip -selection clipboard -o"
+    fi
+  '';
 }
