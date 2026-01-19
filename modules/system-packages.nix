@@ -113,6 +113,10 @@
     ripgrep
     yazi
     xclip
+    wl-clipboard # Wayland moderno
+    # gerenciadores de clipboard
+    clipster
+    greenclip
 
     ##########################################
     # Core UNIX Utilities
