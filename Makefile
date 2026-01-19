@@ -1,12 +1,17 @@
 # =========================================================
-# NixOS Makefile (Non-Flake, no Home Manager)
+# NixOS Makefile (non-flake, Home-based config)
 # =========================================================
+
+# -------------------------
+# Variables
+# -------------------------
+CONFIG_DIR ?= $(HOME)/nixos-config
 
 # -------------------------
 # Phony targets
 # -------------------------
 .PHONY: help \
-        switch switch-impure build build-impure \
+        switch build \
         containers-docker containers-podman \
         rollback gc-soft gc-hard doctor
 
@@ -18,10 +23,8 @@ help:
 	@echo "NixOS Makefile targets:"
 	@echo ""
 	@echo "Build / Switch:"
-	@echo "  switch             - Rebuild & switch system"
-	@echo "  switch-impure      - Rebuild & switch system (impure)"
 	@echo "  build              - Build system (no switch)"
-	@echo "  build-impure       - Build system (impure, no switch)"
+	@echo "  switch             - Rebuild & switch system"
 	@echo ""
 	@echo "Containers:"
 	@echo "  containers-docker  - Enable Docker (default)"
@@ -38,16 +41,10 @@ help:
 # Build / Switch
 # -------------------------
 build:
-	sudo nixos-rebuild build
-
-build-impure:
-	sudo nixos-rebuild build --impure
+	sudo nixos-rebuild build -I nixos-config=$(CONFIG_DIR)
 
 switch:
-	sudo nixos-rebuild switch
-
-switch-impure:
-	sudo nixos-rebuild switch --impure
+	sudo nixos-rebuild switch -I nixos-config=$(CONFIG_DIR)
 
 # -------------------------
 # Containers switch
@@ -57,7 +54,7 @@ containers-docker:
 	@sed -i \
 		-e 's|^# ./modules/containers/docker.nix|./modules/containers/docker.nix|' \
 		-e 's|^./modules/containers/podman.nix|# ./modules/containers/podman.nix|' \
-		configuration.nix
+		$(CONFIG_DIR)/configuration.nix
 	@echo ">> Docker enabled. Run: make switch"
 
 containers-podman:
@@ -65,14 +62,15 @@ containers-podman:
 	@sed -i \
 		-e 's|^# ./modules/containers/podman.nix|./modules/containers/podman.nix|' \
 		-e 's|^./modules/containers/docker.nix|# ./modules/containers/docker.nix|' \
-		configuration.nix
+		$(CONFIG_DIR)/configuration.nix
 	@echo ">> Podman enabled. Run: make switch"
 
 # ---------------------------------------------------------
 # Maintenance
 # ---------------------------------------------------------
+
 rollback:
-	sudo nixos-rebuild switch --rollback
+	sudo nixos-rebuild switch --rollback -I nixos-config=$(CONFIG_DIR)
 
 gc-soft:
 	sudo nix-collect-garbage --delete-older-than 7d
