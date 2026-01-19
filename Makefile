@@ -49,17 +49,11 @@ help:
 # -------------------------
 # Build / Switch
 # -------------------------
-switch:
-	sudo nixos-rebuild switch --flake $(FLAKE)
-
-switch-impure:
-	sudo nixos-rebuild switch --flake $(FLAKE) --impure
-
 build:
-	nix build $(FLAKE)
+	sudo nixos-rebuild switch
 
 build-impure:
-	nix build $(FLAKE) --impure
+	sudo nixos-rebuild switch --impure
 
 # -------------------------
 # Containers switch
