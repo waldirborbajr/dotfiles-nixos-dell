@@ -9,7 +9,7 @@
     ############################################
     # Virtualization (hardware-agnostic)
     ############################################
-    virt-manager
+    unstable.virt-manager
     virt-viewer
     spice
     spice-gtk
@@ -39,7 +39,7 @@
     # -------------------------
     # Editors / Git
     # -------------------------
-    neovim
+    unstable.neovim
     lazygit
     git
     gh

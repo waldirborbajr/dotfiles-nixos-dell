@@ -54,6 +54,8 @@
 
     # Users
     ./modules/user-borba.nix
+
+    ./modules/nix-unstable.nix
   ];
 
   ############################################
