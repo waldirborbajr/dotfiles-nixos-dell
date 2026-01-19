@@ -2,76 +2,68 @@
 
 {
   ############################################
-  # System Packages (global)
+  # System Packages (global / hardware-agnostic)
   ############################################
   environment.systemPackages = with pkgs; [
 
-    # --- Containers / Cloud ---
+    ##########################################
+    # Containers / Cloud / Kubernetes
+    ##########################################
+    docker
+    docker-compose
+    lazydocker
+
     podman
     podman-compose
     buildah
     skopeo
     cri-tools
 
-    # --- Kubernet
     k3s
 
-    ############################################
-    # Virtualization (hardware-agnostic)
-    ############################################
+    ##########################################
+    # Virtualization (clients & tools)
+    ##########################################
     virt-manager
     virt-viewer
+    qemu
+    win-virtio
+
     spice
     spice-gtk
     spice-protocol
-    win-virtio
 
-    qemu
-    
-    # System info
-    microfetch    
+    ##########################################
+    # System Information
+    ##########################################
+    microfetch
 
-    # -------------------------
+    ##########################################
     # Terminals
-    # -------------------------
+    ##########################################
     alacritty
     kitty
 
-    # -------------------------
-    # Shell / Multiplexer
-    # -------------------------
+    ##########################################
+    # Shells / Multiplexers
+    ##########################################
     zsh
     fish
     tmux
     tmuxifier
     stow
 
-    # -------------------------
+    ##########################################
     # Editors / Git
-    # -------------------------
+    ##########################################
     neovim
     lazygit
     git
     gh
 
-    # -------------------------
-    # Containers
-    # -------------------------
-    docker
-    docker-compose
-    lazydocker
-
-    # podeman
-  virt-manager
-  anydesk
-
-  docker-compose
-  podman-compose
-
-
-    # -------------------------
+    ##########################################
     # Languages / Toolchains
-    # -------------------------
+    ##########################################
     gcc
     libgcc
     glibc
@@ -83,9 +75,9 @@
     rustup
     rust-analyzer
 
-    # -------------------------
-    # Build / Dev tools
-    # -------------------------
+    ##########################################
+    # Build / Development Tools
+    ##########################################
     cmake
     gnumake
     libtool
@@ -96,18 +88,18 @@
     llvm
     lld
 
-    # -------------------------
-    # Nix tooling
-    # -------------------------
+    ##########################################
+    # Nix Tooling
+    ##########################################
     nixd
     nil
     statix
     deadnix
     nixfmt-rfc-style
 
-    # -------------------------
-    # Modern CLI
-    # -------------------------
+    ##########################################
+    # Modern CLI Utilities
+    ##########################################
     eza
     btop
     bat
@@ -117,9 +109,9 @@
     yazi
     xclip
 
-    # -------------------------
-    # Core UNIX
-    # -------------------------
+    ##########################################
+    # Core UNIX Utilities
+    ##########################################
     coreutils
     curl
     wget
@@ -129,17 +121,17 @@
     unzip
     zip
 
-    # -------------------------
-    # Hardware / Debug
-    # -------------------------
+    ##########################################
+    # Hardware / System Debug
+    ##########################################
     lshw
     pciutils
     usbutils
     lm_sensors
 
-    # -------------------------
+    ##########################################
     # Network / Connectivity
-    # -------------------------
+    ##########################################
     iwd
     iproute2
     iputils
@@ -147,40 +139,34 @@
     dnsutils
     nmap
 
-    # -------------------------
-    # Storage / FS
-    # -------------------------
+    ##########################################
+    # Storage / Filesystems
+    ##########################################
     e2fsprogs
     ntfs3g
     dosfstools
 
-    # -------------------------
-    # Process / System
-    # -------------------------
+    ##########################################
+    # Process / System Inspection
+    ##########################################
     procps
     psmisc
     util-linux
 
-    # -------------------------
-    # Certificates
-    # -------------------------
+    ##########################################
+    # Certificates / SSL
+    ##########################################
     cacert
 
-    # -------------------------
+    ##########################################
     # GUI Applications (global)
-    # -------------------------
+    ##########################################
     firefox
     firefox-developer-edition
     chromium
     brave
     discord
     flameshot
-    brave
-    firefox-developer-edition
-    chromium
-    discord
-    flameshot
-    kitty
     anydesk
     chirp
   ];
