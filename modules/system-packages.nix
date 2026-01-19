@@ -1,5 +1,11 @@
 { pkgs, ... }:
 
+let
+  # Canal unstable (precisa adicionar nixpkgs-unstable ao NIX_PATH):
+  # sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable
+  # sudo nix-channel --update
+  unstable = import <nixpkgs-unstable> {};
+in
 {
   ############################################
   # System Packages (global / hardware-agnostic)
@@ -19,14 +25,16 @@
     lazydocker
 
     # Kubernetes / k3s
-    k9s             # Kubernetes CLI TUI
+    k9s                        # Kubernetes CLI TUI
 
-    podman
-    podman-compose
-    buildah
-    skopeo
-    cri-tools
-    unstable.lazypodman      # Latest features for Podman
+    # Podman (rootless) - comentado enquanto Docker está ativo
+    # unstable.lazypodman
+    # podman
+    # podman-compose
+    # buildah
+    # skopeo
+    # cri-tools
+    # Motivo: Podman não deve ser ativado junto com Docker, pois dockerCompat entra em conflito.
 
     ##########################################
     # Virtualization (clients & tools)
@@ -77,6 +85,7 @@
 
     go
     gopls
+
     rustup
     rust-analyzer
 
@@ -111,14 +120,10 @@
     fd
     ripgrep
     yazi
-
-    ##########################################
-    # Clipboard / copy-paste support
-    ##########################################
-    xclip                 # X11 clipboard
-    wl-clipboard           # Wayland clipboard
-    clipster               # Clipboard manager
-    greenclip              # Clipboard manager daemon
+    xclip
+    wl-clipboard            # Wayland clipboard
+    clipster
+    greenclip
 
     ##########################################
     # Core UNIX Utilities
@@ -178,22 +183,7 @@
     brave
     discord
     flameshot
-    anydesk
+    # anydesk removido pois estava causando erro
     chirp
   ];
-
-  ############################################
-  # Clipboard Aliases (safe, X11/Wayland)
-  ############################################
-  environment.etc."profile.d/clipboard.sh".text = ''
-    #!/usr/bin/env sh
-    # Auto-select X11 or Wayland clipboard commands
-    if [ -n "$WAYLAND_DISPLAY" ]; then
-      export CLIP_CMD="wl-copy"
-      export PASTE_CMD="wl-paste"
-    else
-      export CLIP_CMD="xclip -selection clipboard"
-      export PASTE_CMD="xclip -selection clipboard -o"
-    fi
-  '';
 }
