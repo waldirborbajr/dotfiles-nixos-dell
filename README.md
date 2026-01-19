@@ -1,4 +1,4 @@
-# My NixOS Configuration ❄️
+# BORBA JR W - NixOS Configuration ❄️
 
 Personal **NixOS workstation configuration**, focused on **simplicity, fast reinstallation, reproducibility and low maintenance**.
 
@@ -31,18 +31,31 @@ Dotfiles and user-level configs are managed externally via **GNU Stow**, keeping
 ├── init.sh
 ├── configuration.nix
 ├── hardware-configuration.nix
-├── modules
-│   ├── desktop-cosmic.nix
-│   ├── desktop-gnome.nix
-│   ├── fonts.nix
-│   ├── hardware-dell.nix
-│   ├── kernel-tuning.nix
-│   ├── maintenance.nix
-│   ├── maintenance-hm.nix
-│   ├── packages.nix
-│   ├── system-packages.nix
-│   ├── system-programs.nix
-│   └── user-borba.nix
+├── modules/
+│     ├── containers/
+│     ├── docker.nix      # Docker + docker-compose + lazydocker
+│     ├── k3s.nix         # Single-node Kubernetes (K3s)
+│     └── podman.nix      # Podman rootless + buildah + skopeo
+├── desktop-cinnamon.nix
+├── desktop-cosmic.nix
+├── desktop-gnome.nix
+├── desktop-hyprland.nix
+├── desktop-lxqt.nix
+├── fonts.nix
+├── hardware-dell.nix
+├── hardware-macbook-efi.nix
+├── hardware-macbook.nix
+├── hardware-radio-chirp.nix
+├── kernel-tuning.nix
+├── maintenance-hm.nix
+├── maintenance.nix
+├── nix-unstable.nix
+├── packages.nix
+├── system-packages.nix
+├── system-programs.nix
+├── user-borba.nix
+├── virt-wayland-tuning.nix
+└── virtualisation-bridge.nix
 └── prj
 ```
 
@@ -52,12 +65,11 @@ Dotfiles and user-level configs are managed externally via **GNU Stow**, keeping
 
 ### 🔧 `configuration.nix`
 Main entry point. Only **wires modules together** and defines host-level concerns:
-- Bootloader
 - Hostname
-- Docker
 - SSH
 - Nix settings
 - Imports modules
+- Optional hardware & desktop profiles
 
 ---
 
@@ -73,6 +85,9 @@ Dell Inspiron–specific hardware:
 - Audio
 - Firmware / microcode
 - Power optimizations
+
+#### `modules/hardware-macbook.nix` / `hardware-macbook-efi.nix`
+MacBook-specific hardware and EFI boot tuning.
 
 ---
 
@@ -96,7 +111,10 @@ Default desktop:
 - Fast startup
 
 #### `modules/desktop-cosmic.nix`
-Optional **COSMIC Desktop profile**, isolated and swappable.
+Optional COSMIC Desktop profile, isolated and swappable.
+
+#### `modules/desktop-cinnamon.nix`
+Optional Cinnamon profile (lightweight, classic desktop). Uses LightDM.
 
 > Only one desktop module should be imported at a time.
 
@@ -115,23 +133,20 @@ System-wide fonts:
 ### 📦 Packages & Programs
 
 #### `modules/system-programs.nix`
-Declarative enablement of system programs:
-- `zsh`
-- `firefox`
-- `zoxide`
-- Core system services
+Enable system programs declaratively:
+- `zsh`, `firefox`, `zoxide`, etc.
 
 #### `modules/system-packages.nix`
-**Global system packages only**:
+**Global system packages**:
 - Terminals: `alacritty`, `kitty`
 - Shell & multiplexers: `zsh`, `tmux`, `tmuxifier`
 - Editors: `neovim`, `lazygit`
-- Containers: `docker`, `docker-compose`
-- Languages: `go`, `rust`, `nix`
-- Toolchains: `gcc`, `clang`, `cmake`, `gdb`, `make`
+- Containers: `docker`, `podman`, `lazypodman`
+- Kubernetes TUI: `k9s`
+- Languages & Toolchains: `go`, `rust`, `gcc`, `clang`, `cmake`
 - CLI tools: `eza`, `bat`, `btop`, `fd`, `ripgrep`, `yazi`
 - Browsers: `brave`, `chromium`, `firefox-developer`
-- Utilities: `flameshot`, `xclip`, `discord`
+- Utilities: `flameshot`, `xclip`, `discord`, `microfetch`
 
 Everything here is **machine-wide and reproducible**.
 
@@ -143,12 +158,10 @@ Everything here is **machine-wide and reproducible**.
 User-specific settings:
 - User `borba`
 - ZSH shell
-- Docker / wheel / network groups
+- Docker / Podman / wheel / network groups
 - **Passwordless sudo**
 - **Automatic login**
-- No user packages (by design)
-
-Dotfiles are managed separately via **GNU Stow**.
+- Dotfiles managed externally via **GNU Stow**
 
 ---
 
@@ -162,37 +175,74 @@ Aggressive but safe cleanup:
 - Limited system generations
 
 #### `modules/maintenance-hm.nix`
-Defensive cleanup of **old Home Manager profiles**, even if HM is not used anymore:
-- Weekly cleanup
-- Keeps last 3 generations
-- Safe no-op if HM is absent
+Defensive cleanup of old Home Manager profiles.
 
 ---
 
-## 🛠️ Makefile
+### 🐳 Containers / Kubernetes
 
-### Common Commands
+#### Module Responsibilities
 
+All container tools are managed as system-wide packages and optional services.
+
+Docker (modules/containers/docker.nix)
+
+- System service enabled by default.
+
+- Includes docker-compose and lazydocker.
+
+- Fully integrated with the user borba.
+
+- Podman (modules/containers/podman.nix)
+
+- Rootless container runtime.
+
+- Docker-compatible socket for switching between Docker and Podman.
+
+- Includes podman-compose, buildah, skopeo, and lazypodman.
+
+- Cgroups v2 enabled.
+
+- K3s (modules/containers/k3s.nix)
+
+- Lightweight Kubernetes for single-node workstations.
+
+- Role: server.
+
+- Optional extra flags to disable Traefik or other services.
+
+- Firewall configured for Kubernetes API (6443).
+
+---
+
+### 🛠️ Makefile
+
+#### Common Commands
 ```bash
-make nixos-rebuild
-make nixos-rebuild IMPURE=1
+make switch           # Rebuild & switch
+make switch-impure    # Rebuild & switch using host environment
+make build            # Build only
+make build-impure     # Build using host environment
 ```
 
-### Maintenance
-
+#### Maintenance
 ```bash
 make rollback
 make gc-soft
 make gc-hard
 ```
 
-### Diagnostics
+#### Containers
+```bash
+make containers-podman   # Switch Docker -> Podman rootless setup
+```
 
+#### Diagnostics
 ```bash
 make doctor
 ```
 
-`make doctor` performs sanity checks:
+`make doctor` checks:
 - Nix store size
 - GC timers
 - Disk usage
@@ -207,21 +257,17 @@ make doctor
 2. Clone this repo
 3. Adjust `hardware-configuration.nix` if needed
 4. Run:
-
 ```bash
 sudo nixos-rebuild switch --flake . --impure
 ```
-
 5. Restore dotfiles via `stow`
-
-Done.
 
 ---
 
 ## 🧠 Design Decisions
 
-- ❌ No Home Manager (by choice)
-- ✅ Stow for dotfiles
+- ❌ No Home Manager
+- ✅ GNU Stow for dotfiles
 - ✅ Aggressive GC (single-user laptop)
 - ✅ Clear module boundaries
 - ✅ Easy hardware swap
@@ -239,15 +285,9 @@ Done.
 
 ## 🏁 Final Notes
 
-This setup is **boring on purpose**.  
-Boring means reliable, fast, reproducible — and easy to throw away and rebuild.
+This setup is **boring on purpose**. Boring means reliable, fast, reproducible, and easy to throw away and rebuild.
 
-If you like it, steal it 😄
+Steal it if you like 😄
 
-## v1.0.1
+## v1.1.0
 
-## Ref
-
-```
-https://chatgpt.com/share/696e41df-f250-8001-9e17-41f3c4a9b18a
-```
