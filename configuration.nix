@@ -34,6 +34,8 @@
     ./modules/desktop-gnome.nix
     # ./modules/desktop-cosmic.nix
     # ./modules/desktop-hyprland.nix
+    # ./modules/desktop-lxqt.nix
+    # ./modules/desktop-cinnamon.nix
 
     ##########################################
     # Base system
