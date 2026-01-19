@@ -243,3 +243,5 @@ This setup is **boring on purpose**.
 Boring means reliable, fast, reproducible — and easy to throw away and rebuild.
 
 If you like it, steal it 😄
+
+## v1.0.1
