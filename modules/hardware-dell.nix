@@ -20,7 +20,7 @@
   # Pacotes de firmware e utilitários
   ############################################
   environment.systemPackages = with pkgs; [
-    linuxFirmware        # Inclui firmware Broadcom e outros
+    linux-firmware       # Firmware Broadcom, Intel e outros
     bluez                # CLI Bluetooth
     blueman              # GUI para BT
   ];
