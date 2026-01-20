@@ -9,35 +9,69 @@ jobs:
   validate:
     runs-on: ubuntu-latest
 
+    strategy:
+      fail-fast: false
+      matrix:
+        profile:
+          - dell
+          - macbook
+
+    name: Validate profile: ${{ matrix.profile }}
+
     steps:
+      # --------------------------------------------------
+      # Checkout
+      # --------------------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # --------------------------------------------------
+      # Install Nix (non-flake, channel-based)
+      # --------------------------------------------------
       - name: Install Nix
         uses: cachix/install-nix-action@v25
         with:
           nix_path: nixpkgs=channel:nixos-unstable
+          extra_nix_config: |
+            experimental-features = nix-command flakes
+            keep-outputs = true
+            keep-derivations = true
 
-      - name: Enable flakes (required by tooling)
-        run: |
-          mkdir -p ~/.config/nix
-          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
-
-      - name: Format check (nixfmt)
+      # --------------------------------------------------
+      # Formatting check
+      # --------------------------------------------------
+      - name: Nix format check
         run: |
           nix-shell -p nixfmt-rfc-style --run \
             "nixfmt --check $(find . -name '*.nix')"
 
-      - name: Static analysis (statix)
+      # --------------------------------------------------
+      # Static analysis
+      # --------------------------------------------------
+      - name: Statix
+        run: nix-shell -p statix --run "statix check"
+
+      - name: Deadnix
+        run: nix-shell -p deadnix --run "deadnix"
+
+      # --------------------------------------------------
+      # Evaluate configuration (profile-aware)
+      # --------------------------------------------------
+      - name: Evaluate configuration
         run: |
-          nix-shell -p statix --run "statix check"
+          nix-instantiate \
+            '<nixpkgs/nixos>' \
+            -A system \
+            -I nixos-config=./configuration.nix \
+            --argstr profile "${{ matrix.profile }}" \
+            >/dev/null
 
-      - name: Dead code detection (deadnix)
+      # --------------------------------------------------
+      # Dry build (no switch, no activation)
+      # --------------------------------------------------
+      - name: Build system (dry-run)
         run: |
-          nix-shell -p deadnix --run "deadnix"
-
-      - name: Nix evaluation check
-        run: ./scripts/ci-eval.sh
-
-      - name: NixOS build (dry build)
-        run: ./scripts/ci-build.sh
+          nix-shell -p nixos-rebuild --run \
+            "nixos-rebuild build \
+              -I nixos-config=$(pwd) \
+              --dry-run"
