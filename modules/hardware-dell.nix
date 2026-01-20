@@ -1,38 +1,46 @@
 { config, pkgs, ... }:
 
+let
+  unstable = import <nixpkgs-unstable> { };
+in
 {
   ############################################
   # Wi-Fi e Bluetooth
   ############################################
   networking.networkmanager.enable = true;
-
-  hardware.enableRedistributableFirmware = true;
   hardware.bluetooth.enable = true;
-
   services.blueman.enable = true;
+  hardware.enableRedistributableFirmware = true;
 
-  # Carrega os módulos corretos no initrd e kernel
+  # Firmware específico para Broadcom BCM4312 LP-PHY
+  environment.systemPackages = with pkgs; [
+    linux-firmware
+    bluez
+    blueman
+    b43-fwcutter
+    wirelesstools
+    pciutils
+    usbutils
+    unstable.rfkill
+  ];
+
+  # Kernel modules
   boot.initrd.kernelModules = [ "ssb" "b43" "btusb" ];
   boot.kernelModules = [ "ssb" "b43" ];
 
-  # Evita conflitos com outros drivers Broadcom
+  # Evita drivers conflitantes
   boot.blacklistedKernelModules = [ "bcma" "brcmsmac" "wl" ];
 
   ############################################
-  # Pacotes essenciais
-  ############################################
-  environment.systemPackages = with pkgs; [
-    linux-firmware   # contém firmware Broadcom e outros
-    bluez            # CLI Bluetooth
-    blueman          # GUI Bluetooth
-    pciutils
-    usbutils
-    rfkill
-  ];
-
-  ############################################
-  # Bootloader GRUB
+  # GRUB bootloader
   ############################################
   boot.loader.grub.enable = true;
-  boot.loader.grub.useOSProber = false; # evita warnings de outros OS
+  boot.loader.grub.version = 2;
+  boot.loader.grub.useOSProber = false;
+  boot.loader.grub.devices = [ "/dev/sda" ];
+
+  ############################################
+  # System state version
+  ############################################
+  system.stateVersion = "25.11";
 }
