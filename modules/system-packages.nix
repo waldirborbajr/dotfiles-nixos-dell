@@ -187,5 +187,7 @@ spice-protocol
     discord
     flameshot
     chirp
+
+anydesk   # Install AnyDesk binary (there's no 'services.anydesk' in NixOS)
   ];
 }
