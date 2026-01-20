@@ -7,6 +7,7 @@ on:
 
 jobs:
   validate:
+    name: Validate profiles
     runs-on: ubuntu-latest
 
     strategy:
@@ -16,47 +17,41 @@ jobs:
           - dell
           - macbook
 
-    name: Validate profile: ${{ matrix.profile }}
-
     steps:
-      # --------------------------------------------------
+      # ----------------------------------------
       # Checkout
-      # --------------------------------------------------
+      # ----------------------------------------
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # --------------------------------------------------
-      # Install Nix (non-flake, channel-based)
-      # --------------------------------------------------
+      # ----------------------------------------
+      # Install Nix
+      # ----------------------------------------
       - name: Install Nix
         uses: cachix/install-nix-action@v25
         with:
           nix_path: nixpkgs=channel:nixos-unstable
-          extra_nix_config: |
-            experimental-features = nix-command flakes
-            keep-outputs = true
-            keep-derivations = true
 
-      # --------------------------------------------------
-      # Formatting check
-      # --------------------------------------------------
+      # ----------------------------------------
+      # Formatting
+      # ----------------------------------------
       - name: Nix format check
         run: |
           nix-shell -p nixfmt-rfc-style --run \
             "nixfmt --check $(find . -name '*.nix')"
 
-      # --------------------------------------------------
+      # ----------------------------------------
       # Static analysis
-      # --------------------------------------------------
+      # ----------------------------------------
       - name: Statix
         run: nix-shell -p statix --run "statix check"
 
       - name: Deadnix
         run: nix-shell -p deadnix --run "deadnix"
 
-      # --------------------------------------------------
-      # Evaluate configuration (profile-aware)
-      # --------------------------------------------------
+      # ----------------------------------------
+      # Evaluate configuration
+      # ----------------------------------------
       - name: Evaluate configuration
         run: |
           nix-instantiate \
@@ -64,11 +59,11 @@ jobs:
             -A system \
             -I nixos-config=./configuration.nix \
             --argstr profile "${{ matrix.profile }}" \
-            >/dev/null
+            > /dev/null
 
-      # --------------------------------------------------
-      # Dry build (no switch, no activation)
-      # --------------------------------------------------
+      # ----------------------------------------
+      # Dry build
+      # ----------------------------------------
       - name: Build system (dry-run)
         run: |
           nix-shell -p nixos-rebuild --run \
