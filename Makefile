@@ -11,7 +11,7 @@ CONFIG_DIR ?= $(HOME)/nixos-config
 # Phony targets
 # -------------------------
 .PHONY: help switch build containers-docker containers-podman \
-        rollback gc-soft gc-hard doctor
+        rollback gc-soft gc-hard doctor update-channels
 
 # -------------------------
 # Help
@@ -26,7 +26,10 @@ help:
 	@echo ""
 	@echo "Containers:"
 	@echo "  containers-docker  - Enable Docker (default)"
-	@echo "  containers-podman  - Enable Podman (rootless)"
+	@echo "  containers-podman  - Enable Podman (rootless, disables Docker)"
+	@echo ""
+	@echo "Channels:"
+	@echo "  update-channels    - Add/update nixpkgs-unstable channel"
 	@echo ""
 	@echo "Maintenance:"
 	@echo "  rollback           - Rollback to previous generation"
@@ -64,11 +67,20 @@ containers-podman:
 		-e 's|^./modules/containers/docker.nix|# ./modules/containers/docker.nix|' \
 		$(CONFIG_DIR)/configuration.nix
 	@echo ">> Podman enabled. Run: make switch"
+	@echo ">> NOTE: Podman is rootless. Make sure to disable Docker first if switching."
+
+# -------------------------
+# Nix Channel Update
+# -------------------------
+update-channels:
+	@echo ">> Adding/updating NixOS unstable channel..."
+	sudo nix-channel --add https://nixos.org/channels/nixos-unstable nixpkgs-unstable || true
+	sudo nix-channel --update
+	@echo ">> Nix channels updated"
 
 # ---------------------------------------------------------
 # Maintenance
 # ---------------------------------------------------------
-
 rollback:
 	sudo nixos-rebuild switch --rollback -I nixos-config=$(CONFIG_DIR)/configuration.nix
 
