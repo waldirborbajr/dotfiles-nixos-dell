@@ -2,24 +2,20 @@
 
 {
   ############################################
-  # Wi-Fi e Bluetooth (Dell Inspiron)
+  # Enable NetworkManager (Wi-Fi / Ethernet)
   ############################################
   networking.networkmanager.enable = true;
 
+  ############################################
+  # Enable redistributable firmware (Dell Wi-Fi / BT)
+  ############################################
   hardware.enableRedistributableFirmware = true;
 
-  # Firmware Broadcom / Intel / Bluetooth
-  environment.systemPackages = with pkgs; [
-    linuxFirmware.b43        # Broadcom Wi-Fi
-    linuxFirmware.b43-open   # Versão open
-    linuxFirmware.broadcom   # Broadcom STA
-    linuxFirmware.intel      # Intel microcode
-    linuxFirmware.broadcom-wl
-  ];
-
+  ############################################
+  # Bluetooth
+  ############################################
   hardware.bluetooth.enable = true;
   hardware.bluetooth.powerOnBoot = true;
-
   services.blueman.enable = true;
 
   ############################################
@@ -56,9 +52,22 @@
   # Kernel Modules
   ############################################
   boot.initrd.availableKernelModules = [
-    "ehci_pci" "ahci" "ums_realtek" "usb_storage" "sd_mod" "sr_mod"
+    "ehci_pci"
+    "ahci"
+    "ums_realtek"
+    "usb_storage"
+    "sd_mod"
+    "sr_mod"
     "b43"       # Broadcom Wi-Fi
     "btusb"     # Bluetooth USB
   ];
+
   boot.kernelModules = [ "kvm-intel" ];
+
+  ############################################
+  # System packages for firmware
+  ############################################
+  environment.systemPackages = with pkgs; [
+    firmwareLinuxNonfree      # Inclui Broadcom b43 e outros firmwares não-livres
+  ];
 }
