@@ -6,6 +6,5 @@
   environment.systemPackages = with pkgs; [
     b43FirmwareCutter
     iw
-    rfkill
   ];
 }
