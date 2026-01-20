@@ -21,7 +21,6 @@
     ##########################################
     ./modules/kernel-tuning.nix
     ./modules/fonts.nix
-    ./modules/system-programs.nix
     ./modules/system-packages.nix
 
     ./modules/desktop-gnome.nix
@@ -34,13 +33,10 @@
 
     ./modules/user-borba.nix
     ./modules/nix-unstable.nix
-  ];
 
-  ############################################
-  # Hostname / Networking
-  ############################################
-  networking.hostName = "nixos";
-  networking.networkmanager.enable = true;
+    ./modules/autologin.nix
+
+  ];
 
   ############################################
   # Locale / Time
@@ -58,11 +54,6 @@
     LC_TELEPHONE = "pt_BR.UTF-8";
     LC_TIME = "pt_BR.UTF-8";
   };
-
-  ############################################
-  # Fonts
-  ############################################
-  fonts = import ./modules/fonts.nix;
 
   ############################################
   # System state version

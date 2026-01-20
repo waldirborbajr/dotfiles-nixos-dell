@@ -1,33 +1,39 @@
 { config, pkgs, ... }:
 
 {
-  ############################################
-  # Podman (rootless, Docker-compatible)
-  ############################################
-  virtualisation.podman = {
-    enable = true;
+  ####################################################################
+  # Podman (FUTURE USE)
+  #
+  # This configuration is intentionally DISABLED.
+  #
+  # Planned migration path:
+  # 1. Disable Docker:
+  #    virtualisation.docker.enable = false;
+  #
+  # 2. Enable Podman below and rebuild.
+  #
+  # Notes:
+  # - dockerCompat MUST NOT be enabled together with Docker.
+  # - This setup is rootless and Docker-CLI compatible.
+  ####################################################################
 
-    # Enable Docker-compatible CLI and socket
-    # Allows using Docker tools against Podman
-    dockerCompat = true;
+  # virtualisation.podman = {
+  #   enable = true;
+  #
+  #   # Docker-compatible CLI and socket
+  #   dockerCompat = true;
+  #
+  #   # Default bridge with DNS enabled
+  #   defaultNetwork.settings = {
+  #     dns_enabled = true;
+  #   };
+  # };
 
-    # Enable default Podman bridge with DNS
-    defaultNetwork.settings = {
-      dns_enabled = true;
-    };
-  };
+  # Required for rootless Podman
+  # users.users.borba.linger = true;
 
-  ############################################
-  # Rootless Podman requirements
-  ############################################
-
-  # Allow user services to run without active login
-  users.users.borba.linger = true;
-
-  ############################################
-  # Firewall (Podman default bridge)
-  ############################################
-  networking.firewall.trustedInterfaces = [
-    "podman0"
-  ];
+  # Firewall exception for Podman bridge
+  # networking.firewall.trustedInterfaces = [
+  #   "podman0"
+  # ];
 }
