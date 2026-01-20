@@ -4,17 +4,17 @@
   ############################################
   # Rede e Bluetooth
   ############################################
-  networking.networkmanager.enable = true
+  networking.networkmanager.enable = true;
 
-  hardware.enableRedistributableFirmware = true
+  hardware.enableRedistributableFirmware = true;
 
-  hardware.bluetooth.enable = true
-  services.blueman.enable = true
+  hardware.bluetooth.enable = true;
+  services.blueman.enable = true;
 
   ############################################
   # Kernel Modules
   ############################################
-  boot.initrd.kernelModules = [ "b43" "btusb" ]
+  boot.initrd.kernelModules = [ "b43" "btusb" ];
 
   ############################################
   # Pacotes de firmware e utilitários
