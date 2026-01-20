@@ -34,15 +34,6 @@ help:
 	@echo "  make gc-soft       - GC older than 7 days"
 	@echo "  make gc-hard       - Full GC (delete all old generations)"
 	@echo ""
-	@echo "Store Maintenance:"
-	@echo "  make optimise      - Deduplicate Nix store"
-	@echo "  make verify        - Verify store integrity"
-	@echo ""
-	@echo "Diagnostics:"
-	@echo "  make doctor        - System health overview"
-	@echo "  make generations   - List system generations"
-	@echo "  make space         - Disk usage overview"
-	@echo ""
 
 # ---------------------------------------------------------
 # Build / Switch
@@ -60,23 +51,29 @@ rollback:
 		-I nixos-config=$(CONFIG_DIR)
 
 # ---------------------------------------------------------
-# Lint / Format
+# Format
 # ---------------------------------------------------------
 fmt:
-	nix run nixpkgs#nixfmt-rfc-style -- \
-	  find . -name "*.nix" \
-	    ! -name "hardware-configuration-*.nix" \
-	    -exec nixfmt {} \;
+	@echo ">> Formatting Nix files"
+	find . -name "*.nix" \
+	  ! -name "hardware-configuration-*.nix" \
+	  -print0 \
+	| xargs -0 nix run nixpkgs#nixfmt-rfc-style -- nixfmt
 
+# ---------------------------------------------------------
+# Lint
+# ---------------------------------------------------------
 lint:
-	nix run nixpkgs#nixfmt-rfc-style -- \
-	  find . -name "*.nix" \
-	    ! -name "hardware-configuration-*.nix" \
-	    -print0 \
-	  | xargs -0 nixfmt --check
+	@echo ">> nixfmt check"
+	find . -name "*.nix" \
+	  ! -name "hardware-configuration-*.nix" \
+	  -print0 \
+	| xargs -0 nix run nixpkgs#nixfmt-rfc-style -- nixfmt --check
 
+	@echo ">> statix"
 	nix run nixpkgs#statix -- check .
 
+	@echo ">> deadnix"
 	nix run nixpkgs#deadnix -- \
 	  --exclude hardware-configuration-dell.nix \
 	  --exclude hardware-configuration-macbook.nix \
@@ -120,29 +117,13 @@ generations:
 	sudo nix-env --list-generations --profile /nix/var/nix/profiles/system
 
 space:
-	@echo ">> Disk usage:"
 	df -h /
-	@echo ""
-	@echo ">> Nix store size:"
 	du -sh /nix/store
 
 doctor:
-	@echo ">> Nix version:"
 	nix --version || true
-	@echo ""
-	@echo ">> Active system generation:"
 	readlink /nix/var/nix/profiles/system
-	@echo ""
-	@echo ">> GC timers:"
 	systemctl list-timers | grep nix || true
-	@echo ""
-	@echo ">> Docker:"
 	systemctl is-active docker || true
-	@echo ""
-	@echo ">> K3s:"
 	systemctl is-active k3s || true
-	@echo ""
-	@echo ">> Store size:"
 	du -sh /nix/store
-	@echo ""
-	@echo ">> Doctor finished"
