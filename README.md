@@ -194,48 +194,62 @@ modules/users/borba.nix
 
 ## Makefile Usage
 
-This repository must live at:
+## This repository must live at:
 
+```
 $HOME/nixos-config
+```
 
-No symlinks to /etc/nixos are used.
+## No symlinks to /etc/nixos are used.
 
-Common commands:
+## Common commands:
 
+```
 make switch
 make build
 make rollback
+```
 
-Channel management:
+## Channel management:
 
+```
 make channels
+```
 
-Garbage collection:
+## Garbage collection:
 
+```
 make gc-soft
 make gc-hard
+```
 
-Store maintenance:
+## Store maintenance:
 
+```
 make optimise
 make verify
+```
 
-Diagnostics:
+## Diagnostics:
 
+```
 make doctor
 make generations
 make space
+```
 
 ---
 
 ## Reinstallation Workflow
 
+```
 1. Install NixOS (minimal installer)
 2. Clone the repository into $HOME/nixos-config
 3. Select the correct host profile in configuration.nix
 4. Import the correct hardware-configuration file
 5. Run make switch
 6. Restore dotfiles using GNU Stow
+```
 
 ---
 
@@ -265,6 +279,5 @@ This configuration is boring by design.
 Boring means reliable, predictable, reproducible, and disposable.
 
 Version: v1.2.1
-
 
 GPT: https://chatgpt.com/share/696fa14b-4160-800c-8714-210ff3688f73
