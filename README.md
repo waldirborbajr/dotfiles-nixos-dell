@@ -263,3 +263,6 @@ This configuration is boring by design.
 Boring means reliable, predictable, reproducible, and disposable.
 
 Version: v1.2.1
+
+
+GPT: https://chatgpt.com/share/696fa14b-4160-800c-8714-210ff3688f73
