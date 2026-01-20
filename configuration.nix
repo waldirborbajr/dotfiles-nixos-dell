@@ -3,6 +3,7 @@
 {
   imports = [
     ./hardware-configuration-dell.nix
+    ./modules/system-packages.nix
   ];
 
   ############################################
@@ -19,7 +20,7 @@
   networking.networkmanager.enable = true;
 
   ############################################
-  # Nix Garbage Collection (max 2 days)
+  # Nix Garbage Collection
   ############################################
   nix.gc = {
     automatic = true;
@@ -31,7 +32,6 @@
   # Locale / Time
   ############################################
   time.timeZone = "America/Sao_Paulo";
-
   i18n.defaultLocale = "en_US.UTF-8";
   i18n.extraLocaleSettings = {
     LC_ADDRESS = "pt_BR.UTF-8";
@@ -46,16 +46,16 @@
   };
 
   ############################################
-  # Wayland + GNOME
+  # GNOME / Wayland
   ############################################
   services.xserver.enable = true;
 
   services.displayManager.gdm = {
-    enable = true;      # atualizado
-    wayland = true;     # atualizado
+    enable = true;
+    wayland = true;
   };
 
-  services.desktopManager.gnome.enable = true; # atualizado
+  services.desktopManager.gnome.enable = true;
 
   services.xserver.xkb = {
     layout = "br";
@@ -104,7 +104,7 @@
   };
 
   ############################################
-  # User
+  # Users
   ############################################
   users.users.borba = {
     isNormalUser = true;
@@ -120,7 +120,7 @@
     ];
   };
 
-  services.displayManager.autoLogin = {   # atualizado
+  services.displayManager.autoLogin = {
     enable = true;
     user = "borba";
   };
@@ -129,28 +129,10 @@
   systemd.services."autovt@tty1".enable = false;
 
   ############################################
-  # Programs
-  ############################################
-  programs = {
-    firefox.enable = true;
-
-    zsh = {
-      enable = true;
-    };
-
-    zoxide = {
-      enable = true;
-      enableZshIntegration = true;
-    };
-  };
-
-  ############################################
   # Docker
   ############################################
-  virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
-  };
+  virtualisation.docker.enable = true;
+  virtualisation.docker.enableOnBoot = true;
 
   ############################################
   # Default Terminal
@@ -160,7 +142,7 @@
   };
 
   ############################################
-  # SUDO: no password ONLY for nixos-rebuild
+  # SUDO: no password ONLY para nixos-rebuild
   ############################################
   security.sudo.extraRules = [
     {
@@ -172,54 +154,6 @@
         }
       ];
     }
-  ];
-
-  nixpkgs.config.allowUnfree = true;
-
-  ############################################
-  # System Packages
-  ############################################
-  environment.systemPackages = with pkgs; [
-    wget
-    coreutils
-    git
-    gh
-    lazygit
-    stow
-    tmux
-    tmuxifier
-    lshw
-    iwd
-    networkmanagerapplet
-
-    docker
-    docker-compose
-    devpod
-
-    alacritty
-    waybar
-    rofi
-    wl-clipboard
-
-    eza
-    btop
-    bat
-    htop
-    fd
-    ripgrep
-    yazi
-
-    go
-    gopls
-
-    rustup
-    rust-analyzer
-
-    nixd
-    nil
-    statix
-    deadnix
-    nixfmt-rfc-style
   ];
 
   ############################################
@@ -241,7 +175,7 @@
       emoji = [ "OpenMoji Color" ];
     };
 
-    enableDefaultPackages = true; # atualizado
+    enableDefaultPackages = true;
   };
 
   ############################################
