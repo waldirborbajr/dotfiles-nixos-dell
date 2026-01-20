@@ -25,11 +25,11 @@ in
   ];
 
   # Kernel modules
-  boot.initrd.kernelModules = [ "ssb" "b43" "btusb" ];
-  boot.kernelModules = [ "ssb" "b43" ];
+  boot.initrd.kernelModules = [ "ssb" "b43" "btusb" "bcma" ];
+  boot.kernelModules = [ "ssb" "b43" "bcma" ];
 
   # Evita drivers conflitantes
-  boot.blacklistedKernelModules = [ "bcma" "brcmsmac" "wl" ];
+  boot.blacklistedKernelModules = [ "brcmsmac" "wl" ];
 
   ############################################
   # GRUB bootloader
