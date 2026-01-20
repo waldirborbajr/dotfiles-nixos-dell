@@ -37,17 +37,28 @@ jobs:
       # ----------------------------------------
       - name: Nix format check
         run: |
-          nix-shell -p nixfmt-rfc-style --run \
-            "nixfmt --check $(find . -name '*.nix')"
+          nix-shell -p nixfmt-rfc-style --run '
+            find . -name "*.nix" \
+              ! -name "hardware-configuration-*.nix" \
+              -print0 \
+            | xargs -0 nixfmt --check
+          '
 
       # ----------------------------------------
       # Static analysis
       # ----------------------------------------
       - name: Statix
-        run: nix-shell -p statix --run "statix check"
+        run: |
+          nix-shell -p statix --run "statix check ."
 
       - name: Deadnix
-        run: nix-shell -p deadnix --run "deadnix"
+        run: |
+          nix-shell -p deadnix --run '
+            deadnix \
+              --exclude hardware-configuration-dell.nix \
+              --exclude hardware-configuration-macbook.nix \
+              .
+          '
 
       # ----------------------------------------
       # Evaluate configuration
