@@ -176,7 +176,7 @@ in
     firefox
     chromium
     brave
-    discord
+    unfree.discord
     flameshot
     chirp
     anydesk
