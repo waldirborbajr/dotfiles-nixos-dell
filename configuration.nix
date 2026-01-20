@@ -1,4 +1,3 @@
-# configuration.nix - Dell Inspiron 1564 (Legacy BIOS)
 { config, pkgs, lib, ... }:
 
 {
@@ -6,16 +5,26 @@
   # Imports
   ############################################
   imports = [
+    # Hardware profile - Dell (BIOS / Legacy)
     ./hardware-configuration-dell.nix
+    ./modules/hardware-dell.nix
+    # Kernel / performance tuning
     ./modules/kernel-tuning.nix
+    # Desktop environment - GNOME
     ./modules/desktop-gnome.nix
+    # Base system packages and programs
     ./modules/fonts.nix
     ./modules/system-programs.nix
     ./modules/system-packages.nix
+    # Containers
     ./modules/containers/docker.nix
     ./modules/containers/k3s.nix
+    # Maintenance / Garbage collection
     ./modules/maintenance.nix
+    ./modules/maintenance-hm.nix
+    # User configuration
     ./modules/user-borba.nix
+    # Nix (unstable overlay)
     ./modules/nix-unstable.nix
   ];
 
@@ -45,10 +54,7 @@
   # Nix configuration
   ############################################
   nixpkgs.config.allowUnfree = true;
-  nix.settings.experimental-features = [
-    "nix-command"
-    "flakes"
-  ];
+  nix.settings.experimental-features = [ "nix-command" "flakes" ];
 
   ############################################
   # Remote access (SSH)
@@ -57,39 +63,37 @@
   networking.firewall.allowedTCPPorts = [ 22 ];
 
   ############################################
-  # Wi-Fi e Bluetooth (Broadcom BCM4312 LP-PHY)
+  # Wi-Fi e Bluetooth (Broadcom BCM4312)
   ############################################
   networking.networkmanager.enable = true;
   hardware.enableRedistributableFirmware = true;
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
-  # Carrega os módulos corretos
+  # Firmware específico para BCM4312 LP-PHY (b43)
+  boot.kernelModules = [ "ssb" "b43" "btusb" ];
   boot.initrd.kernelModules = [ "ssb" "b43" "btusb" ];
-  boot.kernelModules = [ "ssb" "b43" ];
-
-  # Evita conflitos com outros drivers Broadcom
   boot.blacklistedKernelModules = [ "bcma" "brcmsmac" "wl" ];
 
-  # Pacotes de firmware e utilitários
+  # Sistema instala firmware Broadcom
   environment.systemPackages = with pkgs; [
     linux-firmware
     bluez
     blueman
-    wireless-tools
     pciutils
     usbutils
+    wireless_tools    # pacote correto no nixpkgs
+    rfkill
+    b43-fwcutter      # Broadcom firmware utility
   ];
 
   ############################################
   # Bootloader (GRUB)
   ############################################
-  boot.loader.grub = {
-    enable = true;
-    version = 2;
-    useOSProber = false;
-    devices = [ "/dev/sda" ];  # disco de boot principal
-  };
+  boot.loader.grub.enable = true;
+  boot.loader.grub.useOSProber = false;
+  # Use o device do seu disco, normalmente /dev/sda
+  boot.loader.grub.devices = [ "/dev/sda" ];
 
   ############################################
   # System state version
