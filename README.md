@@ -1,3 +1,8 @@
+![NixOS CI](https://github.com/BORBAJR/nixos-config/actions/workflows/nixos-ci.yml/badge.svg)
+![NixOS Lint](https://github.com/BORBAJR/nixos-config/actions/workflows/nixos-lint.yml/badge.svg)
+![NixOS Nightly](https://github.com/BORBAJR/nixos-config/actions/workflows/nixos-nightly.yml/badge.svg)
+
+
 # BORBA JR W – NixOS Configuration ❄️
 
 Personal NixOS workstation configuration focused on clarity, reproducibility, low maintenance, and fast recovery.
