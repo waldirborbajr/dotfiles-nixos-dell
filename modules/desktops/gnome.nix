@@ -1,8 +1,6 @@
 { pkgs, ... }:
 
 {
-  imports = [ ./base.nix ];
-
   services.xserver.enable = true;
 
   services.displayManager.gdm = {

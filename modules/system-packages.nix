@@ -1,5 +1,8 @@
 { pkgs, ... }:
 
+let
+  unstable = pkgs.unstable or pkgs;
+in
 {
   environment.systemPackages = with pkgs; [
 

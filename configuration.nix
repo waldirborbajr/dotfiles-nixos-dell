@@ -1,59 +1,56 @@
 { config, pkgs, ... }:
 
 {
-  imports = [
+imports = [
 
-    ##########################################
-    # Host profile
-    # Choose ONLY ONE
-    ##########################################
+  ##########################################
+  # Host profile (choose ONE)
+  ##########################################
+  ./profiles/dell.nix
+  # ./profiles/macbook.nix
 
-    # Dell Inspiron 1564 (Legacy BIOS)
-    ./profiles/dell.nix
+  ##########################################
+  # Hardware
+  ##########################################
+  ./hardware-configuration-dell.nix
+  ./modules/hardware/dell.nix
 
-    # MacBook Pro 13" 2011 (EFI)
-    # Uncomment this when deploying on the MacBook
-    # ./profiles/macbook.nix
+  ##########################################
+  # Core system
+  ##########################################
+  ./modules/base.nix
+  ./modules/networking.nix
+  ./modules/audio.nix
+  ./modules/fonts.nix
+  ./modules/kernel-tuning.nix
 
+  ##########################################
+  # Desktop
+  ##########################################
+  ./modules/desktops/gnome.nix
+  ./modules/autologin.nix
 
-    ##########################################
-    # Shared system modules (host-agnostic)
-    ##########################################
-    ./modules/kernel-tuning.nix
-    ./modules/fonts.nix
-    ./modules/system-packages.nix
+  ##########################################
+  # Containers / Virtualization
+  ##########################################
+  ./modules/containers/docker.nix
+  ./modules/containers/k3s.nix
+  ./modules/virtualization/libvirt.nix
 
-    ./modules/desktop-gnome.nix
+  ##########################################
+  # Users / Packages / Nix
+  ##########################################
+  ./modules/users/borba.nix
+  ./modules/system-packages.nix
+  ./modules/nixpkgs.nix
 
-    ./modules/containers/docker.nix
-    ./modules/containers/k3s.nix
+  ##########################################
+  # Maintenance
+  ##########################################
+  ./modules/maintenance.nix
+  ./modules/maintenance-hm.nix
+];
 
-    ./modules/maintenance.nix
-    ./modules/maintenance-hm.nix
-
-    ./modules/user-borba.nix
-    ./modules/nix-unstable.nix
-
-    ./modules/autologin.nix
-
-  ];
-
-  ############################################
-  # Locale / Time
-  ############################################
-  time.timeZone = "America/Sao_Paulo";
-  i18n.defaultLocale = "en_US.UTF-8";
-  i18n.extraLocaleSettings = {
-    LC_ADDRESS = "pt_BR.UTF-8";
-    LC_IDENTIFICATION = "pt_BR.UTF-8";
-    LC_MEASUREMENT = "pt_BR.UTF-8";
-    LC_MONETARY = "pt_BR.UTF-8";
-    LC_NAME = "pt_BR.UTF-8";
-    LC_NUMERIC = "pt_BR.UTF-8";
-    LC_PAPER = "pt_BR.UTF-8";
-    LC_TELEPHONE = "pt_BR.UTF-8";
-    LC_TIME = "pt_BR.UTF-8";
-  };
 
   ############################################
   # System state version
