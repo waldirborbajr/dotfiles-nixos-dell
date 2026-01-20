@@ -2,33 +2,35 @@
 
 {
   ############################################
-  # Wi-Fi e Bluetooth
+  # Rede / Wi-Fi e Bluetooth
   ############################################
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = true
+  hardware.enableRedistributableFirmware = true
+  hardware.bluetooth.enable = true
+  services.blueman.enable = true
 
-  hardware.enableRedistributableFirmware = true;
+  # Carrega os módulos corretos no initrd
+  boot.initrd.kernelModules = [ "ssb" "b43" "btusb" ]
+  boot.kernelModules = [ "ssb" "b43" ]
 
-  hardware.bluetooth.enable = true;
-  services.blueman.enable = true;
+  # Evita conflitos com outros drivers Broadcom
+  boot.blacklistedKernelModules = [ "bcma" "brcmsmac" "wl" ]
 
   ############################################
-  # Kernel Modules
-  ############################################
-  boot.initrd.kernelModules = [ "b43" "btusb" ];
-
-  ############################################
-  # Pacotes de firmware e utilitários
+  # Pacotes essenciais
   ############################################
   environment.systemPackages = with pkgs; [
-    linux-firmware       # Firmware Broadcom, Intel e outros
-    bluez                # CLI Bluetooth
-    blueman              # GUI para BT
+    linux-firmware   # Firmware Broadcom e outros
+    bluez            # CLI Bluetooth
+    blueman          # GUI Bluetooth
+    pciutils
+    usbutils
+    rfkill
   ];
 
   ############################################
-  # Bootloader (GRUB)
+  # Bootloader GRUB
   ############################################
-  boot.loader.grub.enable = true;
-  boot.loader.grub.devices = [ "/dev/sda" ];  # disco de boot principal
-  boot.loader.grub.useOSProber = false;       # evita warnings de outros OS
+  boot.loader.grub.enable = true
+  boot.loader.grub.useOSProber = false
 }
