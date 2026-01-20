@@ -1,0 +1,43 @@
+name: NixOS Validation CI
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: Enable flakes (required by tooling)
+        run: |
+          mkdir -p ~/.config/nix
+          echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
+
+      - name: Format check (nixfmt)
+        run: |
+          nix-shell -p nixfmt-rfc-style --run \
+            "nixfmt --check $(find . -name '*.nix')"
+
+      - name: Static analysis (statix)
+        run: |
+          nix-shell -p statix --run "statix check"
+
+      - name: Dead code detection (deadnix)
+        run: |
+          nix-shell -p deadnix --run "deadnix"
+
+      - name: Nix evaluation check
+        run: ./scripts/ci-eval.sh
+
+      - name: NixOS build (dry build)
+        run: ./scripts/ci-build.sh
