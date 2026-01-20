@@ -180,5 +180,6 @@ in
     flameshot
     chirp
     anydesk
+    balena-etcher
   ];
 }
