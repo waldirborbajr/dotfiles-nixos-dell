@@ -1,4 +1,4 @@
-{ pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
   ############################################
@@ -14,16 +14,16 @@
     extraGroups = [
       "wheel"
       "networkmanager"
-      "docker"       # ✅ Adicionado aqui diretamente
+      "docker"
       "libvirtd"    
-      "dialout"      # required for CHIRP / serial radios
+      "dialout"   # required for CHIRP / serial radios
     ];
   };
 
   ############################################
-  # Auto-login
+  # Auto-login (renamed)
   ############################################
-  services.xserver.displayManager.autoLogin = {
+  services.displayManager.autoLogin = {
     enable = true;
     user = "borba";
   };
