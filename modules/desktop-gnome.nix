@@ -2,29 +2,20 @@
 
 {
   ############################################
-  # Wayland + GNOME
+  # X Server + GNOME
   ############################################
   services.xserver.enable = true;
 
-  ############################################
-  # Display Manager (GDM)
-  ############################################
   services.displayManager.gdm = {
     enable = true;
-    wayland = true;       # antigo: services.xserver.displayManager.gdm.wayland
-    autoSuspend = false;  # antigo: services.xserver.displayManager.gdm.autoSuspend
+    wayland = true;
+    autoSuspend = false;
   };
 
-  ############################################
-  # Desktop Manager (GNOME)
-  ############################################
-  services.desktopManager.gnome.enable = true; # antigo: services.xserver.desktopManager.gnome.enable
+  services.desktopManager.gnome.enable = true;
 
-  ############################################
-  # GNOME performance tweaks
-  ############################################
   services.gnome = {
-    core-apps.enable = false;    # antigo: services.gnome.core-utilities.enable
+    core-apps.enable = true;   # Mantemos true para compatibilidade
     gnome-keyring.enable = true;
   };
 
@@ -54,7 +45,7 @@
   # Auto-login
   ############################################
   services.displayManager.autoLogin = {
-    enable = true;      # antigo: services.xserver.displayManager.autoLogin
+    enable = true;
     user = "borba";
   };
 
@@ -71,7 +62,7 @@
     SystemMaxUse=200M
     RuntimeMaxUse=50M
   '';
-  
+
   ############################################
   # Network
   ############################################
