@@ -64,19 +64,18 @@
   hardware.bluetooth.enable = true;
   services.blueman.enable = true;
 
-  # Força carregamento dos módulos corretos
+  # Carrega os módulos corretos
   boot.initrd.kernelModules = [ "ssb" "b43" "btusb" ];
   boot.kernelModules = [ "ssb" "b43" ];
 
   # Evita conflitos com outros drivers Broadcom
   boot.blacklistedKernelModules = [ "bcma" "brcmsmac" "wl" ];
 
-  # Firmware Broadcom LP-PHY
+  # Pacotes de firmware e utilitários
   environment.systemPackages = with pkgs; [
     linux-firmware
     bluez
     blueman
-    b43-fwcutter
     wireless-tools
     pciutils
     usbutils
@@ -90,7 +89,6 @@
     version = 2;
     useOSProber = false;
     devices = [ "/dev/sda" ];  # disco de boot principal
-    # NÃO usar mirroredBoots
   };
 
   ############################################
