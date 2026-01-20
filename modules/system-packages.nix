@@ -1,7 +1,6 @@
 { pkgs, ... }:
 
 let
-  # Canal unstable (adicionado via nix-channel)
   unstable = import <nixpkgs-unstable> {};
 in
 {
@@ -22,7 +21,6 @@ in
   # System Packages (consolidado)
   ############################################
   environment.systemPackages = with pkgs; [
-
     ##########################################
     # Terminals
     ##########################################
@@ -84,10 +82,8 @@ in
     libgcc
     glibc
     libcxx
-
     go
     gopls
-
     rustup
     rust-analyzer
 
@@ -125,7 +121,6 @@ in
     xclip
     wl-clipboard
     clipster
-    # haskellPackages.greenclip
 
     ##########################################
     # Core UNIX Utilities
@@ -182,6 +177,5 @@ in
     flameshot
     chirp
     anydesk
-    # unstable.balena-etcher # opcional, não funcionando
   ];
 }
