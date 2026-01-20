@@ -9,24 +9,24 @@ in
     ##########################################
     # Terminals
     ##########################################
-    alacritty          # GPU-accelerated terminal
-    kitty              # Feature-rich terminal
-    gnome-console      # GNOME default terminal
+    alacritty # GPU-accelerated terminal
+    kitty # Feature-rich terminal
+    gnome-console # GNOME default terminal
 
     ##########################################
     # Shells & Multiplexers
     ##########################################
-    zsh                # Primary shell
-    fish               # Alternative shell
-    tmux               # Terminal multiplexer
-    tmuxifier          # tmux session manager
-    zellij             # Modern tmux alternative
+    zsh # Primary shell
+    fish # Alternative shell
+    tmux # Terminal multiplexer
+    tmuxifier # tmux session manager
+    zellij # Modern tmux alternative
 
     ##########################################
     # Editors & Development UX
     ##########################################
-    unstable.neovim    # Neovim (unstable for faster updates)
-    helix              # Modal editor, LSP-first
+    unstable.neovim # Neovim (unstable for faster updates)
+    helix # Modal editor, LSP-first
     unstable.vscode
     unstable.vscode-extensions.ms-vscode-remote.remote-containers
 
@@ -34,10 +34,10 @@ in
     # Git & Developer Workflow
     ##########################################
     git
-    gh                 # GitHub CLI
-    lazygit            # TUI for git
-    commitizen         # Conventional commits helper
-    devcontainer       # Dev container tooling
+    gh # GitHub CLI
+    lazygit # TUI for git
+    commitizen # Conventional commits helper
+    devcontainer # Dev container tooling
 
     ##########################################
     # Notes / Knowledge Base
@@ -93,36 +93,36 @@ in
     ##########################################
     # Nix Tooling
     ##########################################
-    nixd               # Nix language server
-    nil                # Alternative Nix LSP
-    statix             # Static analysis for Nix
-    deadnix            # Find unused Nix code
-    nixfmt-rfc-style   # Nix formatter
+    nixd # Nix language server
+    nil # Alternative Nix LSP
+    statix # Static analysis for Nix
+    deadnix # Find unused Nix code
+    nixfmt-rfc-style # Nix formatter
 
     ##########################################
     # Modern CLI Utilities (Shell-first / DevOps)
     ##########################################
-    eza                # ls replacement
-    bat                # cat replacement
-    fd                 # find replacement
-    ripgrep            # grep replacement
-    yazi               # Terminal file manager
-    dust               # du replacement
-    ncdu               # Disk usage analyzer
-    zoxide             # Smarter cd
-    atuin              # Shell history with sync
-    tldr               # Simplified man pages
-    sd                 # sed replacement
-    jq                 # JSON processor
-    fx                 # Interactive JSON viewer
-    httpie             # Modern HTTP client
-    curlie             # curl + httpie hybrid
-    fzf                # Fuzzy finder
-    direnv             # Per-directory environments
-    entr               # Run commands on file changes
-    procs              # ps replacement
-    bottom             # Advanced system monitor
-    btop               # Resource monitor
+    eza # ls replacement
+    bat # cat replacement
+    fd # find replacement
+    ripgrep # grep replacement
+    yazi # Terminal file manager
+    dust # du replacement
+    ncdu # Disk usage analyzer
+    zoxide # Smarter cd
+    atuin # Shell history with sync
+    tldr # Simplified man pages
+    sd # sed replacement
+    jq # JSON processor
+    fx # Interactive JSON viewer
+    httpie # Modern HTTP client
+    curlie # curl + httpie hybrid
+    fzf # Fuzzy finder
+    direnv # Per-directory environments
+    entr # Run commands on file changes
+    procs # ps replacement
+    bottom # Advanced system monitor
+    btop # Resource monitor
     htop
 
     ##########################################
