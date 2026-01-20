@@ -1,3 +1,4 @@
+# configuration.nix - Dell Inspiron 1564 (Legacy BIOS)
 { config, pkgs, lib, ... }:
 
 {
@@ -6,7 +7,6 @@
   ############################################
   imports = [
     ./hardware-configuration-dell.nix
-    ./modules/hardware-dell.nix
     ./modules/kernel-tuning.nix
     ./modules/desktop-gnome.nix
     ./modules/fonts.nix
@@ -15,7 +15,6 @@
     ./modules/containers/docker.nix
     ./modules/containers/k3s.nix
     ./modules/maintenance.nix
-    ./modules/maintenance-hm.nix
     ./modules/user-borba.nix
     ./modules/nix-unstable.nix
   ];
@@ -58,7 +57,7 @@
   networking.firewall.allowedTCPPorts = [ 22 ];
 
   ############################################
-  # Wi-Fi e Bluetooth (Broadcom BCM4312)
+  # Wi-Fi e Bluetooth (Broadcom BCM4312 LP-PHY)
   ############################################
   networking.networkmanager.enable = true;
   hardware.enableRedistributableFirmware = true;
@@ -72,40 +71,30 @@
   # Evita conflitos com outros drivers Broadcom
   boot.blacklistedKernelModules = [ "bcma" "brcmsmac" "wl" ];
 
-  # Pacotes de firmware e utilitários
+  # Firmware Broadcom LP-PHY
   environment.systemPackages = with pkgs; [
     linux-firmware
     bluez
     blueman
     b43-fwcutter
-    wirelesstools
+    wireless-tools
     pciutils
     usbutils
   ];
 
   ############################################
-  # Bootloader GRUB (Legacy BIOS)
+  # Bootloader (GRUB)
   ############################################
   boot.loader.grub = {
     enable = true;
     version = 2;
     useOSProber = false;
     devices = [ "/dev/sda" ];  # disco de boot principal
+    # NÃO usar mirroredBoots
   };
 
   ############################################
   # System state version
   ############################################
   system.stateVersion = "25.11";
-
-  ############################################
-  # Docker & Podman
-  ############################################
-  virtualisation.docker.enable = true;
-  virtualisation.docker.enableOnBoot = true;
-
-  # Podman para uso futuro, não ativo agora
-  # virtualisation.podman.enable = true;
-
-  users.users.borba.extraGroups = [ "docker" ];
 }
