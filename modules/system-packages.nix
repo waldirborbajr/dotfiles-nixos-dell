@@ -121,7 +121,6 @@ spice-protocol
     xclip
     wl-clipboard            # Wayland clipboard
     clipster
-    greenclip
 
     ##########################################
     # Core UNIX Utilities
