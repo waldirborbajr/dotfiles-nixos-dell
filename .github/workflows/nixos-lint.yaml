@@ -7,7 +7,7 @@ on:
 
 jobs:
   lint:
-    name: Lint Nix files
+    name: Lint (Nix)
     runs-on: ubuntu-latest
 
     steps:
@@ -16,8 +16,6 @@ jobs:
 
       - name: Install Nix
         uses: cachix/install-nix-action@v25
-        with:
-          nix_path: nixpkgs=channel:nixos-unstable
 
       - name: Run lint via Makefile
         run: make lint
@@ -28,7 +26,9 @@ jobs:
           {
             echo "## 🧹 Lint Summary"
             echo ""
-            echo "- nixfmt: checked"
+            echo "- nixfmt: checked (no auto-format)"
             echo "- statix: checked"
             echo "- deadnix: checked"
+            echo ""
+            echo "_Lint is validation-only. Formatting is local-only._"
           } >> $GITHUB_STEP_SUMMARY
