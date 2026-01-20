@@ -13,37 +13,28 @@ in
     ############################################
     # Virtualization (hardware-agnostic)
     ############################################
-    unstable.virt-manager      # Latest features, Wayland support
+    unstable.virt-manager
 
     ##########################################
     # Containers / Cloud / Kubernetes
     ##########################################
     docker
     docker-compose
+    docker-buildx
     lazydocker
 
-    # Kubernetes / k3s
-    k9s                        # Kubernetes CLI TUI
+    # Kubernetes
+    k9s
 
-    # Podman (rootless) - comentado enquanto Docker está ativo
-    # podman
-    # podman-compose
-    # buildah
-    # skopeo
-    # cri-tools
-    # Motivo: Podman não deve ser ativado junto com Docker, pois dockerCompat entra em conflito.
-    # Para ativar no futuro, descomente estas linhas e comente Docker.
-
-##########################################
-# Virtualization (clients & tools)
-##########################################
-virt-viewer
-qemu
-virtio-win      # Substitui o antigo win-virtio
-
-spice
-spice-gtk
-spice-protocol
+    ##########################################
+    # Virtualization (clients & tools)
+    ##########################################
+    virt-viewer
+    qemu
+    virtio-win
+    spice
+    spice-gtk
+    spice-protocol
 
     ##########################################
     # System Information
@@ -66,12 +57,19 @@ spice-protocol
     stow
 
     ##########################################
-    # Editors / Git
+    # Editors / IDEs / Git
     ##########################################
-    unstable.neovim          # Latest editor features
+    unstable.neovim
+    vscode
+    vscode-extensions.ms-vscode-remote.remote-containers
     lazygit
     git
     gh
+
+    ##########################################
+    # Notes / Knowledge Base
+    ##########################################
+    obsidian
 
     ##########################################
     # Languages / Toolchains
@@ -94,8 +92,8 @@ spice-protocol
     gnumake
     libtool
     libvterm
-    unstable.gdb           # Latest debugger features
-    unstable.clang         # Latest compiler features
+    unstable.gdb
+    unstable.clang
     unstable.llvm
     unstable.lld
 
@@ -119,15 +117,9 @@ spice-protocol
     ripgrep
     yazi
     xclip
-    wl-clipboard            # Wayland clipboard
+    wl-clipboard
     clipster
-
-    # Greenclip clipboard manager
-    # Two options:
-    # 1. Package only (manual execution): pkgs.haskellPackages.greenclip
-    # 2. Enable systemd service: services.greenclip.enable = true
-    pkgs.haskellPackages.greenclip
-
+    haskellPackages.greenclip
 
     ##########################################
     # Core UNIX Utilities
@@ -179,7 +171,7 @@ spice-protocol
     cacert
 
     ##########################################
-    # GUI Applications (global)
+    # GUI Applications
     ##########################################
     firefox
     chromium
@@ -187,7 +179,6 @@ spice-protocol
     discord
     flameshot
     chirp
-
-anydesk   # Install AnyDesk binary (there's no 'services.anydesk' in NixOS)
+    anydesk
   ];
 }
