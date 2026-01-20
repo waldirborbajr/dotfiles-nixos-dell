@@ -1,3 +1,4 @@
+[![NixOS CI](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos.yaml/badge.svg)](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos.yaml)
 [![.github/workflows/nixos-ci.yaml](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos-ci.yaml/badge.svg)](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos-ci.yaml)
 [![NixOS Lint](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos-lint.yaml/badge.svg)](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos-lint.yaml)
 [![NixOS Nightly Channel Regression](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos-nightly.yaml/badge.svg)](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos-nightly.yaml)
