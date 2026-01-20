@@ -12,7 +12,7 @@
 
   # Disable unnecessary GNOME services and animations
   services.gnome = {
-    core-utilities.enable = true;
+    core-apps.enable = true;
     gnome-keyring.enable = true;
   };
 
