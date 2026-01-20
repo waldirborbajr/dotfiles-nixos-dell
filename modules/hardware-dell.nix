@@ -68,6 +68,6 @@
   # System packages for firmware
   ############################################
   environment.systemPackages = with pkgs; [
-    firmwareLinuxNonfree      # Inclui Broadcom b43 e outros firmwares não-livres
+    linux-firmware      # Inclui Broadcom b43, btusb e outros firmwares
   ];
 }
