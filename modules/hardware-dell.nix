@@ -2,31 +2,26 @@
 
 {
   ############################################
-  # Wi-Fi e Bluetooth Dell
+  # Rede e Bluetooth
   ############################################
-  networking.networkmanager.enable = true;
+  networking.networkmanager.enable = true
 
-  hardware.enableRedistributableFirmware = true;
+  hardware.enableRedistributableFirmware = true
 
-  hardware.bluetooth.enable = true;
-  services.blueman.enable = true;
+  hardware.bluetooth.enable = true
+  services.blueman.enable = true
 
   ############################################
   # Kernel Modules
   ############################################
-  boot.initrd.kernelModules = [ "b43" "btusb" ];
-  
-  ############################################
-  # Forçar firmware no initrd
-  ############################################
-  boot.initrd.extraFirmware = with pkgs.linuxFirmware; [
-    b43/ucode15.fw
-  ];
+  boot.initrd.kernelModules = [ "b43" "btusb" ]
 
   ############################################
-  # Pacote de firmware
+  # Pacotes de firmware e utilitários
   ############################################
   environment.systemPackages = with pkgs; [
-    linuxFirmware
+    linuxFirmware        # Inclui firmware para Wi-Fi Broadcom e outros
+    bluez                # Bluetooth CLI utilities
+    blueman              # GUI para BT
   ];
 }
