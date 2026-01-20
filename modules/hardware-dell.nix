@@ -8,18 +8,17 @@
 
   hardware.enableRedistributableFirmware = true;
 
-  # Pacotes de firmware necessários
+  # Firmware Broadcom / Intel / Bluetooth
   environment.systemPackages = with pkgs; [
-    firmware.b43         # Broadcom Wi-Fi
-    firmware.b43-open    # Versão open do firmware
-    firmware.intel-ucode # Microcode Intel
-    firmware.broadcom-wl # Broadcom STA (opcional, mais recente)
+    linuxFirmware.b43        # Broadcom Wi-Fi
+    linuxFirmware.b43-open   # Versão open
+    linuxFirmware.broadcom   # Broadcom STA
+    linuxFirmware.intel      # Intel microcode
+    linuxFirmware.broadcom-wl
   ];
 
-  hardware.bluetooth = {
-    enable = true;
-    powerOnBoot = true;
-  };
+  hardware.bluetooth.enable = true;
+  hardware.bluetooth.powerOnBoot = true;
 
   services.blueman.enable = true;
 
@@ -62,5 +61,4 @@
     "btusb"     # Bluetooth USB
   ];
   boot.kernelModules = [ "kvm-intel" ];
-  boot.extraModulePackages = [ ];
 }
