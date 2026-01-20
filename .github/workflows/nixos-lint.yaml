@@ -1,0 +1,43 @@
+name: NixOS Lint
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+
+jobs:
+  lint:
+    name: Static analysis & formatting
+    runs-on: ubuntu-latest
+
+    steps:
+      # --------------------------------------------------
+      # Checkout
+      # --------------------------------------------------
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # --------------------------------------------------
+      # Install Nix
+      # --------------------------------------------------
+      - name: Install Nix
+        uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      # --------------------------------------------------
+      # Formatting
+      # --------------------------------------------------
+      - name: Nix formatting check
+        run: |
+          nix-shell -p nixfmt-rfc-style --run \
+            "nixfmt --check $(find . -name '*.nix')"
+
+      # --------------------------------------------------
+      # Static analysis
+      # --------------------------------------------------
+      - name: Statix
+        run: nix-shell -p statix --run "statix check"
+
+      - name: Deadnix
+        run: nix-shell -p deadnix --run "deadnix"
