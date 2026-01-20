@@ -26,6 +26,7 @@ If I reinstall the OS, everything I need must be installed and working — no ma
 
 ## Repository Layout
 
+```
 .
 ├── Makefile
 ├── README.md
@@ -61,6 +62,7 @@ If I reinstall the OS, everything I need must be installed and working — no ma
 └── profiles
     ├── dell.nix
     └── macbook.nix
+```
 
 ---
 
