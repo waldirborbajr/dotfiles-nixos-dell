@@ -11,7 +11,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Nix
@@ -19,9 +19,6 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      # -------------------------------------------------
-      # nixfmt (CHECK ONLY – no auto-format in CI)
-      # -------------------------------------------------
       - name: nixfmt check
         run: |
           nix-shell -p nixfmt-rfc-style --run '
@@ -30,14 +27,12 @@ jobs:
               -print0 | xargs -0 nixfmt --check
           '
 
-      # -------------------------------------------------
-      # deadnix (single --exclude, CI-safe)
-      # -------------------------------------------------
       - name: deadnix
         run: |
           nix-shell -p deadnix --run '
             deadnix \
-              --exclude hardware-configuration-dell.nix,hardware-configuration-macbook.nix \
+              --exclude hardware-configuration-dell.nix \
+              --exclude hardware-configuration-macbook.nix \
               .
           '
 
@@ -47,10 +42,10 @@ jobs:
           {
             echo "## 🧹 Lint"
             echo ""
-            echo "- nixfmt: check-only"
+            echo "- nixfmt: OK"
             echo "- deadnix: OK"
             echo ""
-            echo "_Formatting and fixes are local-only._"
+            echo "_statix intentionally disabled (local-only decision)_"
           } >> $GITHUB_STEP_SUMMARY
 
   build:
@@ -64,7 +59,7 @@ jobs:
         profile: [ dell, macbook ]
 
     steps:
-      - name: Checkout repository
+      - name: Checkout
         uses: actions/checkout@v4
 
       - name: Install Nix
@@ -72,9 +67,6 @@ jobs:
         with:
           nix_path: nixpkgs=channel:nixos-unstable
 
-      # -------------------------------------------------
-      # Generate CI entrypoint (no sed, no mutation)
-      # -------------------------------------------------
       - name: Generate CI configuration
         run: |
           cat > ci-configuration.nix <<EOF
@@ -99,24 +91,17 @@ jobs:
           }
           EOF
 
-      # -------------------------------------------------
-      # Evaluation (no build)
-      # -------------------------------------------------
       - name: Evaluate configuration
         run: |
           nix-instantiate '<nixpkgs/nixos>' \
-            -I nixos-config=$(pwd) \
-            ./ci-configuration.nix \
+            -A system \
+            -I nixos-config=$(pwd)/ci-configuration.nix \
             > /dev/null
 
-      # -------------------------------------------------
-      # Dry build (safety only)
-      # -------------------------------------------------
       - name: Dry build
         run: |
           nix-shell -p nixos-rebuild --run "
             nixos-rebuild build \
-              -I nixos-config=$(pwd) \
               -I nixos-config=$(pwd)/ci-configuration.nix \
               --dry-run
           "
