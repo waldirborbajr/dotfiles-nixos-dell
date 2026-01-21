@@ -69,6 +69,8 @@ in
     gopls
     rustup
     rust-analyzer
+    lua
+    lua-language-server
 
     ##########################################
     # Build & Debug Tooling
