@@ -120,26 +120,23 @@ lint:
 		  -print0 \
 		| xargs -0 nixfmt --check \
 	'
-	@echo ">> Running deadnix..."
-	@nix-shell -p deadnix --run '\
-		deadnix \
-		  --exclude hardware-configuration-dell.nix \
-		  --exclude hardware-configuration-macbook.nix \
-		  . \
-	'
 
 	# -----------------------------------------------------
-	# Statix (temporarily disabled)
-	#
-	# Reason:
-	# - Current system is stable and fully working
-	# - Statix reports stylistic warnings only (W10/W20)
-	# - No functional or safety issues
-	#
-	# Re-enable later when refactoring with intent.
+	# Statix is temporarily disabled.
+	# Reason: the current configuration is stable and works
+	# correctly. Warnings reported by statix require careful
+	# refactoring and will be addressed later with proper
+	# validation to avoid regressions.
 	# -----------------------------------------------------
 	# @echo ">> Running statix..."
 	# @nix-shell -p statix --run "statix check ."
+
+	@echo ">> Running deadnix..."
+	@nix-shell -p deadnix --run '\
+		deadnix \
+		  --exclude hardware-configuration-dell.nix,hardware-configuration-macbook.nix \
+		  . \
+	'
 
 # ---------------------------------------------------------
 # Diagnostics
