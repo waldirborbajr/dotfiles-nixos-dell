@@ -26,19 +26,24 @@
   ############################################
   # Infra aliases (NixOS lifecycle)
   ############################################
-
   environment.shellAliases = {
     nixgc   = "sudo nix-collect-garbage";
     garbage = "sudo nix-collect-garbage -d --delete-older-than 1d";
 
-    switch  = "sudo nixos-rebuild switch";
-    build   = "sudo nixos-rebuild switch -I nixos-config=$HOME/nixos-config";
-    upgrade = "sudo nixos-rebuild switch --upgrade";
+    build   = "sudo nixos-rebuild build -I nixos-config=$HOME/nixos-config";
+    switch  = "make switch";
+    upgrade = "sudo nixos-rebuild switch --upgrade -I nixos-config=$HOME/nixos-config";
+
+    rebuild-safe = "sudo systemctl isolate multi-user.target \
+      && sudo nixos-rebuild switch -I nixos-config=$HOME/nixos-config \
+      && sudo systemctl isolate graphical.target";
   };
-  
+
+  ############################################
+  # Avoid user unit reload stalls
+  ############################################
   systemd.user.extraConfig = ''
     DefaultTimeoutStartSec=30s
     DefaultTimeoutStopSec=30s
   '';
-    
 }
