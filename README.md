@@ -305,3 +305,12 @@ git diff --quiet || {
   exit 1
 }
 ```
+
+---
+
+## Add FlatPak Support
+
+
+````
+flatpak override --user --filesystem=home md.obsidian.Obsidian
+```

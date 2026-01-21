@@ -25,10 +25,10 @@ in
     ##########################################
     # Editors & Development UX
     ##########################################
-    unstable.neovim # Neovim (unstable for faster updates)
+    # unstable.neovim # Neovim (unstable for faster updates)
     helix # Modal editor, LSP-first
-    unstable.vscode
-    unstable.vscode-extensions.ms-vscode-remote.remote-containers
+    # unstable.vscode
+    # unstable.vscode-extensions.ms-vscode-remote.remote-containers
 
     ##########################################
     # Git & Developer Workflow
@@ -42,7 +42,7 @@ in
     ##########################################
     # Notes / Knowledge Base
     ##########################################
-    unstable.obsidian
+    # unstable.obsidian
 
     ##########################################
     # Virtualization / Kubernetes (non-container runtime)
@@ -69,6 +69,8 @@ in
     gopls
     rustup
     rust-analyzer
+    lua
+    lua-language-server
 
     ##########################################
     # Build & Debug Tooling
@@ -174,12 +176,13 @@ in
     ##########################################
     # GUI Applications
     ##########################################
-    firefox
-    chromium
-    brave
-    unstable.discord
+    # firefox
+    # chromium
+    # brave
+    # unstable.discord
     flameshot
     chirp
-    unstable.anydesk
+    # unstable.anydesk
   ];
 }
+# 
