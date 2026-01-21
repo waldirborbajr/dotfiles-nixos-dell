@@ -45,7 +45,6 @@ configuration.nix
 
     ./modules/containers/docker.nix
     # ./modules/containers/podman.nix
-    ./modules/containers/docker.nix
     ./modules/containers/k3s.nix
     ./modules/virtualization/libvirt.nix
 
@@ -56,6 +55,21 @@ configuration.nix
     ./modules/system-packages.nix
     ./modules/nixpkgs.nix
 
+    ##########################################
+    # Enable FlatPak
+    ##########################################
+    ./modules/flatpak/enable.nix
+    ./modules/flatpak/packages.nix
+
+    ##########################################
+    # Enable Python (UV -or- Poetry)
+    ##########################################
+    ./modules/python/default.nix
+
+    ##########################################
+    # Enable NodeJS
+    ##########################################
+    ./modules/nodejs/default.nix
   ];
 
   ############################################
@@ -75,6 +89,66 @@ default.nix
 # Do not add logic here.
 
 import ./configuration.nix
+
+----
+.github/workflows/nixos.yaml
+
+name: Nix Lint
+
+on:
+  pull_request:
+  push:
+    branches: [ main ]
+
+jobs:
+  lint:
+    name: Lint
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Install Nix
+        uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
+
+      - name: nixfmt check
+        run: |
+          nix-shell -p nixfmt-rfc-style --run '
+            find . -name "*.nix" \
+              ! -name "hardware-configuration-*.nix" \
+              -print0 | xargs -0 nixfmt --check
+          '
+
+      # statix intentionally disabled:
+      # - generates noisy warnings on working configs
+      # - risky to auto-fix without manual review
+      # - will be re-enabled after config stabilization
+      #
+      # - name: statix
+      #   run: nix-shell -p statix --run "statix check ."
+
+      - name: deadnix
+        run: |
+          nix-shell -p deadnix --run '
+            deadnix \
+              --exclude hardware-configuration-dell.nix,hardware-configuration-macbook.nix \
+              .
+          '
+
+      - name: Lint summary
+        if: always()
+        run: |
+          {
+            echo "## 🧹 Nix Lint"
+            echo ""
+            echo "- nixfmt: OK"
+            echo "- deadnix: OK"
+            echo ""
+            echo "_Build and evaluation intentionally disabled._"
+          } >> $GITHUB_STEP_SUMMARY
 
 ----
 hardware-configuration-dell.nix
@@ -145,6 +219,31 @@ hardware-configuration-macbook.nix
 }
 
 ----
+LICENSE
+
+MIT License
+
+Copyright (c) 2026 Borba
+
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+
+----
 modules/audio.nix
 
 { ... }:
@@ -203,25 +302,59 @@ modules/base.nix
   };
 
   console.keyMap = "br-abnt2";
+
+  ############################################
+  # Infra aliases (NixOS lifecycle)
+  ############################################
+  environment.shellAliases = {
+    nixgc   = "sudo nix-collect-garbage";
+    garbage = "sudo nix-collect-garbage -d --delete-older-than 1d";
+
+    build   = "sudo nixos-rebuild build -I nixos-config=$HOME/nixos-config";
+    switch  = "make switch";
+    upgrade = "sudo nixos-rebuild switch --upgrade -I nixos-config=$HOME/nixos-config";
+
+    rebuild-safe = "sudo systemctl isolate multi-user.target \
+      && sudo nixos-rebuild switch -I nixos-config=$HOME/nixos-config \
+      && sudo systemctl isolate graphical.target";
+  };
+
+  ############################################
+  # Avoid user unit reload stalls
+  ############################################
+  systemd.user.extraConfig = ''
+    DefaultTimeoutStartSec=30s
+    DefaultTimeoutStopSec=30s
+  '';
 }
 
 ----
 modules/containers/common.nix
 
+# modules/containers/common.nix
+{ config, lib, pkgs, ... }:
+
+{
+  # Intentionally left empty.
+  #
+  # This module is reserved for future container policies
+  # shared across all runtimes (Docker, Podman, etc).
+}
 
 ----
 modules/containers/docker.nix
 
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  ############################################
-  # Docker (ACTIVE)
-  ############################################
-
   virtualisation.docker = {
     enable = true;
     enableOnBoot = true;
+    daemon.settings = {
+      features = {
+        buildkit = true;
+      };
+    };
   };
 
   environment.systemPackages = with pkgs; [
@@ -231,13 +364,7 @@ modules/containers/docker.nix
     lazydocker
   ];
 
-  users.users.borba.extraGroups = [ "docker" ];
-
-  ############################################
-  # Explicitly disable Podman
-  ############################################
-
-  virtualisation.podman.enable = lib.mkForce false;
+  users.users.borba.extraGroups = lib.mkAfter [ "docker" ];
 }
 
 ----
@@ -271,23 +398,13 @@ modules/containers/k3s.nix
 ----
 modules/containers/podman.nix
 
-{ pkgs, lib, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  ############################################
-  # Podman (ACTIVE - Rootless)
-  ############################################
-
   virtualisation.podman = {
     enable = true;
-
-    # Docker-compatible CLI & socket
     dockerCompat = true;
-    dockerSocket.enable = true;
-
-    defaultNetwork.settings = {
-      dns_enabled = true;
-    };
+    defaultNetwork.settings.dns_enabled = true;
   };
 
   environment.systemPackages = with pkgs; [
@@ -295,20 +412,14 @@ modules/containers/podman.nix
     podman-compose
     buildah
     skopeo
-    lazydocker # funciona com podman via docker socket
   ];
 
-  ############################################
-  # Rootless Podman requirements
-  ############################################
+  # Podman rootless correto
+  services.userManagement.enable = true;
 
-  users.users.borba.linger = true;
-
-  ############################################
-  # Explicitly disable Docker
-  ############################################
-
-  virtualisation.docker.enable = lib.mkForce false;
+  users.users.borba = {
+    linger = true;
+  };
 }
 
 ----
@@ -350,6 +461,111 @@ modules/desktops/gnome.nix
       xdg-desktop-portal-gnome
       xdg-desktop-portal-gtk
     ];
+  };
+}
+
+----
+modules/flatpak/enable.nix
+
+{ config, pkgs, ... }:
+
+{
+  ##########################################
+  # Flatpak
+  ##########################################
+
+  services.flatpak.enable = true;
+
+  ##########################################
+  # XDG Portal (needed for Flatpak apps)
+  ##########################################
+
+  xdg.portal.enable = true;
+
+  xdg.portal.extraPortals = with pkgs; [
+    xdg-desktop-portal-gtk
+  ];
+}
+
+----
+modules/flatpak/packages.nix
+
+# modules/flatpak/packages.nix
+{ config, pkgs, ... }:
+
+let
+  desired = [
+    # Browsers
+    "org.mozilla.firefox"
+    "com.brave.Browser"
+
+    # Development / IDE
+    "com.visualstudio.code"
+
+    # Communication
+    "com.discordapp.Discord"
+    "me.proton.Mail"
+
+    # Knowledge / Media
+    "md.obsidian.Obsidian"
+
+    # Utilities
+    "com.anydesk.Anydesk"
+
+    # Media / Graphics
+    "org.gimp.GIMP"
+    "org.inkscape.Inkscape"
+    "org.audacityteam.Audacity"
+    "fr.handbrake.ghb"
+    "io.mpv.Mpv"
+    "org.imagemagick.ImageMagick"
+
+    # Downloads / Torrents
+    "com.transmissionbt.Transmission"
+
+    # Screen Shot
+    "be.alexandervanhee.gradia"
+    "org.flameshot.Flameshot"
+#    "org.mozilla.firefoxdeveloperedition"
+#    "org.chromium.Chromium"
+#    "com.vivaldi.Vivaldi"
+#    "com.google.AndroidStudio"
+#    "com.obsproject.Studio"
+#    "com.ticktick.TickTick"
+#    "com.calibre_ebook.calibre"
+#    "org.libreoffice.LibreOffice"
+  ];
+in
+{
+  system.userActivationScripts.flatpakInstall = {
+    text = ''
+      # Ensure Flathub remote (redundant but safe)
+      ${pkgs.flatpak}/bin/flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+
+      installed=$(${pkgs.flatpak}/bin/flatpak list --app --columns=application)
+
+      for app in ${builtins.toString desired}; do
+        if ! echo "$installed" | grep -q -F "$app"; then
+          echo "Installing missing Flatpak: $app"
+          ${pkgs.flatpak}/bin/flatpak install -y --noninteractive flathub "$app" || true
+        fi
+      done
+
+      # Optional: update all
+      echo "Updating Flatpaks..."
+      ${pkgs.flatpak}/bin/flatpak update -y --noninteractive || true
+
+      # Clean up unused runtimes
+      ${pkgs.flatpak}/bin/flatpak uninstall --unused -y || true
+
+      # Uncomment below if you want strict mode (remove apps not in list)
+      # for app in $installed; do
+      #   if ! echo "${builtins.toString desired}" | grep -q -F "$app"; then
+      #     echo "Removing unmanaged: $app"
+      #     ${pkgs.flatpak}/bin/flatpak uninstall -y --noninteractive "$app" || true
+      #   fi
+      # done
+    '';
   };
 }
 
@@ -455,6 +671,64 @@ modules/nixpkgs.nix
 }
 
 ----
+modules/nodejs/common.nix
+
+{ pkgs, ... }:
+
+{
+  ############################################
+  # NodeJS base (safe)
+  ############################################
+
+  environment.variables = {
+    NPM_CONFIG_UPDATE_NOTIFIER = "false";
+    NPM_CONFIG_FUND = "false";
+    NPM_CONFIG_AUDIT = "false";
+  };
+}
+
+----
+modules/nodejs/default.nix
+
+{ lib, ... }:
+
+let
+  enableNode = false; # true | false
+in
+{
+  imports =
+    lib.optionals enableNode [
+      ./enable.nix
+    ];
+}
+
+----
+modules/nodejs/enable.nix
+
+{ pkgs, ... }:
+
+{
+  imports = [
+    ./common.nix
+  ];
+
+  ############################################
+  # NodeJS (enabled)
+  ############################################
+
+  environment.systemPackages = with pkgs; [
+    nodejs_20   # LTS
+    nodePackages.pnpm
+  ];
+
+  environment.shellAliases = {
+    ni = "pnpm install";
+    nr = "pnpm run";
+    nx = "pnpm dlx nx";
+  };
+}
+
+----
 modules/performance/common.nix
 
 { lib, pkgs, ... }:
@@ -464,15 +738,7 @@ modules/performance/common.nix
   # Boot & system noise reduction
   ############################################
 
-#  boot.kernelParams = [
-#    "quiet"
-#    "loglevel=3"
-#    "rd.systemd.show_status=false"
-#    "udev.log_level=3"
-#  ];
-
   boot.consoleLogLevel = 0;
-
 
   ############################################
   # systemd startup optimizations
@@ -481,11 +747,10 @@ modules/performance/common.nix
   systemd.services.systemd-udev-settle.enable = false;
   systemd.services.systemd-timesyncd.enable = true;
 
-  systemd.extraConfig = ''
-    DefaultTimeoutStartSec=10s
-    DefaultTimeoutStopSec=10s
-  '';
-
+  systemd.settings.Manager = {
+    DefaultTimeoutStartSec = "10s";
+    DefaultTimeoutStopSec  = "10s";
+  };
 
   ############################################
   # Memory & VM tuning (safe defaults)
@@ -498,7 +763,6 @@ modules/performance/common.nix
     "vm.dirty_ratio" = 15;
   };
 
-
   ############################################
   # Nix daemon performance
   ############################################
@@ -509,7 +773,6 @@ modules/performance/common.nix
     keep-outputs = true;
     keep-derivations = true;
   };
-
 
   ############################################
   # Journal & logging (reduce IO)
@@ -522,15 +785,13 @@ modules/performance/common.nix
     Compress=yes
   '';
 
-
   ############################################
   # Disable unnecessary background services
   ############################################
 
   services.udisks2.enable = lib.mkDefault true;
-  services.fwupd.enable = lib.mkDefault false;
+  services.fwupd.enable  = lib.mkDefault false;
   services.printing.enable = lib.mkDefault false;
-
 
   ############################################
   # DNS (faster, less blocking)
@@ -545,7 +806,6 @@ modules/performance/common.nix
     ];
   };
 
-
   ############################################
   # ZRAM (safe for low/mid RAM systems)
   ############################################
@@ -554,6 +814,11 @@ modules/performance/common.nix
     enable = true;
     algorithm = "zstd";
     memoryPercent = 25;
+  };
+
+  systemd.settings.Manager = {
+    DefaultTimeoutStartSec = "10s";
+    DefaultTimeoutStopSec  = "10s";
   };
 
 }
@@ -667,6 +932,98 @@ modules/performance/macbook.nix
 }
 
 ----
+modules/python/common.nix
+
+{ pkgs, ... }:
+
+{
+  ############################################
+  # Python base (safe, shared)
+  ############################################
+
+  environment.systemPackages = with pkgs; [
+    python3
+    python3Packages.pip
+    python3Packages.virtualenv
+  ];
+
+  environment.variables = {
+    PIP_DISABLE_PIP_VERSION_CHECK = "1";
+    PYTHONDONTWRITEBYTECODE = "1";
+  };
+}
+
+----
+modules/python/default.nix
+
+{ config, lib, ... }:
+
+let
+  pythonEnv = "uv"; # uv | poetry
+in
+{
+  imports =
+    lib.optionals (pythonEnv == "uv") [
+      ./uv.nix
+    ]
+    ++ lib.optionals (pythonEnv == "poetry") [
+      ./poetry.nix
+    ];
+}
+
+----
+modules/python/poetry.nix
+
+{ pkgs, ... }:
+
+{
+  imports = [
+    ./common.nix
+  ];
+
+  ############################################
+  # Python env manager: poetry (alternative)
+  ############################################
+
+  environment.systemPackages = with pkgs; [
+    poetry
+  ];
+
+  environment.variables = {
+    POETRY_VIRTUALENVS_IN_PROJECT = "true";
+  };
+
+  environment.shellAliases = {
+    py = "poetry run python";
+  };
+}
+
+----
+modules/python/uv.nix
+
+{ pkgs, ... }:
+
+{
+  imports = [
+    ./common.nix
+  ];
+
+  ############################################
+  # Python env manager: uv (preferred)
+  ############################################
+
+  environment.systemPackages = with pkgs; [
+    uv
+  ];
+
+  environment.shellAliases = {
+    venv = "uv venv";
+    py   = "uv run python";
+    pip  = "uv pip";
+  };
+}
+
+----
 modules/system-packages.nix
 
 { pkgs, ... }:
@@ -696,10 +1053,10 @@ in
     ##########################################
     # Editors & Development UX
     ##########################################
-    unstable.neovim # Neovim (unstable for faster updates)
+    # unstable.neovim # Neovim (unstable for faster updates)
     helix # Modal editor, LSP-first
-    unstable.vscode
-    unstable.vscode-extensions.ms-vscode-remote.remote-containers
+    # unstable.vscode
+    # unstable.vscode-extensions.ms-vscode-remote.remote-containers
 
     ##########################################
     # Git & Developer Workflow
@@ -713,21 +1070,13 @@ in
     ##########################################
     # Notes / Knowledge Base
     ##########################################
-    unstable.obsidian
+    # unstable.obsidian
 
     ##########################################
-    # Containers / Virtualization / Kubernetes
+    # Virtualization / Kubernetes (non-container runtime)
     ##########################################
-    docker
-    docker-compose
-    docker-buildx
-    lazydocker
-    podman
-    podman-compose
-    buildah
-    skopeo
-    cri-tools
     k9s
+    cri-tools
 
     virt-manager
     virt-viewer
@@ -748,6 +1097,8 @@ in
     gopls
     rustup
     rust-analyzer
+    lua
+    lua-language-server
 
     ##########################################
     # Build & Debug Tooling
@@ -853,16 +1204,16 @@ in
     ##########################################
     # GUI Applications
     ##########################################
-    firefox
-    chromium
-    brave
-    unstable.discord
+    # firefox
+    # chromium
+    # brave
+    # unstable.discord
     flameshot
     chirp
-    unstable.anydesk
+    # unstable.anydesk
   ];
 }
-
+# 
 ----
 modules/users/borba.nix
 

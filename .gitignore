@@ -9,3 +9,4 @@ tmux/.config/tmux/plugins
 files/configs/nvim/lazy-lock.json
 files/configs/nvim/lazyvim.json
 output.txt
+output.txt
