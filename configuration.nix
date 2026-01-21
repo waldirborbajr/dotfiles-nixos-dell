@@ -58,6 +58,11 @@
     ./modules/flatpak/enable.nix
     ./modules/flatpak/packages.nix
 
+    ##########################################
+    # Enable Python (UV -or- Poetry)
+    ##########################################
+    ./modules/python/default.nix
+
   ];
 
   ############################################
