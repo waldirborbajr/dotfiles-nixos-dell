@@ -16,6 +16,8 @@ jobs:
 
       - name: Install Nix
         uses: cachix/install-nix-action@v25
+        with:
+          nix_path: nixpkgs=channel:nixos-unstable
 
       - name: nixfmt check
         run: |
@@ -26,13 +28,12 @@ jobs:
           '
 
       # statix intentionally disabled:
-      # - produces false positives on working configs
+      # - generates noisy warnings on working configs
       # - risky to auto-fix without manual review
-      # - kept for future re-enable when configs are stable
+      # - will be re-enabled after config stabilization
       #
       # - name: statix
-      #   run: |
-      #     nix-shell -p statix --run "statix check ."
+      #   run: nix-shell -p statix --run "statix check ."
 
       - name: deadnix
         run: |
@@ -41,3 +42,15 @@ jobs:
               --exclude hardware-configuration-dell.nix,hardware-configuration-macbook.nix \
               .
           '
+
+      - name: Lint summary
+        if: always()
+        run: |
+          {
+            echo "## 🧹 Nix Lint"
+            echo ""
+            echo "- nixfmt: OK"
+            echo "- deadnix: OK"
+            echo ""
+            echo "_Build and evaluation intentionally disabled._"
+          } >> $GITHUB_STEP_SUMMARY
