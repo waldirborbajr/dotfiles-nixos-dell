@@ -22,4 +22,18 @@
   };
 
   console.keyMap = "br-abnt2";
+
+  ############################################
+  # Infra aliases (NixOS lifecycle)
+  ############################################
+
+  environment.shellAliases = {
+    nixgc   = "sudo nix-collect-garbage";
+    garbage = "sudo nix-collect-garbage -d --delete-older-than 1d";
+
+    switch  = "sudo nixos-rebuild switch";
+    build   = "sudo nixos-rebuild switch -I nixos-config=$HOME/nixos-config";
+    upgrade = "sudo nixos-rebuild switch --upgrade";
+  };
+    
 }
