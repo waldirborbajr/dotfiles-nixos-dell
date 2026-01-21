@@ -1,15 +1,11 @@
-{ config, pkgs, ... }:
+{ pkgs, ... }:
 
 {
   ##########################################
-  # Flatpak Support
+  # Flatpak
   ##########################################
 
   services.flatpak.enable = true;
-
-  ##########################################
-  # Flatpak Remotes
-  ##########################################
 
   services.flatpak.remotes = [
     {
@@ -19,7 +15,7 @@
   ];
 
   ##########################################
-  # XDG Integration (recommended)
+  # XDG Portal (required)
   ##########################################
 
   xdg.portal.enable = true;
@@ -27,10 +23,4 @@
   xdg.portal.extraPortals = with pkgs; [
     xdg-desktop-portal-gtk
   ];
-
-  ##########################################
-  # Fonts / Icons consistency
-  ##########################################
-
-  fonts.fontDir.enable = true;
 }
