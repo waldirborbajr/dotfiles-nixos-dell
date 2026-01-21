@@ -24,7 +24,7 @@
     NIXOS_OZONE_WL = "1";
 
     # Reduce frame scheduling overhead
-    MUTTER_DEBUG_DISABLE_HW_CURSORS = "1";
+    # MUTTER_DEBUG_DISABLE_HW_CURSORS = "1";
   };
 
   # Portals (required for Wayland apps)

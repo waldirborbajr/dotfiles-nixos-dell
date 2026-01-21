@@ -1,39 +1,23 @@
-{ config, pkgs, ... }:
+{ config, pkgs, lib, ... }:
 
 {
-  ####################################################################
-  # Podman (FUTURE USE)
-  #
-  # This configuration is intentionally DISABLED.
-  #
-  # Planned migration path:
-  # 1. Disable Docker:
-  #    virtualisation.docker.enable = false;
-  #
-  # 2. Enable Podman below and rebuild.
-  #
-  # Notes:
-  # - dockerCompat MUST NOT be enabled together with Docker.
-  # - This setup is rootless and Docker-CLI compatible.
-  ####################################################################
+  virtualisation.podman = {
+    enable = true;
+    dockerCompat = true;
+    defaultNetwork.settings.dns_enabled = true;
+  };
 
-  # virtualisation.podman = {
-  #   enable = true;
-  #
-  #   # Docker-compatible CLI and socket
-  #   dockerCompat = true;
-  #
-  #   # Default bridge with DNS enabled
-  #   defaultNetwork.settings = {
-  #     dns_enabled = true;
-  #   };
-  # };
+  environment.systemPackages = with pkgs; [
+    podman
+    podman-compose
+    buildah
+    skopeo
+  ];
 
-  # Required for rootless Podman
-  # users.users.borba.linger = true;
+  # Podman rootless correto
+  services.userManagement.enable = true;
 
-  # Firewall exception for Podman bridge
-  # networking.firewall.trustedInterfaces = [
-  #   "podman0"
-  # ];
+  users.users.borba = {
+    linger = true;
+  };
 }

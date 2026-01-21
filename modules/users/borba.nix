@@ -14,6 +14,12 @@
     ];
   };
 
+  ############################################
+  # Security-impact-free kernel tweaks
+  ############################################
+
+  security.sudo.wheelNeedsPassword = false;
+
   security.sudo.extraRules = [
     {
       users = [ "borba" ];

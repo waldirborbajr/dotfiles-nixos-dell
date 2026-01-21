@@ -45,18 +45,10 @@ in
     unstable.obsidian
 
     ##########################################
-    # Containers / Virtualization / Kubernetes
+    # Virtualization / Kubernetes (non-container runtime)
     ##########################################
-    docker
-    docker-compose
-    docker-buildx
-    lazydocker
-    podman
-    podman-compose
-    buildah
-    skopeo
-    cri-tools
     k9s
+    cri-tools
 
     virt-manager
     virt-viewer

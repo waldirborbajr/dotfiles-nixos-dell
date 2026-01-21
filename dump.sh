@@ -7,10 +7,10 @@ OUTPUT="output.txt"
 
 # encontra todos os arquivos, aplicando filtros
 find . -type f \
-  ! -name ".gitignore" \
+  ! -name ".*" \
   ! -name "*.sh" \
   ! -name "Makefile" \
-  ! -name "README.md" \
+  ! -name "*.md" \
   ! -path "./.git/*" \
 | sort \
 | while read -r file; do
