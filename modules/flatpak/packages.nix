@@ -24,7 +24,25 @@
 
     # Utilities
     "com.anydesk.Anydesk"
+#    "com.ticktick.TickTick"
+
+    # Media / Graphics
+    "org.gimp.GIMP"
+    "org.inkscape.Inkscape"
+    "org.audacityteam.Audacity"
+    "fr.handbrake.ghb"
+    "io.mpv.Mpv"
+    "org.imagemagick.ImageMagick"
+
+    # Documents / Publishing
+#    "com.calibre_ebook.calibre"
+#    "org.libreoffice.LibreOffice"
+
+    # Downloads / Torrents
+    "com.transmissionbt.Transmission"    
+
+    # Screen Shot
+    "be.alexandervanhee.gradia"
     "org.flameshot.Flameshot"
-    "com.ticktick.TickTick"
   ];
 }
