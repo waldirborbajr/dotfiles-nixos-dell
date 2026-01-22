@@ -1,5 +1,5 @@
 # ==========================================
-# NixOS Infra Makefile (flakes + debug + git commit)
+# NixOS Infra Makefile (flakes + debug + git commit + list generations)
 # ==========================================
 
 NIXOS_CONFIG ?= $(HOME)/nixos-config
@@ -12,11 +12,11 @@ GIT_COMMIT_MSG ?= "chore: auto-commit before build-debug"
 help:
 	@echo "NixOS Infra Commands (flakes optional)"
 	@echo ""
-	@echo "  make build [HOST=host]        -> nixos-rebuild build"
-	@echo "  make build-debug [HOST=host]  -> auto git commit + build + switch with verbose + show-trace, logs at $(DEBUG_LOG)"
-	@echo "  make switch [HOST=host]       -> rebuild keeping graphical session"
-	@echo "  make switch-off [HOST=host]   -> rebuild in multi-user.target (safe)"
-	@echo "  make upgrade [HOST=host]      -> rebuild with channel upgrade"
+	@echo "  make build [HOST=host]        -> nixos-rebuild build + list generations"
+	@echo "  make build-debug [HOST=host]  -> auto git commit + build + switch with verbose + show-trace + list generations"
+	@echo "  make switch [HOST=host]       -> rebuild keeping graphical session + list generations"
+	@echo "  make switch-off [HOST=host]   -> rebuild in multi-user.target (safe) + list generations"
+	@echo "  make upgrade [HOST=host]      -> rebuild with channel upgrade + list generations"
 	@echo "  make gc                        -> nix garbage collection"
 	@echo "  make gc-hard                   -> aggressive garbage collection"
 	@echo "  make fmt                        -> format nix files"
@@ -29,10 +29,20 @@ help:
 NIXOS_CMD = sudo nixos-rebuild $(1) $(if $(HOST),--flake $(NIXOS_CONFIG)#$(HOST),-I nixos-config=$(NIXOS_CONFIG))
 
 # ------------------------------------------
+# Internal helper to list generations
+# ------------------------------------------
+list-generations:
+	@echo ""
+	@echo "=== Current NixOS Generations ==="
+	sudo nix-env -p /nix/var/nix/profiles/system --list-generations
+	@echo "================================="
+
+# ------------------------------------------
 # Build only (no activation)
 # ------------------------------------------
 build:
 	$(call NIXOS_CMD,build)
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Build + switch with debug (verbose + show-trace + auto git commit)
@@ -49,12 +59,14 @@ build-debug:
 	@echo "Starting build-debug for HOST=$(HOST), log at $(DEBUG_LOG)"
 	@echo "Command: $(call NIXOS_CMD,switch --verbose --show-trace)"
 	$(call NIXOS_CMD,switch --verbose --show-trace) 2>&1 | tee $(DEBUG_LOG)
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Normal rebuild (graphical session)
 # ------------------------------------------
 switch:
 	$(call NIXOS_CMD,switch)
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Safe rebuild (drop to multi-user.target)
@@ -63,6 +75,7 @@ switch-off:
 	sudo systemctl isolate multi-user.target
 	$(call NIXOS_CMD,switch)
 	sudo systemctl isolate graphical.target
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Upgrade system (channels)
@@ -70,6 +83,7 @@ switch-off:
 upgrade:
 	sudo nix-channel --update
 	$(call NIXOS_CMD,switch)
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Garbage collection
