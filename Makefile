@@ -1,14 +1,13 @@
 # ==========================================
-# NixOS Infrastructure Makefile (with optional flakes and --impure flag)
+# NixOS Infra Makefile definitivo
 # ==========================================
 
 NIXOS_CONFIG ?= $(HOME)/nixos-config
-HOST ?=
-IMPURE ?=
+HOST ?=   # Ex: macbook ou dell
+DEBUG_LOG ?= /tmp/nixos-build-debug.log
+GIT_COMMIT_MSG ?= chore: auto-commit before build-debug
 
-ifndef HOST
-$(error HOST is required. Example: make switch HOST=macbook)
-endif
+.PHONY: help build build-debug switch switch-off upgrade gc gc-hard fmt status flatpak-update list-generations
 
 .PHONY: help build switch switch-off upgrade gc gc-hard fmt status flatpak-update flatpak-update-repo rollback
 
@@ -28,58 +27,62 @@ help:
 	@echo "  make flatpak-update-repo    -> Updates Flatpak repository information (from flatpak.org)"
 	@echo "  make rollback               -> Rollback to previous system configuration"
 	@echo ""
-	@echo "Notes:"
-	@echo "  - Use 'HOST=macbook' or 'HOST=dell' to specify the host"
-	@echo "  - For any other command, 'HOST' must be defined."
-	@echo "  - The Makefile uses flakes to build the system for the specified host."
-	@echo "  - The 'make upgrade' command updates the flake and the system"
-	@echo "  - The 'make build' and 'make switch' now support an optional '--impure' flag to allow impure builds"
-	@echo "  - The 'make flatpak-update-repo' command updates the Flatpak repository data from flatpak.org"
-	@echo "  - For more details, refer to the documentation or the NixOS repository"
+	@echo "  make build [HOST=host]        -> nixos-rebuild build + list generations"
+	@echo "  make build-debug [HOST=host]  -> auto git commit + build + switch with verbose + show-trace + list generations"
+	@echo "  make switch [HOST=host]       -> rebuild keeping graphical session + list generations"
+	@echo "  make switch-off [HOST=host]   -> rebuild in multi-user.target (safe) + list generations"
+	@echo "  make upgrade [HOST=host]      -> rebuild with channel upgrade + list generations"
+	@echo "  make gc                        -> nix garbage collection"
+	@echo "  make gc-hard                   -> aggressive garbage collection"
+	@echo "  make fmt                        -> format nix files"
+	@echo "  make status                     -> systemd user jobs"
+	@echo "  make flatpak-update             -> update all flatpaks"
 
 # ------------------------------------------
-# Internal command to run flakes with optional --impure flag
-# ------------------------------------------
-NIXOS_CMD = sudo nixos-rebuild $(1) --flake $(NIXOS_CONFIG)#$(HOST) $(if $(IMPURE),--impure)
-
-# ------------------------------------------
-# Function to check for uncommitted changes in Git
-# ------------------------------------------
-check_git_status:
-	@echo "Checking Git status..."
-	@if ! git diff --exit-code > /dev/null; then \
-		echo "There are uncommitted changes, performing commit..."; \
-		git add .; \
-		git commit -m 'Auto commit before rebuild'; \
-		git push; \
-	else \
-		echo "No uncommitted changes in the repository."; \
-	fi
-
-# ------------------------------------------
-# Ensure flake is updated before build/switch
+# Internal function to handle flakes
 # ------------------------------------------
 update-flake:
 	@echo "Updating flake..."
 	nix flake update $(NIXOS_CONFIG)
 
 # ------------------------------------------
+# List system generations
+# ------------------------------------------
+list-generations:
+	@echo ""
+	@echo "=== Current NixOS Generations ==="
+	sudo nix-env -p /nix/var/nix/profiles/system --list-generations
+	@echo "================================="
+
+# ------------------------------------------
 # Build only (no activation)
 # ------------------------------------------
 build: update-flake check_git_status
 	$(call NIXOS_CMD,build)
-	@echo "System rebuilt successfully!"
-	@echo "System version: $(shell nixos-version)"
-	@echo "Build finished at: $(shell date)"
+	$(MAKE) list-generations
+
+# ------------------------------------------
+# Build + switch with debug + auto Git commit
+# ------------------------------------------
+build-debug:
+	@echo "Checking for git changes in $(NIXOS_CONFIG)..."
+	@if [ -n "$$(git -C $(NIXOS_CONFIG) status --porcelain)" ]; then \
+		echo "Git changes detected, committing automatically..."; \
+		cd $(NIXOS_CONFIG) && git add . && git commit -m "$(GIT_COMMIT_MSG)"; \
+	else \
+		echo "No git changes detected."; \
+	fi
+	@echo "Starting build-debug for HOST=$(HOST), log at $(DEBUG_LOG)"
+	@echo "Command: $(call NIXOS_CMD,switch --verbose --show-trace)"
+	$(call NIXOS_CMD,switch --verbose --show-trace) 2>&1 | tee $(DEBUG_LOG)
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Normal rebuild (keeping graphical session)
 # ------------------------------------------
 switch: update-flake check_git_status
 	$(call NIXOS_CMD,switch)
-	@echo "System rebuilt and switched successfully!"
-	@echo "System version: $(shell nixos-version)"
-	@echo "Switch finished at: $(shell date)"
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Safe rebuild (drop to multi-user.target)
@@ -93,15 +96,14 @@ switch-off:
 
 	# Após a execução, retorna ao graphical.target (interface gráfica)
 	sudo systemctl isolate graphical.target
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Upgrade system (channels)
 # ------------------------------------------
 upgrade: update-flake check_git_status
 	$(call NIXOS_CMD,switch)
-	@echo "System upgraded successfully!"
-	@echo "System version: $(shell nixos-version)"
-	@echo "Upgrade finished at: $(shell date)"
+	$(MAKE) list-generations
 
 # ------------------------------------------
 # Garbage collection

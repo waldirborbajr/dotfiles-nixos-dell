@@ -1,9 +1,5 @@
 # hosts/macbook.nix
 # ---
-# ==========================================
-# hosts/macbook.nix
-# ==========================================
-
 { config, pkgs, lib, ... }:
 
 {
@@ -13,7 +9,7 @@
   # Hardware & Performance
   ############################################
   imports = [
-    # ../modules/nixpkgs.nix
+    ../modules/nixpkgs.nix
     ../modules/hardware/macbook.nix
     ../modules/performance/macbook.nix
     ../hardware-configuration-macbook.nix
@@ -64,10 +60,10 @@
   ############################################
   # Pacotes extras para Wi-Fi e debug
   ############################################
-  # environment.systemPackages = with pkgs; [
-  #   iw
-  #   wirelesstools
-  #   util-linux              # garante rfkill
-  #   linuxPackages.broadcom_sta
-  # ];
+  environment.systemPackages = with pkgs; [
+    iw
+    wirelesstools
+    util-linux              # garante rfkill
+    config.boot.kernelPackages.broadcom_sta
+  ];
 }
