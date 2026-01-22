@@ -4,6 +4,7 @@
 # - Auto add/commit to avoid dirty errors
 # - Optional git push
 # - List generations after operations
+# - Post-build validation info
 # ==========================================
 
 NIXOS_CONFIG ?= $(HOME)/nixos-config
@@ -12,7 +13,7 @@ IMPURE ?=               # Set to 1 to add --impure
 DEBUG_LOG ?= /tmp/nixos-build-debug.log
 
 GIT_COMMIT_MSG ?= chore: auto-commit before rebuild
-GIT_PUSH ?=             # Set to 1 to push after commit
+GIT_PUSH ?=             # Set to 1 to push after auto-commit
 
 # ------------------------------------------
 # Internal helpers
@@ -29,7 +30,7 @@ endef
 NIXOS_CMD = sudo nixos-rebuild $(1) --flake $(NIXOS_CONFIG)#$(HOST) $(if $(IMPURE),--impure,) $(2)
 
 .PHONY: \
-	help update-flake check_git_status list-generations \
+	help update-flake check_git_status list-generations post-info \
 	build build-debug switch switch-off upgrade rollback \
 	gc gc-hard fmt status flatpak-update flatpak-update-repo
 
@@ -43,11 +44,11 @@ help:
 	@echo "  HOST=macbook | HOST=dell"
 	@echo ""
 	@echo "Common:"
-	@echo "  make build HOST=<host>            -> flake update + auto-commit + nixos-rebuild build + list generations"
-	@echo "  make switch HOST=<host>           -> flake update + auto-commit + nixos-rebuild switch + list generations"
-	@echo "  make switch-off HOST=<host>       -> safe switch (multi-user.target) + list generations"
-	@echo "  make upgrade HOST=<host>          -> same as switch (flake update already happens) + list generations"
-	@echo "  make build-debug HOST=<host>      -> auto-commit + flake update + switch --verbose --show-trace (logs to DEBUG_LOG)"
+	@echo "  make build HOST=<host>            -> flake update + auto-commit + nixos-rebuild build + list generations + post-info"
+	@echo "  make switch HOST=<host>           -> flake update + auto-commit + nixos-rebuild switch + list generations + post-info"
+	@echo "  make switch-off HOST=<host>       -> safe switch (multi-user.target) + list generations + post-info"
+	@echo "  make upgrade HOST=<host>          -> flake update + auto-commit + switch + list generations + post-info"
+	@echo "  make build-debug HOST=<host>      -> flake update + auto-commit + switch --verbose --show-trace (logs) + list generations + post-info"
 	@echo ""
 	@echo "Options:"
 	@echo "  IMPURE=1                          -> adds --impure to nixos-rebuild"
@@ -62,7 +63,7 @@ help:
 	@echo "  make status                       -> systemd --user list-jobs"
 	@echo "  make flatpak-update               -> flatpak update -y"
 	@echo "  make flatpak-update-repo          -> flatpak update --appstream -y + update -y"
-	@echo "  make rollback                     -> nixos-rebuild switch --rollback (current machine)"
+	@echo "  make rollback                     -> nixos-rebuild switch --rollback + list generations + post-info"
 	@echo ""
 	@echo "Notes:"
 	@echo "  - build/switch/upgrade/build-debug always run: nix flake update"
@@ -103,6 +104,25 @@ list-generations:
 	@echo "================================="
 
 # ------------------------------------------
+# Post-build information (validation)
+# ------------------------------------------
+post-info:
+	@echo ""
+	@echo "=== Post-build validation ==="
+	@echo "Host (flake):        $(HOST)"
+	@echo "NixOS version:       $$(nixos-version)"
+	@echo "Kernel:              $$(uname -r)"
+	@echo "Uptime:              $$(uptime -p 2>/dev/null || true)"
+	@echo "System store path:   $$(readlink /run/current-system)"
+	@echo "Current generation:"
+	@sudo nix-env -p /nix/var/nix/profiles/system --list-generations | grep current || true
+	@echo "Desktop session (may be empty in TTY/build):"
+	@echo "  XDG_CURRENT_DESKTOP=$$XDG_CURRENT_DESKTOP"
+	@echo "  DESKTOP_SESSION=$$DESKTOP_SESSION"
+	@echo "Finished at:         $$(date)"
+	@echo "=============================="
+
+# ------------------------------------------
 # Build only (no activation)
 # ------------------------------------------
 build:
@@ -111,6 +131,7 @@ build:
 	$(MAKE) check_git_status
 	$(call NIXOS_CMD,build,)
 	$(MAKE) list-generations
+	$(MAKE) post-info
 
 # ------------------------------------------
 # Switch (activate)
@@ -121,6 +142,7 @@ switch:
 	$(MAKE) check_git_status
 	$(call NIXOS_CMD,switch,)
 	$(MAKE) list-generations
+	$(MAKE) post-info
 
 # ------------------------------------------
 # Safe switch (drop to multi-user.target)
@@ -133,10 +155,10 @@ switch-off:
 	$(call NIXOS_CMD,switch,)
 	sudo systemctl isolate graphical.target
 	$(MAKE) list-generations
+	$(MAKE) post-info
 
 # ------------------------------------------
-# Upgrade system
-# (With flakes, "upgrade" is basically flake update + switch)
+# Upgrade system (flakes: update + switch)
 # ------------------------------------------
 upgrade:
 	@$(require_host)
@@ -144,6 +166,7 @@ upgrade:
 	$(MAKE) check_git_status
 	$(call NIXOS_CMD,switch,)
 	$(MAKE) list-generations
+	$(MAKE) post-info
 
 # ------------------------------------------
 # Build-debug (verbose + show-trace)
@@ -156,6 +179,7 @@ build-debug:
 	@echo "Command: sudo nixos-rebuild switch --flake $(NIXOS_CONFIG)#$(HOST) $(if $(IMPURE),--impure,) --verbose --show-trace"
 	$(call NIXOS_CMD,switch,--verbose --show-trace) 2>&1 | tee $(DEBUG_LOG)
 	$(MAKE) list-generations
+	$(MAKE) post-info
 
 # ------------------------------------------
 # Garbage collection
@@ -197,3 +221,4 @@ rollback:
 	sudo nixos-rebuild switch --rollback
 	@echo "Rollback completed!"
 	$(MAKE) list-generations
+	$(MAKE) post-info
