@@ -284,7 +284,7 @@ Boring means reliable, predictable, reproducible, and disposable.
 
 Version: v1.2.1
 
-GPT: https://chatgpt.com/share/696fa14b-4160-800c-8714-210ff3688f73
+GPT: [https://chatgpt.com/share/696fa14b-4160-800c-8714-210ff3688f73](https://chatgpt.com/share/697289a7-2498-800c-b917-8d9c82d4d6ce)
 
 
 ````
