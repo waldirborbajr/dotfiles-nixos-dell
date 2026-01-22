@@ -11,6 +11,7 @@ find . -type f \
   ! -name "*.sh" \
   ! -name "Makefile" \
   ! -name "Makefile" \
+  ! -name "flake.lock" \
   ! -name "LICENSE" \
   ! -name "*.md" \
   ! -name "*.bak" \
