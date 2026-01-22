@@ -1,4 +1,7 @@
+# ==========================================
 # hosts/macbook.nix
+# ==========================================
+
 { config, pkgs, lib, ... }:
 
 {
@@ -6,6 +9,7 @@
   # Hardware & Performance
   ############################################
   imports = [
+    ../modules/nixpkgs.nix              # Módulo Nixpkgs primeiro para allowUnfree
     ../modules/hardware/macbook.nix
     ../modules/performance/macbook.nix
     ../hardware-configuration-macbook.nix
@@ -40,7 +44,7 @@
   # Permitir pacote Broadcom STA inseguro
   ############################################
   nixpkgs.config.permittedInsecurePackages = [
-    "broadcom-sta-6.30.223.271-59-6.12.65"
+    "broadcom-sta-6.30.223.271-59-6.12.66"
   ];
 
   ############################################
