@@ -2,7 +2,7 @@
 { config, pkgs, ... }:
 
 {
-  # Habilita firmware redistribuível (inclui alguns Broadcom genéricos)
+  # Habilita firmware redistribuível
   hardware.enableRedistributableFirmware = true;
 
   # Blacklist módulos open-source que conflitam com o driver proprietário
@@ -16,23 +16,15 @@
   # Carrega o módulo proprietário Broadcom (wl)
   boot.kernelModules = [ "wl" ];
 
-  # Adiciona o pacote do driver como extra module
+  # Pacote do driver como extra module
   boot.extraModulePackages = with config.boot.kernelPackages; [
-    broadcom_sta
+    linuxPackages.broadcom-sta
   ];
 
-  # Opcional: se você quiser tentar b43 em vez de broadcom_sta, comente acima e use isso:
-  # boot.kernelModules = [ "b43" ];
-  # boot.blacklistedKernelModules = [ "wl" "brcmsmac" ];
-  # hardware.firmware = with pkgs; [
-  #   b43Firmware_6_30_163_46   # versão mais recente comum
-  #   # ou b43Firmware_5_1_138 se seu chip for muito antigo
-  # ];
-
-  # Pacotes úteis para debug/wireless (não obrigatórios, mas ajudam)
+  # Pacotes úteis para debug/wireless
   environment.systemPackages = with pkgs; [
     iw
-    wirelesstools  # inclui iwconfig, etc.
-    rfkill
+    wirelesstools  # inclui iwconfig, ifconfig e ferramentas wireless
+    # rfkill removido, não existe no Nixpkgs 25.11
   ];
 }
