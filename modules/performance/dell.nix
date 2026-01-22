@@ -1,66 +1,22 @@
-# modules/performance/dell.nix
-# ---
 { lib, ... }:
 
 {
   ############################################
-  # Boot performance
+  # Ajustes de performance no Dell (i3)
   ############################################
 
-  # Faster and more parallel initrd
-  boot.initrd.systemd.enable = true;
+  # Limitar animações no i3 (caso precise)
+  services.xserver.windowManager.i3.extraConfig = ''
+    # Desabilitar animações do i3
+    exec --no-startup-id feh --bg-scale /path/to/background.png  # Alterar o plano de fundo
+  '';
 
-  # Reduce boot verbosity and overhead
-  boot.kernelParams = [
-    "quiet"
-    "loglevel=3"
-  ];
-
-  # Avoid unnecessary waits during boot
-  # systemd.services.systemd-udev-settle.enable = false;
-
-
-  ############################################
-  # CPU scheduling & memory behavior
-  ############################################
-
-  # Best balance for older CPUs (desktop use)
-  powerManagement.cpuFreqGovernor = "schedutil";
-
-  # Reduce memory pressure and disk thrashing
-#  boot.kernel.sysctl = {
-#    "vm.swappiness" = 10;
-#  };
-
-
-  ############################################
-  # Nix build performance (avoid system stalls)
-  ############################################
-
-  nix.settings = {
-    max-jobs = 2;
-    cores = 2;
+  # Configurações de otimização para baixo consumo de memória
+  boot.kernel.sysctl = {
+    "vm.swappiness" = lib.mkDefault 10;  # Menor uso de swap
+    "vm.dirty_ratio" = 10;                # Menor taxa de gravação em disco
   };
 
-
-  ############################################
-  # Container services (do NOT auto-start)
-  ############################################
-
-  # Keep Docker installed but do not start at boot
-  virtualisation.docker.enableOnBoot = lib.mkForce false;
-
-  # Keep K3s installed but do not auto-start
-  systemd.services.k3s.wantedBy = lib.mkForce [];
-
-
-  ############################################
-  # Desktop / GNOME performance hints
-  ############################################
-
-  environment.sessionVariables = {
-    # Reduce Mutter overhead on older Intel iGPU
-    MUTTER_DEBUG_DISABLE_HW_CURSORS = "1";
-    MUTTER_DEBUG_FORCE_KMS_MODE = "simple";
-  };
+  # Ativar zram para reduzir uso de swap
+  boot.zram.enable = true;
 }
