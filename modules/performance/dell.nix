@@ -1,24 +1,29 @@
 # modules/performance/dell.nix
-# ---
 { lib, ... }:
 
 {
   ############################################
-  # Ajustes de performance no Dell (i3)
+  # Dell: No display manager, startx only
   ############################################
+  services.xserver.displayManager.startx.enable = true;
 
-  # Limitar animações no i3 (caso precise)
-  services.xserver.windowManager.i3.extraConfig = ''
-    # Desabilitar animações do i3
-    exec --no-startup-id feh --bg-scale /path/to/background.png  # Alterar o plano de fundo
-  '';
+  # Make sure no DM is enabled on Dell
+  services.displayManager.gdm.enable = false;
 
-  # Configurações de otimização para baixo consumo de memória
+  # (Optional, redundant but harmless)
+  services.xserver.displayManager.lightdm.enable = false;
+
+  ############################################
+  # VM / memory tuning
+  ############################################
   boot.kernel.sysctl = {
-    "vm.swappiness" = lib.mkDefault 10;  # Menor uso de swap
-    "vm.dirty_ratio" = 10;                # Menor taxa de gravação em disco
+    "vm.swappiness" = lib.mkDefault 10;
+    "vm.dirty_ratio" = lib.mkDefault 10;
   };
 
-  # Ativar zram para reduzir uso de swap
-  boot.zram.enable = true;
+  ############################################
+  # ZRAM: already defined in performance/common.nix
+  # If you want Dell-specific tuning, override memoryPercent:
+  ############################################
+  zramSwap.memoryPercent = lib.mkDefault 35;
 }
