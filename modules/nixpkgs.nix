@@ -1,9 +1,9 @@
-# modules/nixpkgs.nix
 { lib, pkgs, ... }:
 
 let
   unstablePkgs = import (builtins.fetchTarball {
     url = "https://github.com/NixOS/nixpkgs/archive/nixos-unstable.tar.gz";
+    sha256 = "0000000000000000000000000000000000000000000000000000"; # placeholder
   }) {
     config = { allowUnfree = true; };
   };
