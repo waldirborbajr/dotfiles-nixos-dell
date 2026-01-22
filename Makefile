@@ -10,7 +10,7 @@ ifndef HOST
 $(error HOST is required. Example: make switch HOST=macbook)
 endif
 
-.PHONY: help build switch switch-off upgrade gc gc-hard fmt status flatpak-update flatpak-update-repo
+.PHONY: help build switch switch-off upgrade gc gc-hard fmt status flatpak-update flatpak-update-repo rollback
 
 # Help command
 help:
@@ -57,9 +57,16 @@ check_git_status:
 	fi
 
 # ------------------------------------------
+# Ensure flake is updated before build/switch
+# ------------------------------------------
+update-flake:
+	@echo "Updating flake..."
+	nix flake update $(NIXOS_CONFIG)
+
+# ------------------------------------------
 # Build only (no activation)
 # ------------------------------------------
-build: check_git_status
+build: update-flake check_git_status
 	$(call NIXOS_CMD,build)
 	@echo "System rebuilt successfully!"
 	@echo "System version: $(shell nixos-version)"
@@ -68,7 +75,7 @@ build: check_git_status
 # ------------------------------------------
 # Normal rebuild (keeping graphical session)
 # ------------------------------------------
-switch: check_git_status
+switch: update-flake check_git_status
 	$(call NIXOS_CMD,switch)
 	@echo "System rebuilt and switched successfully!"
 	@echo "System version: $(shell nixos-version)"
@@ -90,8 +97,7 @@ switch-off:
 # ------------------------------------------
 # Upgrade system (channels)
 # ------------------------------------------
-upgrade: check_git_status
-	nix flake update $(NIXOS_CONFIG)
+upgrade: update-flake check_git_status
 	$(call NIXOS_CMD,switch)
 	@echo "System upgraded successfully!"
 	@echo "System version: $(shell nixos-version)"
