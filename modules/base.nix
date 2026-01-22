@@ -21,7 +21,7 @@
     LC_TIME = "pt_BR.UTF-8";
   };
 
-  console.keyMap = "br-abnt2";
+  # console.keyMap = "br-abnt2";
 
   ############################################
   # Infra aliases (NixOS lifecycle)
