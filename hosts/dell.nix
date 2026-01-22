@@ -1,31 +1,26 @@
 { config, pkgs, lib, ... }:
-
 {
   ############################################
   # Hardware
   ############################################
   imports = [
-    ./modules/hardware/dell.nix
-    ./modules/performance/dell.nix
+    ../modules/hardware/dell.nix
+    ../modules/performance/dell.nix
     ../hardware-configuration-dell.nix
   ];
-
   ############################################
   # Host identity
   ############################################
   networking.hostName = "dell-nixos";
-
   ############################################
   # Bootloader (Legacy BIOS)
   ############################################
   boot.loader.grub.enable = true;
   boot.loader.grub.devices = [ "/dev/sda" ];
-
   ############################################
   # Keyboard (Dell)
   ############################################
   console.keyMap = "br-abnt2";
-
   services.xserver.xkb = {
     layout = "br";
     variant = "abnt2";
