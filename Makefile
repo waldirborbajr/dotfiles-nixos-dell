@@ -10,9 +10,9 @@ help:
 	@echo "NixOS Infra Commands (no flakes)"
 	@echo ""
 	@echo "  make build            -> nixos-rebuild build"
-	@echo "  make switch           -> rebuild keeping graphical session (allow unfree)"
-	@echo "  make switch-off       -> rebuild in multi-user.target (safe, allow unfree)"
-	@echo "  make upgrade          -> rebuild with channel upgrade (allow unfree)"
+	@echo "  make switch           -> rebuild keeping graphical session"
+	@echo "  make switch-off       -> rebuild in multi-user.target (safe)"
+	@echo "  make upgrade          -> rebuild with channel upgrade"
 	@echo "  make gc               -> nix garbage collection"
 	@echo "  make gc-hard          -> aggressive garbage collection"
 	@echo "  make fmt              -> format nix files"
@@ -27,27 +27,27 @@ build:
 		-I nixos-config=$(NIXOS_CONFIG)
 
 # ------------------------------------------
-# Normal rebuild (graphical session, allow unfree)
+# Normal rebuild (graphical session)
 # ------------------------------------------
 switch:
-	sudo NIXPKGS_ALLOW_UNFREE=1 nixos-rebuild switch \
+	sudo nixos-rebuild switch \
 		-I nixos-config=$(NIXOS_CONFIG)
 
 # ------------------------------------------
-# Safe rebuild (drop to multi-user.target, allow unfree)
+# Safe rebuild (drop to multi-user.target)
 # ------------------------------------------
 switch-off:
 	sudo systemctl isolate multi-user.target
-	sudo NIXPKGS_ALLOW_UNFREE=1 nixos-rebuild switch \
+	sudo nixos-rebuild switch \
 		-I nixos-config=$(NIXOS_CONFIG)
 	sudo systemctl isolate graphical.target
 
 # ------------------------------------------
-# Upgrade system (channels, allow unfree)
+# Upgrade system (channels)
 # ------------------------------------------
 upgrade:
 	sudo nix-channel --update
-	sudo NIXPKGS_ALLOW_UNFREE=1 nixos-rebuild switch \
+	sudo nixos-rebuild switch \
 		-I nixos-config=$(NIXOS_CONFIG)
 
 # ------------------------------------------
