@@ -59,7 +59,7 @@ jobs:
           } >> $GITHUB_STEP_SUMMARY
 
 ----
-configuration.nix
+configuration.nix.TO_BE_REMOVED
 
 # configuration.nix
 { config, pkgs, lib, ... }:
@@ -150,6 +150,37 @@ default.nix
 import ./configuration.nix
 
 ----
+flake.lock
+
+{
+  "nodes": {
+    "nixpkgs": {
+      "locked": {
+        "lastModified": 1768940263,
+        "narHash": "sha256-sJERJIYTKPFXkoz/gBaBtRKke82h4DkX3BBSsKbfbvI=",
+        "owner": "NixOS",
+        "repo": "nixpkgs",
+        "rev": "3ceaaa8bc963ced4d830e06ea2d0863b6490ff03",
+        "type": "github"
+      },
+      "original": {
+        "owner": "NixOS",
+        "ref": "nixos-25.11",
+        "repo": "nixpkgs",
+        "type": "github"
+      }
+    },
+    "root": {
+      "inputs": {
+        "nixpkgs": "nixpkgs"
+      }
+    }
+  },
+  "root": "root",
+  "version": 7
+}
+
+----
 flake.nix
 
 # flake.nix
@@ -158,16 +189,18 @@ flake.nix
   description = "BORBA JR W - Multi-host NixOS Flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
-    flake-utils.url = "github:numtide/flake-utils";  # Utiliza flake-utils para suporte a múltiplos sistemas
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... }: flake-utils.lib.eachSystem
-    (system: {
+  outputs = { self, nixpkgs-stable, nixpkgs-unstable, flake-utils, ... }: flake-utils.lib.eachSystem
+    (system: let
+      nixpkgs = if system == "x86_64-linux" then nixpkgs-stable else nixpkgs-unstable;
+    in {
       nixosConfigurations = {
-
         # ==========================================
-        # MacBook host
+        # MacBook host (continua com GNOME)
         # ==========================================
         macbook = nixpkgs.lib.nixosSystem {
           system = system;
@@ -175,29 +208,18 @@ flake.nix
             ./core.nix
             ./hosts/macbook.nix
           ];
-
-          # Systemd-boot configuration (applied only for this host)
-          boot.loader.systemd-boot.configurationLimit = 10;
-          boot.loader.systemd-boot.enable = true;
-          boot.loader.grub.enable = false;  # Desabilitando GRUB para usar systemd-boot
-          boot.rollback.enable = true;      # Habilitando o rollback de configurações
         };
 
         # ==========================================
-        # Dell host
+        # Dell host (i3 agora)
         # ==========================================
         dell = nixpkgs.lib.nixosSystem {
           system = system;
           modules = [
             ./core.nix
             ./hosts/dell.nix
+            ./modules/performance/dell.nix  # Adicione o módulo de performance se necessário
           ];
-
-          # Systemd-boot configuration (applied only for this host)
-          boot.loader.systemd-boot.configurationLimit = 10;
-          boot.loader.systemd-boot.enable = true;
-          boot.loader.grub.enable = false;  # Desabilitando GRUB para usar systemd-boot
-          boot.rollback.enable = true;      # Habilitando o rollback de configurações
         };
       };
     });
@@ -334,10 +356,6 @@ hosts/macbook.nix
 
 # hosts/macbook.nix
 # ---
-# ==========================================
-# hosts/macbook.nix
-# ==========================================
-
 { config, pkgs, lib, ... }:
 
 {
@@ -347,7 +365,7 @@ hosts/macbook.nix
   # Hardware & Performance
   ############################################
   imports = [
-    # ../modules/nixpkgs.nix
+    ../modules/nixpkgs.nix
     ../modules/hardware/macbook.nix
     ../modules/performance/macbook.nix
     ../hardware-configuration-macbook.nix
@@ -398,12 +416,12 @@ hosts/macbook.nix
   ############################################
   # Pacotes extras para Wi-Fi e debug
   ############################################
-  # environment.systemPackages = with pkgs; [
-  #   iw
-  #   wirelesstools
-  #   util-linux              # garante rfkill
-  #   linuxPackages.broadcom_sta
-  # ];
+  environment.systemPackages = with pkgs; [
+    iw
+    wirelesstools
+    util-linux              # garante rfkill
+    config.boot.kernelPackages.broadcom_sta
+  ];
 }
 
 ----
@@ -972,6 +990,7 @@ modules/networking.nix
 modules/nixpkgs.nix
 
 # modules/nixpkgs.nix
+# ---
 { lib, pkgs, ... }:
 
 let
@@ -1158,65 +1177,23 @@ modules/performance/dell.nix
 
 {
   ############################################
-  # Boot performance
+  # Ajustes de performance no Dell (i3)
   ############################################
 
-  # Faster and more parallel initrd
-  boot.initrd.systemd.enable = true;
+  # Limitar animações no i3 (caso precise)
+  services.xserver.windowManager.i3.extraConfig = ''
+    # Desabilitar animações do i3
+    exec --no-startup-id feh --bg-scale /path/to/background.png  # Alterar o plano de fundo
+  '';
 
-  # Reduce boot verbosity and overhead
-  boot.kernelParams = [
-    "quiet"
-    "loglevel=3"
-  ];
-
-  # Avoid unnecessary waits during boot
-  # systemd.services.systemd-udev-settle.enable = false;
-
-
-  ############################################
-  # CPU scheduling & memory behavior
-  ############################################
-
-  # Best balance for older CPUs (desktop use)
-  powerManagement.cpuFreqGovernor = "schedutil";
-
-  # Reduce memory pressure and disk thrashing
-#  boot.kernel.sysctl = {
-#    "vm.swappiness" = 10;
-#  };
-
-
-  ############################################
-  # Nix build performance (avoid system stalls)
-  ############################################
-
-  nix.settings = {
-    max-jobs = 2;
-    cores = 2;
+  # Configurações de otimização para baixo consumo de memória
+  boot.kernel.sysctl = {
+    "vm.swappiness" = lib.mkDefault 10;  # Menor uso de swap
+    "vm.dirty_ratio" = 10;                # Menor taxa de gravação em disco
   };
 
-
-  ############################################
-  # Container services (do NOT auto-start)
-  ############################################
-
-  # Keep Docker installed but do not start at boot
-  virtualisation.docker.enableOnBoot = lib.mkForce false;
-
-  # Keep K3s installed but do not auto-start
-  systemd.services.k3s.wantedBy = lib.mkForce [];
-
-
-  ############################################
-  # Desktop / GNOME performance hints
-  ############################################
-
-  environment.sessionVariables = {
-    # Reduce Mutter overhead on older Intel iGPU
-    MUTTER_DEBUG_DISABLE_HW_CURSORS = "1";
-    MUTTER_DEBUG_FORCE_KMS_MODE = "simple";
-  };
+  # Ativar zram para reduzir uso de swap
+  boot.zram.enable = true;
 }
 
 ----
@@ -1411,196 +1388,190 @@ let
   unstable = pkgs.unstable or pkgs;
 in
 {
-  environment.systemPackages = with pkgs; [
+  environment.systemPackages =
+    # ----------------------------
+    # Stable packages (default)
+    # ----------------------------
+    (with pkgs; [
 
-    ##########################################
-    # Networking / Diagnostics (global)
-    ##########################################
-    iw
-    wirelesstools
-    util-linux
-    linuxPackages.broadcom_sta
+      ##########################################
+      # Networking / Diagnostics (global)
+      ##########################################
+      iw
+      wirelesstools
+      util-linux
+      linuxPackages.broadcom_sta
 
-    ##########################################
-    # Terminals
-    ##########################################
-    alacritty # GPU-accelerated terminal
-    kitty # Feature-rich terminal
-    gnome-console # GNOME default terminal
+      ##########################################
+      # Terminals
+      ##########################################
+      alacritty
+      kitty
+      gnome-console
 
-    ##########################################
-    # Shells & Multiplexers
-    ##########################################
-    zsh # Primary shell
-    fish # Alternative shell
-    tmux # Terminal multiplexer
-    tmuxifier # tmux session manager
-    zellij # Modern tmux alternative
+      ##########################################
+      # Shells & Multiplexers
+      ##########################################
+      zsh
+      fish
+      tmux
+      tmuxifier
+      zellij
 
-    ##########################################
-    # Editors & Development UX
-    ##########################################
-    # unstable.neovim # Neovim (unstable for faster updates)
-    helix # Modal editor, LSP-first
-    # unstable.vscode
-    # unstable.vscode-extensions.ms-vscode-remote.remote-containers
+      ##########################################
+      # Editors & Development UX
+      ##########################################
+      helix
+      neovim
 
-    ##########################################
-    # Git & Developer Workflow
-    ##########################################
-    git
-    gh # GitHub CLI
-    lazygit # TUI for git
-    commitizen # Conventional commits helper
-    devcontainer # Dev container tooling
+      ##########################################
+      # Git & Developer Workflow
+      ##########################################
+      git
+      gh
+      lazygit
+      commitizen
+      devcontainer
 
-    ##########################################
-    # Notes / Knowledge Base
-    ##########################################
-    # unstable.obsidian
+      ##########################################
+      # Virtualization / Kubernetes (non-runtime)
+      ##########################################
+      k9s
+      cri-tools
 
-    ##########################################
-    # Virtualization / Kubernetes (non-container runtime)
-    ##########################################
-    k9s
-    cri-tools
+      virt-manager
+      virt-viewer
+      qemu
+      virtio-win
+      spice
+      spice-gtk
+      spice-protocol
 
-    virt-manager
-    virt-viewer
-    qemu
-    virtio-win
-    spice
-    spice-gtk
-    spice-protocol
+      ##########################################
+      # Languages / Toolchains
+      ##########################################
+      gcc
+      libgcc
+      glibc
+      libcxx
+      go
+      gopls
+      rustup
+      rust-analyzer
+      lua
+      lua-language-server
 
-    ##########################################
-    # Languages / Toolchains
-    ##########################################
-    gcc
-    libgcc
-    glibc
-    libcxx
-    go
-    gopls
-    rustup
-    rust-analyzer
-    lua
-    lua-language-server
+      ##########################################
+      # Nix Tooling (stable)
+      ##########################################
+      nixd
+      nil
+      statix
+      deadnix
+      nixfmt-rfc-style
 
-    ##########################################
-    # Build & Debug Tooling
-    ##########################################
-    cmake
-    gnumake
-    libtool
-    libvterm
-    unstable.gdb
-    unstable.clang
-    unstable.llvm
-    unstable.lld
+      ##########################################
+      # Modern CLI Utilities
+      ##########################################
+      eza
+      bat
+      fd
+      ripgrep
+      yazi
+      dust
+      ncdu
+      zoxide
+      atuin
+      tldr
+      sd
+      jq
+      fx
+      httpie
+      curlie
+      fzf
+      direnv
+      entr
+      procs
+      bottom
+      btop
+      htop
 
-    ##########################################
-    # Nix Tooling
-    ##########################################
-    nixd # Nix language server
-    nil # Alternative Nix LSP
-    statix # Static analysis for Nix
-    deadnix # Find unused Nix code
-    nixfmt-rfc-style # Nix formatter
+      ##########################################
+      # Clipboard / Wayland
+      ##########################################
+      xclip
+      wl-clipboard
+      clipster
 
-    ##########################################
-    # Modern CLI Utilities (Shell-first / DevOps)
-    ##########################################
-    eza # ls replacement
-    bat # cat replacement
-    fd # find replacement
-    ripgrep # grep replacement
-    yazi # Terminal file manager
-    dust # du replacement
-    ncdu # Disk usage analyzer
-    zoxide # Smarter cd
-    atuin # Shell history with sync
-    tldr # Simplified man pages
-    sd # sed replacement
-    jq # JSON processor
-    fx # Interactive JSON viewer
-    httpie # Modern HTTP client
-    curlie # curl + httpie hybrid
-    fzf # Fuzzy finder
-    direnv # Per-directory environments
-    entr # Run commands on file changes
-    procs # ps replacement
-    bottom # Advanced system monitor
-    btop # Resource monitor
-    htop
+      ##########################################
+      # Core UNIX
+      ##########################################
+      coreutils
+      curl
+      wget
+      gnupg
+      file
+      rsync
+      unzip
+      zip
+      procps
+      psmisc
+      util-linux
+      tree
+      stow
 
-    ##########################################
-    # Clipboard / Wayland Utilities
-    ##########################################
-    xclip
-    wl-clipboard
-    clipster
+      ##########################################
+      # Hardware diagnostics
+      ##########################################
+      lshw
+      pciutils
+      usbutils
+      lm_sensors
 
-    ##########################################
-    # Core UNIX Utilities
-    ##########################################
-    coreutils
-    curl
-    wget
-    gnupg
-    file
-    rsync
-    unzip
-    zip
-    procps
-    psmisc
-    util-linux
-    tree
-    stow
+      ##########################################
+      # Networking tools
+      ##########################################
+      iwd
+      iproute2
+      iputils
+      traceroute
+      dnsutils
+      nmap
 
-    ##########################################
-    # Hardware / System Diagnostics
-    ##########################################
-    lshw
-    pciutils
-    usbutils
-    lm_sensors
+      ##########################################
+      # Storage
+      ##########################################
+      e2fsprogs
+      ntfs3g
+      dosfstools
 
-    ##########################################
-    # Networking
-    ##########################################
-    iwd
-    iproute2
-    iputils
-    traceroute
-    dnsutils
-    nmap
+      ##########################################
+      # Certificates
+      ##########################################
+      cacert
 
-    ##########################################
-    # Storage / Filesystems
-    ##########################################
-    e2fsprogs
-    ntfs3g
-    dosfstools
+      ##########################################
+      # GUI
+      ##########################################
+      flameshot
+      chirp
+    ])
 
-    ##########################################
-    # Certificates / SSL
-    ##########################################
-    cacert
-
-    ##########################################
-    # GUI Applications
-    ##########################################
-    # firefox
-    # chromium
-    # brave
-    # unstable.discord
-    flameshot
-    chirp
-    # unstable.anydesk
-  ];
+    # ----------------------------
+    # Unstable packages (explicit)
+    # ----------------------------
+    ++ (with unstable; [
+      clang
+      llvm
+      lld
+      gdb
+      # neovim
+      # vscode
+      # discord
+      # anydesk
+    ]);
 }
-# 
+
 ----
 modules/users/borba.nix
 
@@ -1677,7 +1648,7 @@ profiles/dell.nix
 
 # profiles/dell.nix
 # ---
-{ ... }:
+{ config, pkgs, lib, ... }:
 
 {
   ############################################
@@ -1694,14 +1665,32 @@ profiles/dell.nix
   };
 
   ############################################
-  # Keyboard (Dell)
+  # Alterações para i3 no Dell
   ############################################
+  
+  # Desabilitar GNOME no Dell
+  services.xserver.desktopManager.gnome.enable = false;
+
+  # Habilitar i3 no Dell
+  services.xserver.windowManager.i3.enable = true;
+
+  # Configuração do teclado
   console.keyMap = "br-abnt2";
 
   services.xserver.xkb = {
     layout = "br";
     variant = "abnt2";
   };
+
+  # Habilitar o X server
+  services.xserver.enable = true;
+
+  ############################################
+  # Instalar i3 somente no Dell
+  ############################################
+  environment.systemPackages = with pkgs; lib.optionals (config.networking.hostName == "dell-nixos") [
+    i3
+  ];
 }
 
 ----
