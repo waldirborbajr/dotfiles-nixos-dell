@@ -20,6 +20,10 @@
     ../modules/autologin.nix
   ];
 
+  # Docker ON no MacBook (DevOps)
+  virtualisation.docker.enable = lib.mkForce true;
+
+
   ############################################
   # Hardware & Performance
   ############################################
