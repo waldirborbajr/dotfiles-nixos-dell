@@ -14,6 +14,9 @@
     ../hardware-configuration-dell.nix
   ];
 
+  # Docker OFF no Dell (máquina lenta)
+  virtualisation.docker.enable = lib.mkForce false;
+
   ############################################
   # Host identity
   ############################################
