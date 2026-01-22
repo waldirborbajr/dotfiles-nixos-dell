@@ -1,8 +1,17 @@
-# profiles/dell.nix
-# ---
 { config, pkgs, lib, ... }:
 
 {
+  system.stateVersion = "25.11";
+
+  ############################################
+  # Hardware
+  ############################################
+  imports = [
+    ../modules/hardware/dell.nix
+    ../modules/performance/dell.nix
+    ../hardware-configuration-dell.nix
+  ];
+
   ############################################
   # Host identity
   ############################################
@@ -11,22 +20,21 @@
   ############################################
   # Bootloader (Legacy BIOS)
   ############################################
-  boot.loader.grub = {
+  boot.loader.grub.enable = true;
+  boot.loader.grub.devices = [ "/dev/sda" ];
+
+  ############################################
+  # X11 + i3 (somente Dell)
+  ############################################
+  services.xserver.enable = true;
+
+  services.xserver.windowManager.i3 = {
     enable = true;
-    devices = [ "/dev/sda" ];
   };
 
   ############################################
-  # Alterações para i3 no Dell
+  # Keyboard
   ############################################
-  
-  # Desabilitar GNOME no Dell
-  services.xserver.desktopManager.gnome.enable = false;
-
-  # Habilitar i3 no Dell
-  services.xserver.windowManager.i3.enable = true;
-
-  # Configuração do teclado
   console.keyMap = "br-abnt2";
 
   services.xserver.xkb = {
@@ -34,13 +42,14 @@
     variant = "abnt2";
   };
 
-  # Habilitar o X server
-  services.xserver.enable = true;
-
   ############################################
-  # Instalar i3 somente no Dell
+  # Pacotes específicos do Dell
   ############################################
-  environment.systemPackages = with pkgs; lib.optionals (config.networking.hostName == "dell-nixos") [
+  environment.systemPackages = with pkgs; [
     i3
+    i3status
+    dmenu
+    feh
+    picom
   ];
 }
