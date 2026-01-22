@@ -1,3 +1,5 @@
+#     nixos-config/hosts/dell.nix
+
 { config, pkgs, lib, ... }:
 {
   ############################################
