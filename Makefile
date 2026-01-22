@@ -5,20 +5,21 @@
 NIXOS_CONFIG ?= $(HOME)/nixos-config
 HOST ?=   # Ex: macbook ou dell
 
-.PHONY: help build switch switch-off upgrade gc gc-hard fmt status flatpak-update
+.PHONY: help build switch switch-off upgrade gc gc-hard fmt status flatpak-update build-debug
 
 help:
 	@echo "NixOS Infra Commands (flakes optional)"
 	@echo ""
-	@echo "  make build [HOST=host]      -> nixos-rebuild build"
-	@echo "  make switch [HOST=host]     -> rebuild keeping graphical session"
-	@echo "  make switch-off [HOST=host] -> rebuild in multi-user.target (safe)"
-	@echo "  make upgrade [HOST=host]    -> rebuild with channel upgrade"
-	@echo "  make gc                           -> nix garbage collection"
-	@echo "  make gc-hard                      -> aggressive garbage collection"
-	@echo "  make fmt                           -> format nix files"
-	@echo "  make status                        -> systemd user jobs"
-	@echo "  make flatpak-update                -> update all flatpaks"
+	@echo "  make build [HOST=host]        -> nixos-rebuild build"
+	@echo "  make build-debug [HOST=host]  -> nixos-rebuild build with debug (verbose + show-trace)"
+	@echo "  make switch [HOST=host]       -> rebuild keeping graphical session"
+	@echo "  make switch-off [HOST=host]   -> rebuild in multi-user.target (safe)"
+	@echo "  make upgrade [HOST=host]      -> rebuild with channel upgrade"
+	@echo "  make gc                        -> nix garbage collection"
+	@echo "  make gc-hard                   -> aggressive garbage collection"
+	@echo "  make fmt                        -> format nix files"
+	@echo "  make status                     -> systemd user jobs"
+	@echo "  make flatpak-update             -> update all flatpaks"
 
 # ------------------------------------------
 # Internal command to handle flakes
@@ -30,6 +31,12 @@ NIXOS_CMD = sudo nixos-rebuild $(1) $(if $(HOST),--flake $(NIXOS_CONFIG)#$(HOST)
 # ------------------------------------------
 build:
 	$(call NIXOS_CMD,build)
+
+# ------------------------------------------
+# Debug build (verbose + show-trace)
+# ------------------------------------------
+build-debug:
+	$(call NIXOS_CMD,"build --verbose --show-trace")
 
 # ------------------------------------------
 # Normal rebuild (graphical session)
