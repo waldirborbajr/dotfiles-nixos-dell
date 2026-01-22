@@ -26,8 +26,10 @@
   ############################################
   # Pacotes úteis para debug e configuração wireless
   ############################################
-  environment.systemPackages = with pkgs; [
-    iw
-    wirelesstools
-  ];
+  #environment.systemPackages = with pkgs; [
+    #iw
+    #wirelesstools
+  #  util-linux
+  #  linuxPackages.broadcom_sta    
+  #];
 }

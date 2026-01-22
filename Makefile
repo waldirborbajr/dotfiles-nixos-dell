@@ -9,8 +9,23 @@ GIT_COMMIT_MSG ?= chore: auto-commit before build-debug
 
 .PHONY: help build build-debug switch switch-off upgrade gc gc-hard fmt status flatpak-update list-generations
 
+.PHONY: help build switch switch-off upgrade gc gc-hard fmt status flatpak-update flatpak-update-repo rollback
+
+# Help command
 help:
-	@echo "NixOS Infra Commands (flakes optional)"
+	@echo "NixOS Infrastructure Commands (flakes optional)"
+	@echo ""
+	@echo "  make build [HOST=host]      -> Executes 'nixos-rebuild build' for the specified host"
+	@echo "  make switch [HOST=host]     -> Rebuild keeping graphical session"
+	@echo "  make switch-off [HOST=host] -> Rebuild in multi-user.target mode (safe)"
+	@echo "  make upgrade [HOST=host]    -> Rebuild with channel upgrade"
+	@echo "  make gc                     -> Garbage collection"
+	@echo "  make gc-hard                -> Aggressive garbage collection (deletes older objects)"
+	@echo "  make fmt                    -> Formats nix files and shows git status"
+	@echo "  make status                 -> Shows active systemd user jobs"
+	@echo "  make flatpak-update         -> Updates all Flatpak packages"
+	@echo "  make flatpak-update-repo    -> Updates Flatpak repository information (from flatpak.org)"
+	@echo "  make rollback               -> Rollback to previous system configuration"
 	@echo ""
 	@echo "  make build [HOST=host]        -> nixos-rebuild build + list generations"
 	@echo "  make build-debug [HOST=host]  -> auto git commit + build + switch with verbose + show-trace + list generations"
@@ -26,7 +41,9 @@ help:
 # ------------------------------------------
 # Internal function to handle flakes
 # ------------------------------------------
-NIXOS_CMD = sudo nixos-rebuild $(1) $(if $(HOST),--flake $(NIXOS_CONFIG)#$(HOST),-I nixos-config=$(NIXOS_CONFIG))
+update-flake:
+	@echo "Updating flake..."
+	nix flake update $(NIXOS_CONFIG)
 
 # ------------------------------------------
 # List system generations
@@ -40,7 +57,7 @@ list-generations:
 # ------------------------------------------
 # Build only (no activation)
 # ------------------------------------------
-build:
+build: update-flake check_git_status
 	$(call NIXOS_CMD,build)
 	$(MAKE) list-generations
 
@@ -61,9 +78,9 @@ build-debug:
 	$(MAKE) list-generations
 
 # ------------------------------------------
-# Normal rebuild (graphical session)
+# Normal rebuild (keeping graphical session)
 # ------------------------------------------
-switch:
+switch: update-flake check_git_status
 	$(call NIXOS_CMD,switch)
 	$(MAKE) list-generations
 
@@ -71,16 +88,20 @@ switch:
 # Safe rebuild (drop to multi-user.target)
 # ------------------------------------------
 switch-off:
+	# Isola em multi-user.target (sem interface gráfica)
 	sudo systemctl isolate multi-user.target
+
+	# Executa a reconstrução
 	$(call NIXOS_CMD,switch)
+
+	# Após a execução, retorna ao graphical.target (interface gráfica)
 	sudo systemctl isolate graphical.target
 	$(MAKE) list-generations
 
 # ------------------------------------------
 # Upgrade system (channels)
 # ------------------------------------------
-upgrade:
-	sudo nix-channel --update
+upgrade: update-flake check_git_status
 	$(call NIXOS_CMD,switch)
 	$(MAKE) list-generations
 
@@ -101,7 +122,7 @@ fmt:
 	git status
 
 # ------------------------------------------
-# Debug helpers
+# List systemd user jobs
 # ------------------------------------------
 status:
 	systemctl --user list-jobs
@@ -111,3 +132,18 @@ status:
 # ------------------------------------------
 flatpak-update:
 	flatpak update -y
+
+# ------------------------------------------
+# Update Flatpak repository data from flatpak.org
+# ------------------------------------------
+flatpak-update-repo:
+	flatpak update --appstream -y
+	flatpak update -y
+
+# ------------------------------------------
+# Rollback to the previous configuration
+# ------------------------------------------
+rollback:
+	@echo "Rolling back to the previous system configuration..."
+	sudo nixos-rebuild switch --rollback
+	@echo "Rollback completed!"

@@ -1,11 +1,18 @@
 {
-  description = "Multi-host NixOS flake for Borba";
+  description = "BORBA JR W - Multi-host NixOS Flake";
 
   inputs = {
-    nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
+    # Stable Nixpkgs versão 25.11
+    nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
+
+    # Nixpkgs unstable
+    nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
+
+    # Utiliza flake-utils para suporte a múltiplos sistemas
+    flake-utils.url = "github:numtide/flake-utils";
   };
 
-  outputs = { self, nixpkgs, ... }: {
+  outputs = { self, nixpkgs-stable, nixpkgs-unstable, flake-utils, ... }:
 
     nixosConfigurations = {
       macbook = nixpkgs.lib.nixosSystem {

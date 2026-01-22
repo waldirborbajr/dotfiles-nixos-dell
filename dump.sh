@@ -13,6 +13,7 @@ find . -type f \
   ! -name "Makefile" \
   ! -name "LICENSE" \
   ! -name "*.md" \
+  ! -name "*.bak" \
   ! -path "./.git/*" \
 | sort \
 | while read -r file; do

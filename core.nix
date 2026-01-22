@@ -7,12 +7,11 @@
     ##########################################
     # Core system
     ##########################################
-    ./modules/nixpkgs.nix    
+    ./modules/nixpkgs.nix
     ./modules/base.nix
     ./modules/networking.nix
     ./modules/audio.nix
-    ./modules/fonts.nix
-    
+    ./modules/fonts.nix   
 
     ##########################################
     # Desktop

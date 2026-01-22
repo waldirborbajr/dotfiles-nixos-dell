@@ -44,3 +44,5 @@ done
 
 echo "Processamento concluído!"
 echo "Arquivos originais preservados com extensão .bak (quando modificados)"
+
+find . -type f -name "*.bak" -delete

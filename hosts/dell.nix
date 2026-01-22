@@ -4,6 +4,9 @@
 
 { config, pkgs, lib, ... }:
 {
+
+  system.stateVersion = "25.11";
+
   ############################################
   # Hardware
   ############################################
@@ -12,6 +15,16 @@
     ../modules/performance/dell.nix
     ../hardware-configuration-dell.nix
   ];
+  
+  ############################################
+  # Hardware
+  ############################################
+  #imports = [
+  #  ../modules/hardware/dell.nix
+  #  ../modules/performance/dell.nix
+  #  ../hardware-configuration-dell.nix
+  #];
+
   ############################################
   # Host identity
   ############################################

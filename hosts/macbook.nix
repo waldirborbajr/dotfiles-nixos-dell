@@ -3,6 +3,8 @@
 { config, pkgs, lib, ... }:
 
 {
+  system.stateVersion = "25.11";
+
   ############################################
   # Hardware & Performance
   ############################################
@@ -12,6 +14,16 @@
     ../modules/performance/macbook.nix
     ../hardware-configuration-macbook.nix
   ];
+
+  ############################################
+  # Hardware & Performance
+  ############################################
+  #imports = [
+  #  ../modules/nixpkgs.nix              # Módulo Nixpkgs primeiro para allowUnfree
+  #  ../modules/hardware/macbook.nix
+  #  ../modules/performance/macbook.nix
+  #  ../hardware-configuration-macbook.nix
+  #];
 
   ############################################
   # Host identity
