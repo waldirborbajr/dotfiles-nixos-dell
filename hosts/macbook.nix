@@ -27,6 +27,9 @@
   ############################################
   console.keyMap = "us";
 
+  ############################################
+  # X11 layout
+  ############################################
   services.xserver.enable = true;
   services.xserver.xkb = {
     layout = "us";
@@ -46,7 +49,7 @@
   environment.systemPackages = with pkgs; [
     iw
     wirelesstools
-    rfkill
+    util-linux  # garante rfkill
     broadcom-sta
   ];
 }
