@@ -3,13 +3,11 @@
 
 {
   ############################################
-  # Firmware & drivers
+  # Broadcom / Wireless
   ############################################
-
-  # Habilita firmware redistribuível Broadcom / Intel / Realtek
   hardware.enableRedistributableFirmware = true;
 
-  # Blacklist drivers open-source que podem conflitar com o Broadcom proprietário
+  # Blacklist drivers que conflitam com Broadcom proprietário
   boot.blacklistedKernelModules = [
     "b43"
     "brcmsmac"
@@ -17,12 +15,19 @@
     "ssb"
   ];
 
-  # Carrega o driver proprietário Broadcom (wl)
+  # Driver proprietário Broadcom
   boot.kernelModules = [ "wl" ];
 
-  # Pacotes úteis para debug / wireless
+  # Pacote do driver para o kernel ativo
+  boot.extraModulePackages = with config.boot.kernelPackages; [
+    broadcom_sta
+  ];
+
+  ############################################
+  # Pacotes úteis para debug e configuração wireless
+  ############################################
   environment.systemPackages = with pkgs; [
-    iw            # Ferramenta wireless avançada
-    wirelesstools # Inclui iwconfig, ifconfig, etc.
+    iw
+    wirelesstools
   ];
 }
