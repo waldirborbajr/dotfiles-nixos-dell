@@ -5,6 +5,7 @@
 # - Optional git push
 # - List generations after operations
 # - Post-build validation info
+# - Flatpak Flathub remote setup
 # ==========================================
 
 NIXOS_CONFIG ?= $(HOME)/nixos-config
@@ -32,7 +33,7 @@ NIXOS_CMD = sudo nixos-rebuild $(1) --flake $(NIXOS_CONFIG)#$(HOST) $(if $(IMPUR
 .PHONY: \
 	help update-flake check_git_status list-generations post-info \
 	build build-debug switch switch-off upgrade rollback \
-	gc gc-hard fmt status flatpak-update flatpak-update-repo
+	gc gc-hard fmt status flatpak-setup flatpak-update flatpak-update-repo
 
 # ------------------------------------------
 # Help
@@ -61,6 +62,7 @@ help:
 	@echo "  make gc-hard                      -> aggressive garbage collection"
 	@echo "  make fmt                          -> nix fmt + git status"
 	@echo "  make status                       -> systemd --user list-jobs"
+	@echo "  make flatpak-setup                -> add Flathub remote if missing"
 	@echo "  make flatpak-update               -> flatpak update -y"
 	@echo "  make flatpak-update-repo          -> flatpak update --appstream -y + update -y"
 	@echo "  make rollback                     -> nixos-rebuild switch --rollback + list generations + post-info"
@@ -202,6 +204,14 @@ fmt:
 # ------------------------------------------
 status:
 	systemctl --user list-jobs
+
+# ------------------------------------------
+# Flatpak: ensure Flathub remote exists
+# ------------------------------------------
+flatpak-setup:
+	@echo "Ensuring Flathub remote exists..."
+	flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+	@echo "Flathub remote is ready."
 
 # ------------------------------------------
 # Flatpak
