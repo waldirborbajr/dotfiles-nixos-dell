@@ -16,6 +16,7 @@
 
     # Desktop apenas no MacBook
     ../modules/desktops/gnome.nix
+    ../modules/desktops/hyprland.nix
     ../modules/autologin.nix
   ];
 
