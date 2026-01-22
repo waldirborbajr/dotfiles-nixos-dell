@@ -10,10 +10,10 @@ HOST ?=   # Ex: macbook ou dell
 help:
 	@echo "NixOS Infra Commands (flakes optional)"
 	@echo ""
-	@echo "  make build [FLAKE_HOST=host]      -> nixos-rebuild build"
-	@echo "  make switch [FLAKE_HOST=host]     -> rebuild keeping graphical session"
-	@echo "  make switch-off [FLAKE_HOST=host] -> rebuild in multi-user.target (safe)"
-	@echo "  make upgrade [FLAKE_HOST=host]    -> rebuild with channel upgrade"
+	@echo "  make build [HOST=host]      -> nixos-rebuild build"
+	@echo "  make switch [HOST=host]     -> rebuild keeping graphical session"
+	@echo "  make switch-off [HOST=host] -> rebuild in multi-user.target (safe)"
+	@echo "  make upgrade [HOST=host]    -> rebuild with channel upgrade"
 	@echo "  make gc                           -> nix garbage collection"
 	@echo "  make gc-hard                      -> aggressive garbage collection"
 	@echo "  make fmt                           -> format nix files"
@@ -23,7 +23,7 @@ help:
 # ------------------------------------------
 # Internal command to handle flakes
 # ------------------------------------------
-NIXOS_CMD = sudo nixos-rebuild $(1) $(if $(FLAKE_HOST),--flake $(NIXOS_CONFIG)#$(FLAKE_HOST),-I nixos-config=$(NIXOS_CONFIG))
+NIXOS_CMD = sudo nixos-rebuild $(1) $(if $(HOST),--flake $(NIXOS_CONFIG)#$(HOST),-I nixos-config=$(NIXOS_CONFIG))
 
 # ------------------------------------------
 # Build only (no activation)
