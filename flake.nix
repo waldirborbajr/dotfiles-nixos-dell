@@ -1,11 +1,11 @@
 # ==========================================
-# NixOS Infra Makefile (flakes + debug + git commit + list generations)
+# NixOS Infra Makefile definitivo
 # ==========================================
 
 NIXOS_CONFIG ?= $(HOME)/nixos-config
 HOST ?=   # Ex: macbook ou dell
 DEBUG_LOG ?= /tmp/nixos-build-debug.log
-GIT_COMMIT_MSG ?= "chore: auto-commit before build-debug"
+GIT_COMMIT_MSG ?= chore: auto-commit before build-debug
 
 .PHONY: help build build-debug switch switch-off upgrade gc gc-hard fmt status flatpak-update list-generations
 
@@ -29,7 +29,7 @@ help:
 NIXOS_CMD = sudo nixos-rebuild $(1) $(if $(HOST),--flake $(NIXOS_CONFIG)#$(HOST),-I nixos-config=$(NIXOS_CONFIG))
 
 # ------------------------------------------
-# Internal helper to list generations
+# List system generations
 # ------------------------------------------
 list-generations:
 	@echo ""
@@ -45,14 +45,13 @@ build:
 	$(MAKE) list-generations
 
 # ------------------------------------------
-# Build + switch with debug (verbose + show-trace + auto git commit)
+# Build + switch with debug + auto Git commit
 # ------------------------------------------
 build-debug:
 	@echo "Checking for git changes in $(NIXOS_CONFIG)..."
 	@if [ -n "$$(git -C $(NIXOS_CONFIG) status --porcelain)" ]; then \
 		echo "Git changes detected, committing automatically..."; \
-		git -C $(NIXOS_CONFIG) add .; \
-		git -C $(NIXOS_CONFIG) commit -m "$(GIT_COMMIT_MSG)"; \
+		cd $(NIXOS_CONFIG) && git add . && git commit -m "$(GIT_COMMIT_MSG)"; \
 	else \
 		echo "No git changes detected."; \
 	fi
