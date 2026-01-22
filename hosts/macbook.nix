@@ -29,4 +29,23 @@
   services.xserver.enable = true;
   services.xserver.layout = "us";
   services.xserver.xkbVariant = "";
+
+  ############################################
+  # Firmware & Broadcom wireless fix
+  ############################################
+  hardware.enableRedistributableFirmware = true;
+  networking.enableB43Firmware = true;
+
+  boot.blacklistedKernelModules = [
+    "brcmsmac"
+    "wl"
+  ];
+
+  environment.systemPackages = with pkgs; [
+    firmware.b43          # Broadcom open firmware
+    firmware.b43legacy    # Broadcom legacy firmware
+    linuxPackages.broadcom-sta  # Proprietary STA driver
+    wirelesstools
+    rfkill
+  ];
 }
