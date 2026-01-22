@@ -2,7 +2,7 @@
 
 {
   ############################################
-  # Hardware
+  # Hardware & Performance
   ############################################
   imports = [
     ../modules/hardware/macbook.nix
@@ -22,12 +22,16 @@
   boot.loader.efi.canTouchEfiVariables = true;
 
   ############################################
-  # Keyboard (MacBook)
+  # Keyboard layout
   ############################################
   console.keyMap = "us";
-
-  services.xserver.xkb = {
-    layout = "us";
-    variant = "";
+  services.xserver = {
+    enable = true;
+    layout = {
+      xkb = {
+        layout = "us";
+        variant = "";
+      };
+    };
   };
 }
