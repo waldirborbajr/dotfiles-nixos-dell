@@ -1,5 +1,5 @@
 {
-  description = "BORBA JR W - Multi-host NixOS Flake for MacBook & Dell";
+  description = "Multi-host NixOS flake for Borba";
 
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-25.11";
@@ -7,27 +7,30 @@
 
   outputs = { self, nixpkgs }: {
 
-    # Função que retorna uma configuração NixOS para um host específico
-    nixosConfigurations = let
-      systemPkgs = nixpkgs.legacyPackages.x86_64-linux;
-      makeConfig = hostName: {
-        # Base do sistema
-        imports = [
-          ./core.nix
-          ./hosts/${hostName}.nix
-        ];
-        system.stateVersion = "25.11";
-      };
-    in {
-      macbook = nixpkgs.lib.nixosSystem {
+    nixosConfigurations = {
+
+      # ==========================================
+      # MacBook host
+      # ==========================================
+      macbook = {
         system = "x86_64-linux";
-        modules = [ makeConfig "macbook" ];
+        modules = [
+          ./core.nix
+          ./hosts/macbook.nix
+        ];
       };
 
-      dell = nixpkgs.lib.nixosSystem {
+      # ==========================================
+      # Dell host
+      # ==========================================
+      dell = {
         system = "x86_64-linux";
-        modules = [ makeConfig "dell" ];
+        modules = [
+          ./core.nix
+          ./hosts/dell.nix
+        ];
       };
+
     };
   };
 }
