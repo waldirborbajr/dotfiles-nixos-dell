@@ -40,6 +40,7 @@ define require_flake_host
 	fi
 endef
 
+
 # nixos-rebuild command (flake-based)
 # Usage: $(call NIXOS_CMD,<action>,<extra_args>)
 NIXOS_CMD = sudo nixos-rebuild $(1) --flake "$(NIXOS_CONFIG)#$(HOST)" $(if $(IMPURE),--impure,) $(2)
