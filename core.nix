@@ -11,7 +11,7 @@
     ./modules/base.nix
     ./modules/networking.nix
     ./modules/audio.nix
-    ./modules/fonts.nix   
+    ./modules/fonts.nix
 
     ##########################################
     # Desktop
@@ -20,11 +20,10 @@
     # ./modules/autologin.nix
 
     ##########################################
-    # Containers / Virtualization
+    # Containers / Virtualization (ON-DEMAND)
     ##########################################
-    ./modules/containers/docker.nix
-    ./modules/containers/k3s.nix
-    ./modules/virtualization/libvirt.nix
+    ./modules/features/devops.nix
+    ./modules/features/qemu.nix
 
     ##########################################
     # Users / Dev
