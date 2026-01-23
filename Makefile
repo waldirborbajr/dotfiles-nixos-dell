@@ -32,7 +32,8 @@ endef
 
 define require_flake_host
 	@echo "Validating flake host: $(HOST) in $(NIXOS_CONFIG)..."; \
-	if ! nix --extra-experimental-features "nix-command flakes" flake show "$(NIXOS_CONFIG)" 2>/dev/null | grep -q "nixosConfigurations\.$(HOST)"; then \
+	if ! nix --extra-experimental-features "nix-command flakes" flake show "$(NIXOS_CONFIG)" 2>/dev/null \
+		| grep -Fq "───$(HOST): NixOS configuration"; then \
 		echo "ERROR: HOST='$(HOST)' not found in flake outputs (nixosConfigurations.$(HOST))."; \
 		echo "HINT: Run: nix flake show $(NIXOS_CONFIG)"; \
 		exit 1; \
