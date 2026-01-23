@@ -1,13 +1,13 @@
 # ==========================================
 # NixOS Infra Makefile (Borba - complete & hardened)
 # - Always uses flake selector: $(NIXOS_CONFIG)#$(HOST)   (NO quotes to avoid truncation)
-# - Validates HOST exists in nixosConfigurations.<HOST>   (no UTF tree chars)
+# - Validates HOST exists in nixosConfigurations.<HOST>
 # - Flake update before build/switch
 # - Auto add/commit to avoid dirty warnings/errors
 # - Optional git push
 # - List generations after operations
 # - Post-build validation info
-# - Flatpak Flathub remote setup
+# - Flatpak Flathub remote setup + flatpak-sync (manual)
 # ==========================================
 
 NIXOS_CONFIG ?= $(HOME)/nixos-config
@@ -17,6 +17,9 @@ DEBUG_LOG ?= /tmp/nixos-build-debug.log
 
 GIT_COMMIT_MSG ?= chore: auto-commit before rebuild
 GIT_PUSH ?=             # Set to 1 to push after auto-commit
+
+# Flatpak sync script (manual run)
+FLATPAK_SYNC_SCRIPT ?= $(NIXOS_CONFIG)/scripts/flatpak-sync.sh
 
 # ------------------------------------------
 # Internal helpers
@@ -37,7 +40,6 @@ define require_flake_host
 	fi
 endef
 
-
 # nixos-rebuild command (flake-based)
 # Usage: $(call NIXOS_CMD,<action>,<extra_args>)
 # NOTE: We intentionally do NOT quote --flake to avoid line truncation in some shells/editors.
@@ -48,10 +50,18 @@ define print_cmd
 	@echo "    sudo nixos-rebuild $(1) --flake $(NIXOS_CONFIG)#$(HOST) $(if $(IMPURE),--impure,) $(2)"
 endef
 
+define require_flatpak_script
+	@if [ ! -f "$(FLATPAK_SYNC_SCRIPT)" ]; then \
+		echo "ERROR: Flatpak sync script not found: $(FLATPAK_SYNC_SCRIPT)"; \
+		echo "HINT: create it and chmod +x scripts/flatpak-sync.sh"; \
+		exit 1; \
+	fi
+endef
+
 .PHONY: \
 	help update-flake check_git_status list-generations post-info \
 	build build-debug switch switch-off upgrade rollback \
-	gc gc-hard fmt status flatpak-setup flatpak-update flatpak-update-repo \
+	gc gc-hard fmt status flatpak-setup flatpak-update flatpak-update-repo flatpak-sync \
 	debug-cmd flake-show
 
 # ------------------------------------------
@@ -80,14 +90,17 @@ help:
 	@echo "  make debug-cmd HOST=<host>        -> prints the resolved nixos-rebuild command"
 	@echo "  make flake-show                   -> nix flake show (to see nixosConfigurations.*)"
 	@echo ""
+	@echo "Flatpak (manual):"
+	@echo "  make flatpak-setup                -> add Flathub remote if missing"
+	@echo "  make flatpak-sync                 -> run scripts/flatpak-sync.sh (install/update apps on-demand)"
+	@echo "  make flatpak-update               -> flatpak update -y"
+	@echo "  make flatpak-update-repo          -> flatpak update --appstream -y + update -y"
+	@echo ""
 	@echo "Maintenance:"
 	@echo "  make gc                           -> nix garbage collection"
 	@echo "  make gc-hard                      -> aggressive garbage collection"
 	@echo "  make fmt                          -> nix fmt + git status"
 	@echo "  make status                       -> systemd --user list-jobs"
-	@echo "  make flatpak-setup                -> add Flathub remote if missing"
-	@echo "  make flatpak-update               -> flatpak update -y"
-	@echo "  make flatpak-update-repo          -> flatpak update --appstream -y + update -y"
 	@echo "  make rollback                     -> nixos-rebuild switch --rollback + list generations + post-info"
 	@echo ""
 	@echo "Notes:"
@@ -227,6 +240,30 @@ build-debug:
 	$(MAKE) post-info
 
 # ------------------------------------------
+# Flatpak: ensure Flathub remote exists
+# ------------------------------------------
+flatpak-setup:
+	@echo "Ensuring Flathub remote exists..."
+	flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
+	@echo "Flathub remote is ready."
+
+# Manual Flatpak sync (install/update apps on-demand)
+flatpak-sync:
+	@$(call require_flatpak_script)
+	@echo "Running Flatpak sync script: $(FLATPAK_SYNC_SCRIPT)"
+	@bash "$(FLATPAK_SYNC_SCRIPT)"
+
+# ------------------------------------------
+# Flatpak
+# ------------------------------------------
+flatpak-update:
+	flatpak update -y
+
+flatpak-update-repo:
+	flatpak update --appstream -y
+	flatpak update -y
+
+# ------------------------------------------
 # Garbage collection
 # ------------------------------------------
 gc:
@@ -249,24 +286,6 @@ status:
 	systemctl --user list-jobs
 
 # ------------------------------------------
-# Flatpak: ensure Flathub remote exists
-# ------------------------------------------
-flatpak-setup:
-	@echo "Ensuring Flathub remote exists..."
-	flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-	@echo "Flathub remote is ready."
-
-# ------------------------------------------
-# Flatpak
-# ------------------------------------------
-flatpak-update:
-	flatpak update -y
-
-flatpak-update-repo:
-	flatpak update --appstream -y
-	flatpak update -y
-
-# ------------------------------------------
 # Rollback (current machine)
 # ------------------------------------------
 rollback:
@@ -275,4 +294,3 @@ rollback:
 	@echo "Rollback completed!"
 	$(MAKE) list-generations
 	$(MAKE) post-info
-
