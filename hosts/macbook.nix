@@ -12,6 +12,7 @@
     ../modules/nixpkgs.nix
     ../modules/hardware/macbook.nix
     ../modules/performance/macbook.nix
+    # ../modules/desktops/hyprland.nix
     ../hardware-configuration-macbook.nix
 
     # Desktop apenas no MacBook
