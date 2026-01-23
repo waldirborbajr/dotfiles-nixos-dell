@@ -12,29 +12,20 @@
 
   services.desktopManager.gnome.enable = true;
 
-  # Disable unnecessary GNOME services and animations
+  # GNOME services (keep minimal & useful even outside GNOME)
   services.gnome = {
     core-apps.enable = true;
     gnome-keyring.enable = true;
   };
 
+  # Session variables (avoid forcing session type globally)
   environment.sessionVariables = {
-    # Wayland native
-    XDG_SESSION_TYPE = "wayland";
     QT_QPA_PLATFORM = "wayland";
     MOZ_ENABLE_WAYLAND = "1";
     NIXOS_OZONE_WL = "1";
-
-    # Reduce frame scheduling overhead
-    # MUTTER_DEBUG_DISABLE_HW_CURSORS = "1";
   };
 
-  # Portals (required for Wayland apps)
-  xdg.portal = {
-    enable = false;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gnome
-      xdg-desktop-portal-gtk
-    ];
-  };
+  # IMPORTANT:
+  # Do not force xdg.portal here. Hyprland module should own the portal setup for Hyprland sessions.
+  # GNOME works fine with its own integration when logging into GNOME via GDM.
 }
