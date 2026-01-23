@@ -3,7 +3,7 @@
 { pkgs, ... }:
 
 let
-  unstable hookup = pkgs.unstable or pkgs;
+  unstablePkgs = pkgs.unstable or pkgs;
 in
 {
   environment.systemPackages =
@@ -198,7 +198,7 @@ in
     # ----------------------------
     # Unstable packages (explicit)
     # ----------------------------
-    ++ (with unstable; [
+    ++ (with unstablePkgs; [
       clang
       llvm
       lld
