@@ -25,6 +25,7 @@
   ];
 
   # Portals: crucial for Flatpak apps and screen-sharing on Wayland
+/*
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
@@ -32,6 +33,15 @@
       xdg-desktop-portal-gtk
     ];
   };
+*/
+
+xdg.portal = {
+  enable = true;
+  extraPortals = with pkgs; [
+    xdg-desktop-portal-hyprland
+    xdg-desktop-portal-gtk
+  ];
+};
 
   # Put the canonical configs in /etc/xdg (Nix-managed, immutable)
   environment.etc."xdg/hypr/hyprland.conf".source = ./hyprland.conf;
