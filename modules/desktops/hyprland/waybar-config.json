@@ -1,3 +1,5 @@
+// modules/desktops/hyprland/waybar-config.json
+// ---
 {
   "layer": "top",
   "position": "top",

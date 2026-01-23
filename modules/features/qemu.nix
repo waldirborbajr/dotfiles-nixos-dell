@@ -1,3 +1,5 @@
+# modules/features/qemu.nix
+# ---
 { config, lib, pkgs, qemuEnabled ? false, ... }:
 
 let

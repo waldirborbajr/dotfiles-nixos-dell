@@ -1,3 +1,5 @@
+# modules/features/devops.nix
+# ---
 { config, lib, pkgs, devopsEnabled ? false, ... }:
 
 let

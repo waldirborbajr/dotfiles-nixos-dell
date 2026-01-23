@@ -11,3 +11,4 @@ files/configs/nvim/lazyvim.json
 output.txt
 *.bak
 result
+DUMP.log

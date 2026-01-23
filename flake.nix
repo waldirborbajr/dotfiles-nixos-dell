@@ -1,3 +1,5 @@
+# flake.nix
+# ---
 {
   description = "BORBA JR W - Multi-host NixOS Flake";
 
