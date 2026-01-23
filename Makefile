@@ -40,6 +40,14 @@ define require_flake_host
 	fi
 endef
 
+define require_flatpak_script
+	@if [ ! -f "$(FLATPAK_SYNC_SCRIPT)" ]; then \
+		echo "ERROR: Flatpak sync script not found: $(FLATPAK_SYNC_SCRIPT)"; \
+		echo "HINT: create it and chmod +x scripts/flatpak-sync.sh"; \
+		exit 1; \
+	fi
+endef
+
 # nixos-rebuild command (flake-based)
 # Usage: $(call NIXOS_CMD,<action>,<extra_args>)
 # NOTE: We intentionally do NOT quote --flake to avoid line truncation in some shells/editors.
@@ -50,18 +58,10 @@ define print_cmd
 	@echo "    sudo nixos-rebuild $(1) --flake $(NIXOS_CONFIG)#$(HOST) $(if $(IMPURE),--impure,) $(2)"
 endef
 
-define require_flatpak_script
-	@if [ ! -f "$(FLATPAK_SYNC_SCRIPT)" ]; then \
-		echo "ERROR: Flatpak sync script not found: $(FLATPAK_SYNC_SCRIPT)"; \
-		echo "HINT: create it and chmod +x scripts/flatpak-sync.sh"; \
-		exit 1; \
-	fi
-endef
-
 .PHONY: \
 	help update-flake check_git_status list-generations post-info \
 	build build-debug switch switch-off upgrade rollback \
-	gc gc-hard fmt status flatpak-setup flatpak-update flatpak-update-repo flatpak-sync \
+	gc gc-hard fmt status flatpak-setup flatpak-sync flatpak-update flatpak-update-repo \
 	debug-cmd flake-show
 
 # ------------------------------------------
