@@ -1,314 +1,177 @@
 # ==========================================
-# NixOS Infra Makefile (Borba - complete & hardened)
-# - Always uses flake selector: $(NIXOS_CONFIG)#$(HOST)   (NO quotes to avoid truncation)
-# - Validates HOST exists in nixosConfigurations.<HOST>
-# - Flake update before build/switch
-# - Auto add/commit to avoid dirty warnings/errors
-# - Optional git push
-# - List generations after operations
-# - Post-build validation info
-# - Flatpak Flathub remote setup + flatpak-sync (manual)
-# - Feature flags (independent):
-#     DEVOPS=1  -> exports DEVOPS=1 and adds --impure automatically (for env-based flags)
-#     QEMU=1    -> exports QEMU=1 and adds --impure automatically (for env-based flags)
-#   You can enable either one or both independently.
+# NixOS Infra Makefile — Borba (SAFE / STABLE)
 # ==========================================
 
 NIXOS_CONFIG ?= $(HOME)/nixos-config
-HOST ?=                 # Example: macbook or dell
-IMPURE ?=               # Set to 1 to add --impure
+HOST ?=
+
+# Feature flags (independentes)
+DEVOPS ?= 0
+QEMU   ?= 0
+IMPURE ?= 0
+
 DEBUG_LOG ?= /tmp/nixos-build-debug.log
 
 GIT_COMMIT_MSG ?= chore: auto-commit before rebuild
-GIT_PUSH ?=             # Set to 1 to push after auto-commit
+GIT_PUSH ?= 0
 
-# Manual feature flags (independent)
-DEVOPS ?=               # Set to 1 to enable DevOps services (docker/k3s) via flake env
-QEMU ?=                 # Set to 1 to enable QEMU/libvirt via flake env
+# --impure automaticamente quando necessário
+NEED_IMPURE :=
+ifeq ($(IMPURE),1)
+  NEED_IMPURE := --impure
+endif
+ifeq ($(DEVOPS),1)
+  NEED_IMPURE := --impure
+endif
+ifeq ($(QEMU),1)
+  NEED_IMPURE := --impure
+endif
 
-# Flatpak sync script (manual run)
-FLATPAK_SYNC_SCRIPT ?= $(NIXOS_CONFIG)/scripts/flatpak-sync.sh
+# ==========================================
+# Helpers
+# ==========================================
+.PHONY: require-host require-flake-host
 
-# ------------------------------------------
-# Internal helpers
-# ------------------------------------------
-define require_host
+require-host:
 	@if [ -z "$(HOST)" ]; then \
-		echo "ERROR: HOST is required. Example: make switch HOST=macbook"; \
+		echo "ERROR: HOST is required. Example:"; \
+		echo "  make switch HOST=macbook"; \
 		exit 1; \
 	fi
-endef
 
-define require_flake_host
-	@echo "Validating flake host: $(HOST) in $(NIXOS_CONFIG)..."; \
-	if ! nix --extra-experimental-features "nix-command flakes" eval --raw "$(NIXOS_CONFIG)#nixosConfigurations.$(HOST).config.system.build.toplevel.drvPath" >/dev/null 2>&1; then \
-		echo "ERROR: HOST='$(HOST)' not found or not evaluatable in flake outputs (nixosConfigurations.$(HOST))."; \
-		echo "HINT: Run: nix flake show $(NIXOS_CONFIG)"; \
+require-flake-host: require-host
+	@echo "Validating flake host: $(HOST)"
+	@if ! nix eval --raw "$(NIXOS_CONFIG)#nixosConfigurations.$(HOST).config.system.build.toplevel.drvPath" >/dev/null 2>&1; then \
+		echo "ERROR: Host '$(HOST)' not found in flake."; \
+		echo "Run: nix flake show $(NIXOS_CONFIG)"; \
 		exit 1; \
 	fi
-endef
 
-define require_flatpak_script
-	@if [ ! -f "$(FLATPAK_SYNC_SCRIPT)" ]; then \
-		echo "ERROR: Flatpak sync script not found: $(FLATPAK_SYNC_SCRIPT)"; \
-		echo "HINT: create it and chmod +x scripts/flatpak-sync.sh"; \
-		exit 1; \
-	fi
-endef
-
-# Feature env prefix (independent)
-FEATURE_ENV = $(if $(DEVOPS),DEVOPS=1,) $(if $(QEMU),QEMU=1,)
-
-# If either DEVOPS or QEMU is enabled, we must add --impure (because flake reads env vars)
-AUTO_IMPURE = $(if $(or $(DEVOPS),$(QEMU)),--impure,)
-
-# Effective impure flag:
-# - explicit IMPURE=1 OR auto-impure due to DEVOPS/QEMU flags
-EFFECTIVE_IMPURE = $(if $(IMPURE),--impure,) $(AUTO_IMPURE)
-
-# nixos-rebuild command (flake-based)
-# Usage: $(call NIXOS_CMD,<action>,<extra_args>)
-# NOTE: We intentionally do NOT quote --flake to avoid line truncation in some shells/editors.
-NIXOS_CMD = $(FEATURE_ENV) sudo nixos-rebuild $(1) --flake $(NIXOS_CONFIG)#$(HOST) $(EFFECTIVE_IMPURE) $(2)
-
-define print_cmd
-	@echo ">>> nixos-rebuild command:"
-	@echo "    $(FEATURE_ENV) sudo nixos-rebuild $(1) --flake $(NIXOS_CONFIG)#$(HOST) $(EFFECTIVE_IMPURE) $(2)"
-endef
-
-.PHONY: \
-	help update-flake check_git_status list-generations post-info \
-	build build-debug switch switch-off upgrade rollback \
-	gc gc-hard fmt status \
-	flatpak-setup flatpak-sync flatpak-update flatpak-update-repo \
-	debug-cmd flake-show
-
-# ------------------------------------------
-# Help
-# ------------------------------------------
-help:
-	@echo "NixOS Infrastructure Commands (flakes)"
-	@echo ""
-	@echo "Required:"
-	@echo "  HOST=macbook | HOST=dell"
-	@echo ""
-	@echo "Common:"
-	@echo "  make build HOST=<host>                         -> flake update + auto-commit + nixos-rebuild build + list generations + post-info"
-	@echo "  make switch HOST=<host>                        -> flake update + auto-commit + nixos-rebuild switch + list generations + post-info"
-	@echo "  make switch HOST=<host> DEVOPS=1               -> enables DevOps services (docker/k3s) via env + --impure"
-	@echo "  make switch HOST=<host> QEMU=1                 -> enables QEMU/libvirt via env + --impure"
-	@echo "  make switch HOST=<host> DEVOPS=1 QEMU=1         -> enables both (independent flags) via env + --impure"
-	@echo "  make switch-off HOST=<host>                    -> safe switch (multi-user.target) + list generations + post-info"
-	@echo "  make upgrade HOST=<host>                       -> flake update + auto-commit + switch + list generations + post-info"
-	@echo "  make build-debug HOST=<host>                   -> flake update + auto-commit + switch --verbose --show-trace (logs)"
-	@echo ""
-	@echo "Options:"
-	@echo "  IMPURE=1                                       -> forces --impure even without flags"
-	@echo "  GIT_PUSH=1                                     -> pushes after auto-commit"
-	@echo "  GIT_COMMIT_MSG='...'                           -> commit message override"
-	@echo "  DEBUG_LOG=/path/file.log                       -> debug log path (build-debug)"
-	@echo ""
-	@echo "Diagnostics:"
-	@echo "  make debug-cmd HOST=<host>                     -> prints the resolved nixos-rebuild command"
-	@echo "  make flake-show                                -> nix flake show"
-	@echo ""
-	@echo "Flatpak (manual):"
-	@echo "  make flatpak-setup                             -> add Flathub remote if missing"
-	@echo "  make flatpak-sync                              -> run scripts/flatpak-sync.sh (install/update apps on-demand)"
-	@echo "  make flatpak-update                            -> flatpak update -y"
-	@echo "  make flatpak-update-repo                       -> flatpak update --appstream -y + update -y"
-	@echo ""
-	@echo "Maintenance:"
-	@echo "  make gc                                        -> nix garbage collection"
-	@echo "  make gc-hard                                   -> aggressive garbage collection"
-	@echo "  make fmt                                       -> nix fmt + git status"
-	@echo "  make status                                    -> systemd --user list-jobs"
-	@echo "  make rollback                                  -> nixos-rebuild switch --rollback + list generations + post-info"
-
-# ------------------------------------------
+# ==========================================
 # Diagnostics
-# ------------------------------------------
+# ==========================================
+.PHONY: help flake-show debug-cmd
+
+help:
+	@echo ""
+	@echo "Usage:"
+	@echo "  make switch HOST=macbook"
+	@echo "  DEVOPS=1 make switch HOST=macbook"
+	@echo "  QEMU=1 make switch HOST=macbook"
+	@echo "  DEVOPS=1 QEMU=1 make switch HOST=macbook"
+	@echo ""
+	@echo "Flatpak:"
+	@echo "  make flatpak-sync"
+	@echo ""
+
 flake-show:
 	@cd $(NIXOS_CONFIG) && nix flake show
 
-debug-cmd:
-	@$(require_host)
-	@$(require_flake_host)
-	$(call print_cmd,switch,)
+debug-cmd: require-flake-host
+	@echo "Resolved command:"
+	@echo "DEVOPS=$(DEVOPS) QEMU=$(QEMU) sudo nixos-rebuild switch --flake $(NIXOS_CONFIG)#$(HOST) $(NEED_IMPURE)"
 
-# ------------------------------------------
-# Update flake (always before build/switch)
-# ------------------------------------------
+# ==========================================
+# Git / Flake
+# ==========================================
+.PHONY: update-flake check-git
+
 update-flake:
-	@echo "Updating flake in $(NIXOS_CONFIG)..."
+	@echo "Updating flake..."
 	@cd $(NIXOS_CONFIG) && nix flake update
 
-# ------------------------------------------
-# Auto add/commit (and optional push) to avoid dirty warnings/errors
-# ------------------------------------------
-check_git_status:
-	@echo "Checking Git status in $(NIXOS_CONFIG)..."
-	@if [ -n "$$(git -C $(NIXOS_CONFIG) status --porcelain)" ]; then \
-		echo "Git changes detected -> auto add/commit..."; \
-		git -C $(NIXOS_CONFIG) add .; \
-		git -C $(NIXOS_CONFIG) commit -m "$(GIT_COMMIT_MSG)" || true; \
-		if [ "$(GIT_PUSH)" = "1" ]; then \
-			echo "Pushing changes..."; \
-			git -C $(NIXOS_CONFIG) push; \
-		fi; \
+check-git:
+	@cd $(NIXOS_CONFIG) && \
+	if [ -n "$$(git status --porcelain)" ]; then \
+		echo "Git dirty → auto commit"; \
+		git add .; \
+		git commit -m "$(GIT_COMMIT_MSG)" || true; \
+		if [ "$(GIT_PUSH)" = "1" ]; then git push; fi; \
 	else \
-		echo "No git changes detected."; \
+		echo "Git clean"; \
 	fi
 
-# ------------------------------------------
-# List system generations
-# ------------------------------------------
-list-generations:
-	@echo ""
-	@echo "=== Current NixOS Generations ==="
-	@sudo nix-env -p /nix/var/nix/profiles/system --list-generations
-	@echo "================================="
+# ==========================================
+# Build / Switch
+# ==========================================
+.PHONY: build switch switch-safe upgrade rollback
 
-# ------------------------------------------
-# Post-build information (validation)
-# ------------------------------------------
+build: require-flake-host
+	$(MAKE) update-flake
+	$(MAKE) check-git
+	@echo ">>> nixos-rebuild build"
+	@DEVOPS=$(DEVOPS) QEMU=$(QEMU) sudo nixos-rebuild build \
+		--flake $(NIXOS_CONFIG)#$(HOST) $(NEED_IMPURE)
+
+switch: require-flake-host
+	$(MAKE) update-flake
+	$(MAKE) check-git
+	@echo ">>> nixos-rebuild switch"
+	@DEVOPS=$(DEVOPS) QEMU=$(QEMU) sudo nixos-rebuild switch \
+		--flake $(NIXOS_CONFIG)#$(HOST) $(NEED_IMPURE)
+	$(MAKE) post-info
+
+switch-safe: require-flake-host
+	@sudo systemctl isolate multi-user.target
+	@DEVOPS=$(DEVOPS) QEMU=$(QEMU) sudo nixos-rebuild switch \
+		--flake $(NIXOS_CONFIG)#$(HOST) $(NEED_IMPURE)
+	@sudo systemctl isolate graphical.target
+	$(MAKE) post-info
+
+upgrade: switch
+
+rollback:
+	@sudo nixos-rebuild switch --rollback
+	$(MAKE) post-info
+
+# ==========================================
+# Post info
+# ==========================================
+.PHONY: post-info
+
 post-info:
 	@echo ""
-	@echo "=== Post-build validation ==="
-	@echo "Host (flake):        $(HOST)"
-	@echo "Flags:               DEVOPS=$(if $(DEVOPS),1,0) QEMU=$(if $(QEMU),1,0) IMPURE=$(if $(IMPURE),1,0) (effective impure: $(if $(EFFECTIVE_IMPURE),yes,no))"
-	@echo "NixOS version:       $$(nixos-version)"
-	@echo "Kernel:              $$(uname -r)"
-	@echo "Uptime:              $$(uptime -p 2>/dev/null || true)"
-	@echo "System store path:   $$(readlink /run/current-system)"
-	@echo "Current generation:"
+	@echo "=== System Info ==="
+	@echo "Host:    $(HOST)"
+	@echo "DEVOPS:  $(DEVOPS)"
+	@echo "QEMU:    $(QEMU)"
+	@echo "Impure:  $(NEED_IMPURE)"
+	@echo "Kernel:  $$(uname -r)"
+	@echo "Uptime:  $$(uptime -p || true)"
+	@echo "Gen:"
 	@sudo nix-env -p /nix/var/nix/profiles/system --list-generations | grep current || true
-	@echo "Desktop session (may be empty in TTY/build):"
-	@echo "  XDG_CURRENT_DESKTOP=$$XDG_CURRENT_DESKTOP"
-	@echo "  DESKTOP_SESSION=$$DESKTOP_SESSION"
-	@echo "Finished at:         $$(date)"
-	@echo "=============================="
+	@echo "==================="
 
-# ------------------------------------------
-# Build only (no activation)
-# ------------------------------------------
-build:
-	@$(require_host)
-	@$(require_flake_host)
-	$(MAKE) update-flake
-	$(MAKE) check_git_status
-	$(call print_cmd,build,)
-	$(call NIXOS_CMD,build,)
-	$(MAKE) list-generations
-	$(MAKE) post-info
+# ==========================================
+# Maintenance
+# ==========================================
+.PHONY: gc gc-hard
 
-# ------------------------------------------
-# Switch (activate)
-# ------------------------------------------
-switch:
-	@$(require_host)
-	@$(require_flake_host)
-	$(MAKE) update-flake
-	$(MAKE) check_git_status
-	$(call print_cmd,switch,)
-	$(call NIXOS_CMD,switch,)
-	$(MAKE) list-generations
-	$(MAKE) post-info
-
-# ------------------------------------------
-# Safe switch (drop to multi-user.target)
-# ------------------------------------------
-switch-off:
-	@$(require_host)
-	@$(require_flake_host)
-	$(MAKE) update-flake
-	$(MAKE) check_git_status
-	$(call print_cmd,switch,)
-	sudo systemctl isolate multi-user.target
-	$(call NIXOS_CMD,switch,)
-	sudo systemctl isolate graphical.target
-	$(MAKE) list-generations
-	$(MAKE) post-info
-
-# ------------------------------------------
-# Upgrade system (flakes: update + switch)
-# ------------------------------------------
-upgrade:
-	@$(require_host)
-	@$(require_flake_host)
-	$(MAKE) update-flake
-	$(MAKE) check_git_status
-	$(call print_cmd,switch,)
-	$(call NIXOS_CMD,switch,)
-	$(MAKE) list-generations
-	$(MAKE) post-info
-
-# ------------------------------------------
-# Build-debug (verbose + show-trace)
-# ------------------------------------------
-build-debug:
-	@$(require_host)
-	@$(require_flake_host)
-	$(MAKE) update-flake
-	$(MAKE) check_git_status
-	@echo "Starting build-debug for HOST=$(HOST), log at $(DEBUG_LOG)"
-	$(call print_cmd,switch,--verbose --show-trace)
-	$(call NIXOS_CMD,switch,--verbose --show-trace) 2>&1 | tee $(DEBUG_LOG)
-	$(MAKE) list-generations
-	$(MAKE) post-info
-
-# ------------------------------------------
-# Flatpak: ensure Flathub remote exists
-# ------------------------------------------
-flatpak-setup:
-	@echo "Ensuring Flathub remote exists..."
-	flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo
-	@echo "Flathub remote is ready."
-
-# Manual Flatpak sync (install/update apps on-demand)
-flatpak-sync:
-	@$(call require_flatpak_script)
-	@echo "Running Flatpak sync script: $(FLATPAK_SYNC_SCRIPT)"
-	@bash "$(FLATPAK_SYNC_SCRIPT)"
-
-# ------------------------------------------
-# Flatpak
-# ------------------------------------------
-flatpak-update:
-	flatpak update -y
-
-flatpak-update-repo:
-	flatpak update --appstream -y
-	flatpak update -y
-
-# ------------------------------------------
-# Garbage collection
-# ------------------------------------------
 gc:
 	sudo nix-collect-garbage
 
 gc-hard:
 	sudo nix-collect-garbage -d --delete-older-than 1d
 
-# ------------------------------------------
-# Formatting
-# ------------------------------------------
-fmt:
-	@cd $(NIXOS_CONFIG) && nix fmt
-	@git -C $(NIXOS_CONFIG) status
+# ==========================================
+# Flatpak (ISOLATED — NEVER DURING REBUILD)
+# ==========================================
+.PHONY: flatpak-sync
 
-# ------------------------------------------
-# Debug helpers
-# ------------------------------------------
-status:
-	systemctl --user list-jobs
-
-# ------------------------------------------
-# Rollback (current machine)
-# ------------------------------------------
-rollback:
-	@echo "Rolling back to the previous system configuration..."
-	sudo nixos-rebuild switch --rollback
-	@echo "Rollback completed!"
-	$(MAKE) list-generations
-	$(MAKE) post-info
+flatpak-sync:
+	@bash -eu -o pipefail -c '\
+	  echo "Flatpak sync..."; \
+	  flatpak remote-add --if-not-exists flathub https://dl.flathub.org/repo/flathub.flatpakrepo || true; \
+	  FILE="$(NIXOS_CONFIG)/modules/flatpak/packages.nix"; \
+	  apps=$$(grep -oE "\"[a-zA-Z0-9._-]+\"" "$$FILE" | tr -d "\"" | sort -u); \
+	  installed=$$(flatpak list --app --columns=application || true); \
+	  for app in $$apps; do \
+	    if ! echo "$$installed" | grep -qx "$$app"; then \
+	      echo "Installing $$app"; \
+	      flatpak install -y flathub "$$app" || true; \
+	    fi; \
+	  done; \
+	  flatpak update -y || true; \
+	  flatpak uninstall --unused -y || true; \
+	  echo "Flatpak sync done."; \
+	'
