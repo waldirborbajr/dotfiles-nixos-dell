@@ -2,24 +2,15 @@
 { config, pkgs, lib, ... }:
 
 {
-  programs.git = {
-    enable = true;
+  # Ativa o git (pacote + binário no PATH)
+  programs.git.enable = true;
 
-    userName  = "Waldir Borba Junior";
-    userEmail = "wborbajr@gmail.com";
-
-    # Ignora arquivos globais (suportado nativamente)
-    ignores = [
-      "*.swp" "*.swo" "*.swn" ".DS_Store"
-      ".venv/" "venv/" "node_modules/"
-      ".terraform/" "*.tfstate*" ".direnv/" ".envrc"
-      "*.log" "*.tmp" "*.bak" "tags" "TAGS"
-      "__pycache__/" "*.pyc"
-    ];
-  };
-
-  # Config avançada via ~/.config/git/config (declarativo e Nix-gerenciado)
+  # Config global do git (~/.config/git/config)
   xdg.configFile."git/config".text = ''
+    [user]
+        name = Waldir Borba Junior
+        email = wborbajr@gmail.com
+
     [core]
         editor = nvim
         pager = bat
@@ -46,7 +37,6 @@
     [merge]
         conflictStyle = zdiff3
 
-    # Aliases DevOps-friendly
     [alias]
         st = status --short --branch
         co = checkout
@@ -63,12 +53,39 @@
         undo = reset --soft HEAD~1
   '';
 
-  # Pacotes relacionados
+  # Arquivo global de ignores (~/.config/git/ignore)
+  xdg.configFile."git/ignore".text = ''
+    # Editores / temporários
+    *.swp *.swo *.swn *~ .fuse_hidden*
+    .DS_Store
+
+    # Ambientes virtuais / deps
+    .venv/ venv/ __pycache__/ *.pyc
+    node_modules/ .npm/ .yarn/ dist/ build/
+
+    # DevOps / Infra
+    .terraform/ *.tfstate *.tfstate.backup
+    .kube/ k8s/ *.kubeconfig
+    .direnv/ .envrc
+    *.log *.tmp *.bak
+
+    # Tags / ctags
+    tags TAGS cscope.*
+
+    # Outros comuns
+    .env .env.local .env.*
+    .cache/ .pytest_cache/
+  '';
+
+  # Pacotes essenciais + ferramentas úteis
   environment.systemPackages = with pkgs; [
     git
     git-lfs
-    bat          # usado como pager
-    delta        # diff bonito (opcional, mas recomendado)
-    tig          # TUI git (opcional)
+    bat           # pager do git
+    delta         # diff bonito (recomendado)
+    tig           # interface TUI para git (opcional)
   ];
+
+  # Opcional: força delta como pager padrão do git (diffs lindos)
+  environment.variables.GIT_PAGER = "delta";
 }
