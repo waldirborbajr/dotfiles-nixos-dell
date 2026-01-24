@@ -64,8 +64,13 @@
               inherit inputs devopsEnabled qemuEnabled;
             };
 
-            # Correção: usuário correto é "borba" (não waldir)
-            home-manager.users.borba = import ./home.nix;
+            # Correção: usuário correto é "borba"
+            home-manager.users.borba = { config, pkgs, lib, ... }: {
+              imports = [
+                ./home.nix                     # seu home.nix mínimo (com imports de zsh, fzf, etc.)
+                ./modules/apps/git.nix         # git agora entra aqui, dentro do contexto home-manager
+              ];
+            };
           }
         ];
       };
