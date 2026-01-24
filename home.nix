@@ -31,17 +31,17 @@ in
     ripgrep
     fd
     tree
-  ] ++ lib.optional isMacbook (with pkgs; [
-    waybar
-    mako
-    fuzzel
-    alacritty
-    wl-clipboard
-    grim
-    slurp
-    swappy
-    playerctl
-  ]);
+    ] ++ lib.optionals isMacbook (with pkgs; [
+      waybar
+      mako
+      fuzzel
+      alacritty
+      wl-clipboard
+      grim
+      slurp
+      swappy
+      playerctl
+    ]);
 
   home.sessionVariables = {
     EDITOR = "nvim";
