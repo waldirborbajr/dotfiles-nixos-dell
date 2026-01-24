@@ -3,11 +3,10 @@
 
 {
   ############################################
-  # Packages
+  # Packages (Nix-managed)
   ############################################
   environment.systemPackages = with pkgs; [
     alacritty
-    tmux
     nerd-fonts.jetbrains-mono
   ];
 
@@ -43,12 +42,11 @@
     log_level = "Off"
 
     # =========================
-    # Shell
+    # Shell (NO tmux autostart)
     # =========================
-    # Entramos no tmux e ele abre o shell padrão (vamos forçar zsh pelo tmux.conf).
     [terminal.shell]
-    program = "tmux"
-    args = ["new-session", "-A", "-D", "-s", "DevOps"]
+    program = "${pkgs.zsh}/bin/zsh"
+    args = ["-l"]
 
     # =========================
     # Fonte
@@ -129,36 +127,15 @@
       # Scroll manual
       { key = "K", mods = "Control|Shift", action = "ScrollPageUp" },
       { key = "J", mods = "Control|Shift", action = "ScrollPageDown" },
-
-      # tmux splits (Command = Super / ⌘)
-      { key = "D", mods = "Command",       chars = "\u0002\"" },
-      { key = "D", mods = "Command|Shift", chars = "\u0002%" },
-      { key = "O", mods = "Command",       chars = "\u0002o" },
     ]
   '';
 
   ############################################
-  # Force tmux to use zsh (Nix-managed)
-  # This is the correct place to "point to zsh"
-  ############################################
-  environment.etc."xdg/tmux/tmux.conf".text = ''
-    # Use zsh as default shell for tmux panes
-    set -g default-shell ${pkgs.zsh}/bin/zsh
-
-    # Ensure login-like environment (optional, but helpful)
-    set -g default-command ${pkgs.zsh}/bin/zsh
-
-    # Nice defaults
-    set -g mouse on
-    set -g history-limit 50000
-  '';
-
-  ############################################
-  # Symlinks into ~/.config (no Home-Manager)
-  # - Only creates links if the target does not exist
+  # Symlink into ~/.config (no Home-Manager)
+  # - Only creates link if the target does not exist
   ############################################
   systemd.user.services."xdg-config-links-alacritty" = {
-    description = "Symlink Alacritty/Tmux XDG configs from /etc/xdg to ~/.config";
+    description = "Symlink Alacritty XDG config from /etc/xdg to ~/.config";
     wantedBy = [ "default.target" ];
     serviceConfig = {
       Type = "oneshot";
@@ -167,13 +144,10 @@
     script = ''
       set -euo pipefail
 
-      mkdir -p "$HOME/.config/alacritty" "$HOME/.config/tmux"
+      mkdir -p "$HOME/.config/alacritty"
 
       # Alacritty
       [ -e "$HOME/.config/alacritty/alacritty.toml" ] || ln -s /etc/xdg/alacritty/alacritty.toml "$HOME/.config/alacritty/alacritty.toml"
-
-      # Tmux
-      [ -e "$HOME/.config/tmux/tmux.conf" ] || ln -s /etc/xdg/tmux/tmux.conf "$HOME/.config/tmux/tmux.conf"
     '';
   };
 }
