@@ -7,7 +7,7 @@
 
     # Configurações gerais + aliases (agora tudo dentro de settings para evitar warning)
     settings = {
-      git_protocol = "https";          # default global (pode ser sobrescrito por host)
+      git_protocol = "ssh";          # default global (pode ser sobrescrito por host)
       editor = "";                     # vazio = usa $EDITOR (nvim)
       prompt = "enabled";
       prefer_editor_prompt = "disabled";
