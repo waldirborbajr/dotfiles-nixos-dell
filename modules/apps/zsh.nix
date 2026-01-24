@@ -1,264 +1,190 @@
+# modules/apps/zsh.nix
 { config, pkgs, lib, ... }:
 
 let
-  zshrc = ''
-    # =========================================================
-    # ZSH (Nix-managed) - minimal DevOps prompt
-    # - No zinit / no powerlevel10k
-    # - Fast prompt: cwd + git branch + dirty
-    # =========================================================
+  # Script pequeno pra status do git (rápido e sem firula).
+  # Mostra: branch + indicadores: * (dirty) + (staged) ? (untracked) ⇡⇣ (ahead/behind)
+  gitPrompt = pkgs.writeShellScript "zsh-git-prompt" ''
+    #!/usr/bin/env bash
+    set -euo pipefail
 
-    # XDG
-    export ZDOTDIR="$HOME/.config/zsh"
-    export ZSH_CACHE_DIR="${XDG_CACHE_HOME:-$HOME/.cache}/zsh"
-    mkdir -p "$ZSH_CACHE_DIR"
-
-    # ---------------------------------------------------------
-    # Basic options
-    # ---------------------------------------------------------
-    setopt autocd
-    setopt correct
-    setopt interactivecomments
-    setopt magicequalsubst
-    setopt nonomatch
-    setopt notify
-    setopt numericglobsort
-    setopt promptsubst
-    setopt appendhistory
-    setopt sharehistory
-    setopt hist_ignore_space
-    setopt hist_ignore_all_dups
-    setopt hist_save_no_dups
-    setopt hist_ignore_dups
-    setopt hist_find_no_dups
-
-    # History
-    HISTSIZE=10000
-    SAVEHIST=$HISTSIZE
-    HISTFILE="$HOME/.zsh_history"
-
-    # ---------------------------------------------------------
-    # Environment
-    # ---------------------------------------------------------
-    export EDITOR="nvim"
-    export VISUAL="nvim"
-    export SUDO_EDITOR="nvim"
-    export FCEDIT="nvim"
-
-    # Keep your browser/terminal vars if you want (optional)
-    export BROWSER="com.brave.Browser"
-
-    if command -v bat >/dev/null 2>&1; then
-      export MANPAGER="sh -c 'col -bx | bat -l man -p'"
-      export PAGER="bat"
+    # Só roda se estiver num repo
+    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+      exit 0
     fi
 
-    # ---------------------------------------------------------
-    # Keybindings (vi-mode)
-    # ---------------------------------------------------------
-    bindkey -v
-    bindkey "^[[A" history-beginning-search-backward
-    bindkey "^[[B" history-beginning-search-forward
+    # branch (ou short sha se detached)
+    branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || true)"
+    [ -n "''${branch:-}" ] || exit 0
 
-    # ---------------------------------------------------------
-    # Completion styling
-    # ---------------------------------------------------------
-    zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
-    zstyle ':completion:*' list-colors "${(s.:.)LS_COLORS}"
-    zstyle ':completion:*' menu no
+    # status rápido (porcelana)
+    st="$(git status --porcelain=v1 2>/dev/null || true)"
 
-    # ---------------------------------------------------------
-    # PATH helpers (safe)
-    # ---------------------------------------------------------
+    dirty=""
+    staged=""
+    untracked=""
+
+    if echo "$st" | grep -qE '^[ MARC?DU][MD] '; then staged="+"; fi
+    if echo "$st" | grep -qE '^[MDARC?DU][ MD] '; then dirty="*"; fi
+    if echo "$st" | grep -qE '^\?\? '; then untracked="?"; fi
+
+    # ahead/behind (pode falhar se não tiver upstream; ok)
+    ahead=""
+    behind=""
+    if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
+      counts="$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null || true)"
+      left="''${counts%% *}"
+      right="''${counts##* }"
+      if [ "''${left:-0}" != "0" ]; then ahead="⇡"; fi
+      if [ "''${right:-0}" != "0" ]; then behind="⇣"; fi
+    fi
+
+    printf "%s%s%s%s%s" "$branch" "$staged" "$dirty" "$untracked" "$ahead$behind"
+  '';
+in
+{
+  #### Zsh habilitado pelo NixOS ####
+  programs.zsh.enable = true;
+
+  #### Ferramentas usadas pelo teu workflow (sem exagero) ####
+  environment.systemPackages = with pkgs; [
+    git
+    fzf
+    zoxide
+    eza
+    bat
+  ];
+
+  #### Variáveis globais (login shells) ####
+  environment.etc."zsh/zprofile".text = ''
+    # /etc/zsh/zprofile (Nix-managed)
+    export EDITOR=nvim
+    export VISUAL=nvim
+    export SUDO_EDITOR=nvim
+    export FCEDIT=nvim
+    export BROWSER=com.brave.Browser
+
+    # Terminal default (se quiser)
+    export TERMINAL=kitty
+
+    # PATHs pessoais (somente se existirem, sem poluir nem duplicar)
     pathappend() {
-      for ARG in "$@"; do
-        if [ -d "$ARG" ] && [[ ":$PATH:" != *":$ARG:"* ]]; then
-          PATH="${PATH:+"$PATH:"}$ARG"
-        fi
+      for p in "$@"; do
+        [ -d "$p" ] || continue
+        case ":$PATH:" in
+          *":$p:"*) ;;
+          *) PATH="$PATH:$p" ;;
+        esac
       done
     }
 
     pathprepend() {
-      for ARG in "$@"; do
-        if [ -d "$ARG" ] && [[ ":$PATH:" != *":$ARG:"* ]]; then
-          PATH="$ARG${PATH:+":$PATH"}"
-        fi
+      for p in "$@"; do
+        [ -d "$p" ] || continue
+        case ":$PATH:" in
+          *":$p:"*) ;;
+          *) PATH="$p:$PATH" ;;
+        esac
       done
     }
 
-    pathprepend "$HOME/bin" "$HOME/sbin" "$HOME/.local/bin" "$HOME/local/bin" "$HOME/.bin"
-    pathappend "$HOME/.cargo/bin" "$HOME/go/bin" "$HOME/.tmuxifier/bin"
+    pathprepend "$HOME/.local/bin" "$HOME/bin" "$HOME/.bin"
+    pathappend "$HOME/go/bin" "$HOME/.cargo/bin"
+  '';
 
-    # ---------------------------------------------------------
-    # Aliases / Functions (split files, Nix-managed)
-    # ---------------------------------------------------------
-    source "$ZDOTDIR/aliases.zsh"
-    source "$ZDOTDIR/functions.zsh"
+  #### Zsh interativo (prompt, aliases, binds) ####
+  environment.etc."zsh/zshrc".text = ''
+    # /etc/zsh/zshrc (Nix-managed)
+    setopt autocd correct interactivecomments magicequalsubst nonomatch notify numericglobsort promptsubst
+    setopt appendhistory sharehistory hist_ignore_space hist_ignore_all_dups hist_save_no_dups hist_ignore_dups hist_find_no_dups
 
-    # ---------------------------------------------------------
-    # zoxide / tmuxifier (keep your workflow)
-    # ---------------------------------------------------------
+    HISTSIZE=10000
+    SAVEHIST=10000
+    HISTFILE="$HOME/.zsh_history"
+
+    # Vi mode
+    bindkey -v
+    bindkey "^[[A" history-beginning-search-backward
+    bindkey "^[[B" history-beginning-search-forward
+
+    # Completion
+    autoload -Uz compinit && compinit
+    zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
+    zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
+    zstyle ':completion:*' menu no
+
+    # bat como pager/manpager quando disponível
+    if command -v bat >/dev/null 2>&1; then
+      export MANPAGER="sh -c 'col -bx | bat -l man -p'"
+      export PAGER=bat
+    fi
+
+    # FZF opts (mantive simples pra DevOps, sem tema pesado)
+    if command -v fzf >/dev/null 2>&1; then
+      export FZF_DEFAULT_OPTS="--info=inline-right --ansi --layout=reverse --border=rounded"
+    fi
+
+    # zoxide
     if command -v zoxide >/dev/null 2>&1; then
       eval "$(zoxide init --cmd cd zsh)"
     fi
 
-    if command -v tmuxifier >/dev/null 2>&1; then
-      eval "$(tmuxifier init -)"
-    fi
-
-    # ---------------------------------------------------------
-    # Prompt: cwd + git branch + dirty (FAST)
-    # ---------------------------------------------------------
-    autoload -Uz vcs_info
-
-    # Only Git (fast)
-    zstyle ':vcs_info:*' enable git
-    zstyle ':vcs_info:git:*' formats ' %b'
-    zstyle ':vcs_info:git:*' actionformats ' %b|%a'
-
-    # Quick dirty check (no remote, no fetch)
-    _git_dirty() {
-      command git rev-parse --is-inside-work-tree >/dev/null 2>&1 || return 0
-      # --untracked-files=no avoids expensive scans
-      command git status --porcelain --untracked-files=no 2>/dev/null | command grep -q . && echo '*'
-      return 0
-    }
-
-    precmd() {
-      vcs_info
-    }
-
-    # Colors
-    autoload -Uz colors && colors
-
-    # Left prompt:
-    # 1) cwd
-    # 2) ❯ with git branch + dirty marker
-    PROMPT='%F{blue}%~%f%F{magenta}${vcs_info_msg_0_}%f%F{yellow}$(_git_dirty)%f
-%F{green}❯%f '
-
-    # Right prompt (optional): last exit status
-    RPROMPT='%(?..%F{red}%?%f)'
-
-    # ---------------------------------------------------------
-    # Performance: avoid implicit git fetches from tools
-    # ---------------------------------------------------------
-    # Don’t auto-fetch in background.
-    # Keep this here; it’s cheap and reduces surprise.
-    git config --global fetch.auto 0 >/dev/null 2>&1 || true
-
-  '';
-
-  aliases = ''
-    # Navigation
-    alias ..="cd .."
-    alias ...="cd ../.."
-    alias ....="cd ../../.."
-
-    # Safer defaults
+    # Aliases essenciais (enxutos)
     alias c='clear'
-    alias e='exit'
-    alias mkdir='mkdir -pv'
-    alias cp='cp -iv'
-    alias mv='mv -iv'
-    alias rm='rm -iv'
+    alias q='exit'
+    alias ll='eza -lg --icons --group-directories-first'
+    alias la='eza -lag --icons --group-directories-first'
+    alias rg="rg --hidden --smart-case --glob='!.git/' --no-search-zip --trim"
 
-    # Modern tools (use if installed)
-    if command -v eza >/dev/null 2>&1; then
-      alias ll="eza -lg --icons --group-directories-first"
-      alias la="eza -lag --icons --group-directories-first"
-      alias ls="eza -h --icons --group-directories-first"
-    else
-      alias ls='ls --color=auto'
-      alias ll='ls -larth'
-    fi
-
-    # Git (short + fast)
+    # Git (curto e objetivo)
+    alias gs='git status --short'
     alias ga='git add'
     alias gc='git commit'
-    alias gco='git checkout'
-    alias gd='git diff'
-    alias gds='git diff --staged'
-    alias gl='git log --oneline --decorate --graph --all'
     alias gp='git push'
     alias gu='git pull'
-    alias gs='git status -sb'
+    alias gd='git diff'
+    alias gds='git diff --staged'
+
+    # Função "runfree"
+    runfree() { "$@" >/dev/null 2>&1 & disown; }
+
+    # Prompt: caminho + git status rápido
+    # Ex: ~/repo/subdir [main+*?⇡]
+    git_seg() {
+      local s
+      s="$(${gitPrompt} 2>/dev/null)"
+      [ -n "$s" ] && echo " [%F{magenta}$s%f]"
+    }
+
+    # Prompt minimalista (DevOps)
+    # Mostra status do comando anterior via cor do símbolo
+    precmd() {
+      local code=$?
+      local sym
+      if [ $code -eq 0 ]; then
+        sym="%F{green}❯%f"
+      else
+        sym="%F{red}❯%f"
+      fi
+      PROMPT="%F{cyan}%~%f$(git_seg)\n$sym "
+    }
+
+    # ---- Opcional: auto iniciar tmux (igual teu alacritty) ----
+    # Descomenta se quiser sempre entrar no tmux "DevOps" ao abrir shell interativo
+    # if command -v tmux >/dev/null 2>&1; then
+    #   if [[ -z "$TMUX" && -z "$SSH_CONNECTION" ]]; then
+    #     tmux new-session -A -D -s DevOps
+    #   fi
+    # fi
   '';
 
-  functions = ''
-    # Start a program detached
-    runfree() {
-      "$@" > /dev/null 2>&1 & disown
-    }
-
-    # yazi wrapper to cd on exit
-    y() {
-      local tmp="$(mktemp -t "yazi-cwd.XXXXXX")"
-      yazi "$@" --cwd-file="$tmp"
-      if cwd="$(cat -- "$tmp")" && [ -n "$cwd" ] && [ "$cwd" != "$PWD" ]; then
-        builtin cd -- "$cwd"
-      fi
-      rm -f -- "$tmp"
-    }
-
-    # Session manager (prefer zellij, fallback tmux)
-    session() {
-      if [[ -n "$SSH_CONNECTION" ]] || [[ -n "$TMUX" ]] || [[ -n "$ZELLIJ" ]]; then
-        return 0
-      fi
-
-      if command -v zellij >/dev/null 2>&1; then
-        if zellij list-sessions 2>/dev/null | grep -q .; then
-          zellij attach "$(zellij list-sessions | head -1)"
-        else
-          zellij
-        fi
-      elif command -v tmux >/dev/null 2>&1; then
-        tmux attach || tmux new
-      fi
-    }
+  #### (Opcional) zshenv mínimo: só XDG paths (NÃO coloque coisa pesada aqui) ####
+  environment.etc."zsh/zshenv".text = ''
+    # /etc/zsh/zshenv (Nix-managed) - keep minimal!
+    export ZDOTDIR="$HOME"
+    export XDG_CACHE_HOME="$HOME/.cache"
+    export XDG_CONFIG_HOME="$HOME/.config"
+    export XDG_DATA_HOME="$HOME/.local/share"
+    export XDG_STATE_HOME="$HOME/.local/state"
   '';
-in
-{
-  programs.zsh.enable = true;
-
-  # Nice-to-have Zsh goodies via Nix (no plugin manager)
-  programs.zsh.autosuggestions.enable = true;
-  programs.zsh.syntaxHighlighting.enable = true;
-
-  environment.systemPackages = with pkgs; [
-    zsh
-    git
-  ];
-
-  # Canonical config in /etc/xdg
-  environment.etc."xdg/zsh/.zshrc".text = zshrc;
-  environment.etc."xdg/zsh/aliases.zsh".text = aliases;
-  environment.etc."xdg/zsh/functions.zsh".text = functions;
-
-  # Symlink to user config (no home-manager)
-  systemd.user.services."zsh-xdg-links" = {
-    description = "Symlink Zsh configs from /etc/xdg to ~/.config/zsh and ~/.zshrc";
-    wantedBy = [ "default.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      set -euo pipefail
-
-      mkdir -p "$HOME/.config/zsh"
-
-      # Main files
-      ln -sf /etc/xdg/zsh/.zshrc "$HOME/.config/zsh/.zshrc"
-      ln -sf /etc/xdg/zsh/aliases.zsh "$HOME/.config/zsh/aliases.zsh"
-      ln -sf /etc/xdg/zsh/functions.zsh "$HOME/.config/zsh/functions.zsh"
-
-      # Ensure ~/.zshrc points to XDG config
-      cat > "$HOME/.zshrc" <<'EOF'
-export ZDOTDIR="$HOME/.config/zsh"
-source "$ZDOTDIR/.zshrc"
-EOF
-    '';
-  };
 }
