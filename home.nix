@@ -12,5 +12,8 @@
     ./modules/apps/fzf.nix
     ./modules/apps/git.nix
     ./modules/apps/gh.nix
+    ./modules/apps/go.nix
+    ./modules/apps/rust.nix
+    ./modules/apps/lua.nix
   ];
 }
