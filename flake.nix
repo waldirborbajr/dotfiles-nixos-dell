@@ -34,6 +34,9 @@
     qemuEnabled = builtins.getEnv "QEMU" == "1";
   in
   {
+    # Enables: nix fmt
+    formatter.${system} = pkgsStable.nixpkgs-fmt;
+
     nixosConfigurations = {
       macbook = nixpkgs-stable.lib.nixosSystem {
         inherit system;
