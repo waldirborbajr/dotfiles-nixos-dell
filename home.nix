@@ -2,8 +2,9 @@
 { config, pkgs, lib, ... }:
 
 let
-  hostname = config.networking.hostName or "unknown";
-  isMacbook = hostname == "macbook-nixos" || hostname == "macbook";  # ajuste se necessário
+  # Usa builtins.getEnv para evitar dependência de config (resolve recursão)
+  hostname = builtins.getEnv "HOSTNAME" or "unknown";
+  isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
 in
 {
   home.stateVersion = "25.11";
@@ -17,11 +18,12 @@ in
     ./modules/apps/gh.nix
     ./modules/apps/go.nix
     ./modules/apps/rust.nix
-    ./modules/apps/niri.nix
 
+    # Niri só no macbook (com import condicional)
+    (lib.mkIf isMacbook (import ./modules/apps/niri.nix { inherit config pkgs lib; }))
   ];
 
-  # Pacotes comuns a todos
+  # Pacotes comuns a todos os hosts
   home.packages = with pkgs; [
     git
     fzf
@@ -32,7 +34,6 @@ in
     fd
     tree
   ] ++ lib.optional isMacbook (with pkgs; [
-    # Pacotes específicos do Niri (só no macbook)
     waybar
     mako
     fuzzel
