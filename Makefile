@@ -218,16 +218,21 @@ build:
   $(MAKE) list-generations
 
 switch:
-  $(call preflight)
-  if [[ "$(AUTO_UPDATE_FLAKE)" == "1" ]]; then $(MAKE) update-flake; else echo "AUTO_UPDATE_FLAKE=0 -> skipping flake update"; fi
-  $(MAKE) check_git_status
-  echo "Before:"
-  $(MAKE) current-system
-  $(call print_cmd,switch,)
-  $(call nixos_cmd,switch,)
-  echo "After:"
-  $(MAKE) current-system
-  $(MAKE) list-generations
+	@$(MAKE) preflight
+	@if [[ "$(AUTO_UPDATE_FLAKE)" == "1" ]]; then \
+		echo "AUTO_UPDATE_FLAKE=1 -> updating flake"; \
+		$(MAKE) update-flake; \
+	else \
+		echo "AUTO_UPDATE_FLAKE=0 -> skipping flake update."; \
+	fi
+	@$(MAKE) check_git_status
+	@echo "Before:"
+	@$(MAKE) current-system
+	@$(call print_cmd,switch,)
+	@$(call nixos_cmd,switch,)
+	@echo "After:"
+	@$(MAKE) current-system
+	@$(MAKE) list-generations
 
 build-debug:
   $(call preflight)
