@@ -45,13 +45,24 @@ let
 in
 {
   ##############################################################################
-  # Niri: fully managed by NixOS (session + package + integration)
+  # Niri: managed by NixOS
   ##############################################################################
   programs.niri.enable = true;
 
-services.displayManager.sessionPackages = [
-  pkgs.niri
-];
+  # Ensure GDM/SDDM can discover the session
+  services.displayManager.sessionPackages = [
+    pkgs.niri
+  ];
+
+  # Explicit session file (required when nixpkgs doesn't ship one)
+  environment.etc."wayland-sessions/niri.desktop".text = ''
+    [Desktop Entry]
+    Name=Niri
+    Comment=Niri Wayland Compositor
+    Exec=${pkgs.niri}/bin/niri
+    Type=Application
+    DesktopNames=niri
+  '';
 
   ##############################################################################
   # Wayland essentials
