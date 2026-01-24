@@ -1,59 +1,57 @@
-# modules/gh.nix
+# modules/apps/git.nix
 { config, pkgs, lib, ... }:
 
-let
-  ghConfig = {
-    version = 1;
-    git_protocol = "https";  # default global
-    editor = "";
-    prompt = "enabled";
-    prefer_editor_prompt = "disabled";
-    pager = "";
-    aliases.co = "pr checkout";
-    http_unix_socket = "";
-    browser = "";
-    color_labels = "disabled";
-    accessible_colors = "disabled";
-    accessible_prompter = "disabled";
-    spinner = "enabled";
-  };
-
-  ghHosts = {
-    "github.com" = {
-      git_protocol = "ssh";
-      users = {
-        waldirborbajr = { };
-        omnicwbdev = { };
-      };
-      user = "omnicwbdev";
-    };
-
-    "gitlab.com" = {
-      git_protocol = "ssh";
-      users = {
-        waldirborbajr = { };
-        omnicwbdev = { };
-      };
-      user = "waldirborbajr";  # ou o que preferir como default no gitlab
-    };
-  };
-in
 {
-  programs.gh = {
+  programs.git = {
     enable = true;
-    enableGitCredentialHelper = true;  # integra com git credential
-    settings = ghConfig // {
-      hosts = ghHosts;
+
+    userName  = "Waldir Borba Junior";
+    userEmail = "wborbajr@gmail.com";
+
+    extraConfig = {
+      core.editor      = "nvim";
+      core.pager       = "bat";
+      core.autocrlf    = "input";
+
+      init.defaultBranch = "main";
+
+      pull.rebase = true;
+
+      push.default         = "current";
+      push.autoSetupRemote = true;
+
+      fetch.prune     = true;
+      fetch.pruneTags = true;
+
+      rebase.autoStash  = true;
+      rebase.autoSquash = true;
+
+      merge.conflictStyle = "zdiff3";
+
+      alias = {
+        st  = "status --short --branch";
+        co  = "checkout";
+        br  = "branch -v";
+        ci  = "commit";
+        cm  = "commit -m";
+        ca  = "commit --amend";
+        lg  = "log --graph --oneline --decorate --all";
+        df  = "diff --color-words";
+        ds  = "diff --staged";
+        fp  = "fetch --prune --prune-tags";
+        pu  = "push --set-upstream origin HEAD";
+        rh  = "reset --hard HEAD";
+        undo = "reset --soft HEAD~1";
+      };
     };
+
+    ignores = [
+      "*.swp" "*.swo" "*.swn" ".DS_Store"
+      ".venv/" "venv/" "node_modules/"
+      ".terraform/" "*.tfstate*" ".direnv/" ".envrc"
+      "*.log" "*.tmp" "*.bak" "tags" "TAGS"
+    ];
   };
 
-  # Pacote gh
-  environment.systemPackages = with pkgs; [ gh ];
-
-  # Opcional: alias global para gh (se quiser)
-  environment.shellAliases = {
-    ghpr = "gh pr create --fill --web";  # cria PR rápido
-    ghv  = "gh pr view --web";           # abre PR no browser
-    ghi  = "gh issue create --web";      # cria issue
-  };
+  environment.systemPackages = with pkgs; [ git git-lfs delta tig ];
 }
