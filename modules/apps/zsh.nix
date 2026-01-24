@@ -31,11 +31,11 @@ in
   programs.zsh = {
     enable = true;
 
-    # Configurações básicas do histórico
+    # Histórico (usando opções nativas do NixOS, mais idiomático)
     history = {
       size = 10000;
       save = 10000;
-      path = "${config.xdg.cacheHome}/.zsh_history";  # ou ~/.zsh_history se preferir
+      path = "${config.xdg.cacheHome}/.zsh_history";  # ou use ~/.zsh_history se preferir não usar xdg
       ignoreDups = true;
       ignoreAllDups = true;
       ignoreSpace = true;
@@ -43,31 +43,23 @@ in
       expireDuplicatesFirst = true;
     };
 
-    # Alternativa: se preferir manter no shellInit como estava
-    # shellInit = ''
-    #   setopt appendhistory sharehistory hist_ignore_space hist_ignore_all_dups hist_save_no_dups hist_ignore_dups hist_find_no_dups
-    #   HISTSIZE=10000
-    #   SAVEHIST=10000
-    #   HISTFILE=~/.zsh_history
-    # '';
-
     shellAliases = {
-      c      = "clear";
-      q      = "exit";
-      ll     = "eza -lg --icons --group-directories-first";
-      la     = "eza -lag --icons --group-directories-first";
-      rg     = "rg --hidden --smart-case --glob='!.git/' --no-search-zip --trim";
-      gs     = "git status --short";
-      ga     = "git add";
-      gc     = "git commit";
-      gp     = "git push";
-      gu     = "git pull";
-      gd     = "git diff";
-      gds    = "git diff --staged";
+      c = "clear";
+      q = "exit";
+      ll = "eza -lg --icons --group-directories-first";
+      la = "eza -lag --icons --group-directories-first";
+      rg = "rg --hidden --smart-case --glob='!.git/' --no-search-zip --trim";
+      gs = "git status --short";
+      ga = "git add";
+      gc = "git commit";
+      gp = "git push";
+      gu = "git pull";
+      gd = "git diff";
+      gds = "git diff --staged";
       runfree = ''"$@" >/dev/null 2>&1 & disown'';
     };
 
-    # Configurações que rodam no início da sessão interativa
+    # Código que roda em shells interativos
     initExtra = ''
       # Vi mode
       bindkey -v
@@ -80,7 +72,7 @@ in
       zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
       zstyle ':completion:*' menu no
 
-      # bat como pager / manpager
+      # bat como pager/manpager
       if command -v bat >/dev/null 2>&1; then
         export MANPAGER="sh -c 'col -bx | bat -l man -p'"
         export PAGER=bat
@@ -91,7 +83,23 @@ in
         eval "$(zoxide init --cmd cd zsh)"
       fi
 
-      # Prompt customizado com git status
+      # FZF: integração oficial + suas opções
+      if command -v fzf >/dev/null 2>&1; then
+        export FZF_DEFAULT_OPTS="--info=inline-right --ansi --layout=reverse --border=rounded --height=60%"
+
+        # Integração key-bindings e completion do fzf (Ctrl+R, Ctrl+T, Alt+C)
+        source ${pkgs.fzf}/share/fzf/key-bindings.zsh
+        source ${pkgs.fzf}/share/fzf/completion.zsh
+
+        # Opcional: melhore o preview do Ctrl+T com bat (se quiser ver conteúdo dos arquivos)
+        export FZF_CTRL_T_COMMAND="fd --type f --hidden --follow --exclude .git || find . -type f"
+        export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
+
+        # Opcional: preview para Alt+C (diretórios)
+        export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
+      fi
+
+      # Prompt + git status
       git_seg() {
         local s
         s="$(${gitPrompt}/bin/git-prompt 2>/dev/null)"
@@ -106,32 +114,34 @@ in
         else
           sym="%F{red}❯%f"
         fi
-        # Sem quebra de linha explícita → tudo na mesma linha
         PROMPT="%F{cyan}%~%f$(git_seg) $sym "
       }
     '';
-
-    # Opcional: plugins do zsh que você pode querer adicionar depois
-    # plugins = [
-    #   {
-    #     name = "zsh-autosuggestions";
-    #     src = pkgs.fetchFromGitHub {
-    #       owner = "zsh-users";
-    #       repo = "zsh-autosuggestions";
-    #       rev = "c3d4e576c9c86eac628a0b265c7b30f0caee0a47";
-    #       sha256 = "sha256-B+KzIrM0VkpeOA3u+ve5HqkgmkyJ3+AwagAQQp6fTXc=";
-    #     };
-    #   }
-    # ];
   };
 
-  # Pacotes que são úteis para o shell / terminal (fzf sai daqui)
-  home.packages = with pkgs; [
+  # Pacotes necessários (incluindo fzf agora)
+  environment.systemPackages = with pkgs; [
     git
+    fzf         # ← adicionado aqui
     zoxide
     eza
     bat
     ripgrep
-    # fzf → removido, vem via programs.fzf
+    fd          # útil para FZF_CTRL_T_COMMAND (mais rápido que find)
+    tree        # opcional, para preview de diretórios no Alt+C
   ];
+
+  # Suas variáveis de ambiente (mantidas)
+  environment.sessionVariables = {
+    EDITOR = "nvim";
+    VISUAL = "nvim";
+    SUDO_EDITOR = "nvim";
+    BROWSER = "com.brave.Browser";
+    TERMINAL = "kitty";
+    NPM_CONFIG_UPDATE_NOTIFIER = "false";
+    NPM_CONFIG_FUND = "false";
+    NPM_CONFIG_AUDIT = "false";
+    PYTHONDONTWRITEBYTECODE = "1";
+    PIP_DISABLE_PIP_VERSION_CHECK = "1";
+  };
 }
