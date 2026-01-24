@@ -1,11 +1,8 @@
-# modules/apps/niri.nix
-{ config, pkgs, lib, ... }:
+{ config, pkgs, lib, hostname, ... }:
 
 let
-  hostname = config.networking.hostName or "unknown";
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
 
-  # Catppuccin Mocha palette (hex WITHOUT '#')
   cat = {
     rosewater = "f5e0dc";
     flamingo = "f2cdcd";
@@ -34,183 +31,107 @@ let
     mantle = "181825";
     crust = "11111b";
   };
+
   hex = c: "#${c}";
   term = "alacritty";
   menu = "fuzzel";
+
+  # Niri config as KDL (what niri actually uses)
+  niriKdl = ''
+    input {
+      keyboard {
+        xkb {
+          layout "us"
+          variant ""
+        }
+        repeat-delay 250
+        repeat-rate 35
+      }
+      touchpad {
+        tap true
+        natural-scroll true
+      }
+    }
+
+    layout {
+      gaps 8
+      border {
+        width 2
+        active-color "${hex cat.mauve}"
+        inactive-color "${hex cat.surface1}"
+        urgent-color "${hex cat.red}"
+      }
+    }
+
+    animations {
+      enabled true
+      workspace-switch {
+        duration-ms 140
+      }
+      window-open-close {
+        duration-ms 140
+      }
+    }
+
+    spawn-at-startup "mako"
+    spawn-at-startup "waybar"
+    spawn-at-startup "${term}"
+
+    binds {
+      mod "Super"
+
+      "Super+Return" { spawn "${term}" }
+      "Super+D"      { spawn "${menu}" }
+      "Super+Shift+E" "quit"
+
+      "Print"       { spawn "sh" "-lc" "grim -g \"$(slurp)\" - | swappy -f -" }
+      "Super+Print"  { spawn "sh" "-lc" "grim - | swappy -f -" }
+
+      "Super+H" "focus left"
+      "Super+J" "focus down"
+      "Super+K" "focus up"
+      "Super+L" "focus right"
+
+      "Super+Shift+H" "move left"
+      "Super+Shift+J" "move down"
+      "Super+Shift+K" "move up"
+      "Super+Shift+L" "move right"
+
+      "Super+1" "workspace 1"
+      "Super+2" "workspace 2"
+      "Super+3" "workspace 3"
+      "Super+4" "workspace 4"
+      "Super+5" "workspace 5"
+      "Super+6" "workspace 6"
+      "Super+7" "workspace 7"
+      "Super+8" "workspace 8"
+      "Super+9" "workspace 9"
+
+      "Super+Shift+1" "move-to-workspace 1"
+      "Super+Shift+2" "move-to-workspace 2"
+      "Super+Shift+3" "move-to-workspace 3"
+      "Super+Shift+4" "move-to-workspace 4"
+      "Super+Shift+5" "move-to-workspace 5"
+      "Super+Shift+6" "move-to-workspace 6"
+      "Super+Shift+7" "move-to-workspace 7"
+      "Super+Shift+8" "move-to-workspace 8"
+      "Super+Shift+9" "move-to-workspace 9"
+
+      "Super+F" "toggle-fullscreen"
+      "Super+Space" "toggle-floating"
+    }
+
+    window-rules {
+      rule {
+        match {
+          app-id "org.gnome.Calculator"
+        }
+        floating true
+      }
+    }
+  '';
 in
 lib.mkIf isMacbook {
-  programs.niri = {
-    enable = true;
-    package = pkgs.niri;  # ou pkgs.unstable.niri para bleeding edge
-
-    settings = {
-      input = {
-        keyboard = {
-          xkb = {
-            layout = "us";
-            variant = "";
-          };
-          repeat-delay = 250;
-          repeat-rate = 35;
-        };
-        touchpad = {
-          tap = true;
-          natural-scroll = true;
-        };
-      };
-
-      layout = {
-        gaps = 8;
-        border = {
-          width = 2;
-          active-color = hex cat.mauve;
-          inactive-color = hex cat.surface1;
-          urgent-color = hex cat.red;
-        };
-      };
-
-      animations = {
-        enabled = true;
-        workspace-switch.duration-ms = 140;
-        window-open-close.duration-ms = 140;
-      };
-
-      spawn-at-startup = [
-        "mako"
-        "waybar"
-        term
-      ];
-
-      binds = {
-        mod = "Super";
-
-        "Super+Return" = { spawn = term; };
-        "Super+D" = { spawn = menu; };
-        "Super+Shift+E" = "quit";
-
-        "Print" = { spawn = "sh -lc 'grim -g \"$(slurp)\" - | swappy -f -'"; };
-        "Super+Print" = { spawn = "sh -lc 'grim - | swappy -f -'"; };
-
-        "Super+H" = "focus left";
-        "Super+J" = "focus down";
-        "Super+K" = "focus up";
-        "Super+L" = "focus right";
-
-        "Super+Shift+H" = "move left";
-        "Super+Shift+J" = "move down";
-        "Super+Shift+K" = "move up";
-        "Super+Shift+L" = "move right";
-
-        "Super+1" = "workspace 1";
-        "Super+2" = "workspace 2";
-        "Super+3" = "workspace 3";
-        "Super+4" = "workspace 4";
-        "Super+5" = "workspace 5";
-        "Super+6" = "workspace 6";
-        "Super+7" = "workspace 7";
-        "Super+8" = "workspace 8";
-        "Super+9" = "workspace 9";
-
-        "Super+Shift+1" = "move-to-workspace 1";
-        "Super+Shift+2" = "move-to-workspace 2";
-        "Super+Shift+3" = "move-to-workspace 3";
-        "Super+Shift+4" = "move-to-workspace 4";
-        "Super+Shift+5" = "move-to-workspace 5";
-        "Super+Shift+6" = "move-to-workspace 6";
-        "Super+Shift+7" = "move-to-workspace 7";
-        "Super+Shift+8" = "move-to-workspace 8";
-        "Super+Shift+9" = "move-to-workspace 9";
-
-        "Super+F" = "toggle-fullscreen";
-        "Super+Space" = "toggle-floating";
-      };
-
-      window-rules = [
-        {
-          match.app-id = "org.gnome.Calculator";
-          floating = true;
-        }
-      ];
-    };
-  };
-
-  xdg.configFile = {
-    "waybar/config.jsonc".text = ''
-      {
-        "layer": "top",
-        "position": "top",
-        "height": 30,
-        "spacing": 8,
-        "modules-left": ["niri/workspaces"],
-        "modules-center": ["clock"],
-        "modules-right": ["pulseaudio", "network", "battery", "tray"],
-        "clock": { "format": "{:%a %d/%m %H:%M}" },
-        "pulseaudio": { "format": " {volume}%", "format-muted": "󰖁 muted" },
-        "network": { "format-wifi": " {signalStrength}%", "format-ethernet": "󰈀 {ipaddr}", "format-disconnected": "󰖪" },
-        "battery": { "format": "{capacity}% " }
-      }
-    '';
-
-    "waybar/style.css".text = ''
-      * {
-        font-family: "JetBrainsMono Nerd Font";
-        font-size: 11px;
-        border: none;
-        border-radius: 0;
-        min-height: 0;
-      }
-      window#waybar {
-        background: rgba(30, 30, 46, 0.95);
-        color: #cdd6f4;
-      }
-      #clock, #pulseaudio, #network, #battery, #tray, #workspaces {
-        padding: 0 10px;
-        margin: 6px 6px;
-        background: #313244;
-        border-radius: 10px;
-      }
-      #workspaces button {
-        padding: 0 8px;
-        margin: 0 2px;
-        background: transparent;
-        color: #a6adc8;
-      }
-      #workspaces button.active {
-        color: #1e1e2e;
-        background: #cba6f7;
-        border-radius: 8px;
-      }
-    '';
-
-    "mako/config".text = ''
-      background-color=#1e1e2ee6
-      text-color=#cdd6f4
-      border-color=#cba6f7
-      progress-color=over #45475a
-      border-size=2
-      border-radius=10
-      padding=10
-      default-timeout=5000
-      font=JetBrainsMono Nerd Font 10
-    '';
-
-    "fuzzel/fuzzel.ini".text = ''
-      [main]
-      font=JetBrainsMono Nerd Font:size=11
-      prompt="> "
-      width=40
-      lines=12
-
-      [colors]
-      background=#1e1e2eee
-      text=#cdd6f4ff
-      match=#cba6f7ff
-      selection=#45475aff
-      selection-text=#cdd6f4ff
-      border=#cba6f7ff
-    '';
-  };
-
   home.packages = with pkgs; [
     niri
     waybar
@@ -224,13 +145,83 @@ lib.mkIf isMacbook {
     playerctl
   ];
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-wlr
-      xdg-desktop-portal-gtk
-    ];
-  };
+  # Niri expects config at: ~/.config/niri/config.kdl
+  xdg.configFile."niri/config.kdl".text = niriKdl;
+
+  xdg.configFile."waybar/config.jsonc".text = ''
+    {
+      "layer": "top",
+      "position": "top",
+      "height": 30,
+      "spacing": 8,
+      "modules-left": ["niri/workspaces"],
+      "modules-center": ["clock"],
+      "modules-right": ["pulseaudio", "network", "battery", "tray"],
+      "clock": { "format": "{:%a %d/%m %H:%M}" },
+      "pulseaudio": { "format": " {volume}%", "format-muted": "󰖁 muted" },
+      "network": { "format-wifi": " {signalStrength}%", "format-ethernet": "󰈀 {ipaddr}", "format-disconnected": "󰖪" },
+      "battery": { "format": "{capacity}% " }
+    }
+  '';
+
+  xdg.configFile."waybar/style.css".text = ''
+    * {
+      font-family: "JetBrainsMono Nerd Font";
+      font-size: 11px;
+      border: none;
+      border-radius: 0;
+      min-height: 0;
+    }
+    window#waybar {
+      background: rgba(30, 30, 46, 0.95);
+      color: #cdd6f4;
+    }
+    #clock, #pulseaudio, #network, #battery, #tray, #workspaces {
+      padding: 0 10px;
+      margin: 6px 6px;
+      background: #313244;
+      border-radius: 10px;
+    }
+    #workspaces button {
+      padding: 0 8px;
+      margin: 0 2px;
+      background: transparent;
+      color: #a6adc8;
+    }
+    #workspaces button.active {
+      color: #1e1e2e;
+      background: #cba6f7;
+      border-radius: 8px;
+    }
+  '';
+
+  xdg.configFile."mako/config".text = ''
+    background-color=#1e1e2ee6
+    text-color=#cdd6f4
+    border-color=#cba6f7
+    progress-color=over #45475a
+    border-size=2
+    border-radius=10
+    padding=10
+    default-timeout=5000
+    font=JetBrainsMono Nerd Font 10
+  '';
+
+  xdg.configFile."fuzzel/fuzzel.ini".text = ''
+    [main]
+    font=JetBrainsMono Nerd Font:size=11
+    prompt="> "
+    width=40
+    lines=12
+
+    [colors]
+    background=#1e1e2eee
+    text=#cdd6f4ff
+    match=#cba6f7ff
+    selection=#45475aff
+    selection-text=#cdd6f4ff
+    border=#cba6f7ff
+  '';
 
   home.sessionVariables = {
     MOZ_ENABLE_WAYLAND = "1";
