@@ -43,5 +43,7 @@
     # Access
     ##########################################
     ./modules/ssh.nix
+
+environment.etc."__PROVA_IMPORT__.txt".text = "NIRI-IMPORT-TEST";
   ];
 }
