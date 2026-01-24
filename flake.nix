@@ -19,12 +19,12 @@
     qemuEnabled   = builtins.getEnv "QEMU" == "1";
 
     # ==========================================
-    # Overlay: exposes pkgs.unstable for the SAME system
+    # Overlay: exposes pkgs.unstable for the SAME hostPlatform.system
     # Usage inside modules: pkgs.unstable.<pkg>
     # ==========================================
     unstableOverlay = final: prev: {
       unstable = import nixpkgs-unstable {
-        system = final.system;
+        inherit (final.stdenv.hostPlatform) system;
         config.allowUnfree = true;
       };
     };
@@ -40,7 +40,8 @@
     # ==========================================
     mkHost = { hostname, system }:
       lib.nixosSystem {
-        inherit system;
+        # NixOS 25.11+: prefer hostPlatform.system (system is deprecated here)
+        hostPlatform.system = system;
 
         # Pass flags + inputs into modules when needed
         specialArgs = {
@@ -86,48 +87,13 @@
 
       # =========================================================
       # FUTURE / TEMPLATE HOSTS (commented, ready to enable)
-      #
-      # Create the matching file under:
-      #   ./hosts/<name>.nix
-      # and uncomment the entry below.
       # =========================================================
 
-      # --------------------------
-      # AMD Desktop / Laptop
-      # (still x86_64-linux)
-      # --------------------------
-      # amd = mkHost { hostname = "amd"; system = "x86_64-linux"; };
-
-      # --------------------------
-      # Apple Silicon (M1/M2/M3)
-      # (aarch64-linux)
-      # Notes:
-      # - Typically Asahi Linux based NixOS setups
-      # - You’ll want host-specific hardware config in ./hosts/apple-m.nix
-      # --------------------------
+      # amd     = mkHost { hostname = "amd";     system = "x86_64-linux"; };
       # apple-m = mkHost { hostname = "apple-m"; system = "aarch64-linux"; };
-
-      # --------------------------
-      # Raspberry Pi (64-bit)
-      # (aarch64-linux)
-      # Notes:
-      # - You’ll likely have bootloader/firmware specifics in host file
-      # --------------------------
       # raspberry = mkHost { hostname = "raspberry"; system = "aarch64-linux"; };
-
-      # --------------------------
-      # Virtual Machine (x86_64)
-      # Notes:
-      # - Great for testing changes before applying to real metal
-      # --------------------------
-      # vm-x86 = mkHost { hostname = "vm-x86"; system = "x86_64-linux"; };
-
-      # --------------------------
-      # Virtual Machine (ARM)
-      # Notes:
-      # - Useful on Apple Silicon hosts or ARM servers
-      # --------------------------
-      # vm-arm = mkHost { hostname = "vm-arm"; system = "aarch64-linux"; };
+      # vm-x86  = mkHost { hostname = "vm-x86";  system = "x86_64-linux"; };
+      # vm-arm  = mkHost { hostname = "vm-arm";  system = "aarch64-linux"; };
     };
   };
 }
