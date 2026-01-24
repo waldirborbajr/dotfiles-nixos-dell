@@ -38,7 +38,8 @@ let
   term = "alacritty";
   menu = "fuzzel";
 in
-if !isMacbook then {} else {
+lib.mkIf isMacbook {
+  # Ativa Niri + configurações principais (KDL convertido para Nix)
   programs.niri = {
     enable = true;
     package = pkgs.niri;  # ou pkgs.unstable.niri para bleeding edge
@@ -75,6 +76,7 @@ if !isMacbook then {} else {
         window-open-close.duration-ms = 140;
       };
 
+      # Autostart (spawn-at-startup)
       spawn-at-startup = [
         "mako"
         "waybar"
@@ -84,23 +86,28 @@ if !isMacbook then {} else {
       binds = {
         mod = "Super";
 
+        # Launcher / terminal
         "Super+Return" = { spawn = term; };
         "Super+D" = { spawn = menu; };
         "Super+Shift+E" = "quit";
 
+        # Screenshots
         "Print" = { spawn = "sh -lc 'grim -g \"$(slurp)\" - | swappy -f -'"; };
         "Super+Print" = { spawn = "sh -lc 'grim - | swappy -f -'"; };
 
+        # Focus (vim keys)
         "Super+H" = "focus left";
         "Super+J" = "focus down";
         "Super+K" = "focus up";
         "Super+L" = "focus right";
 
+        # Move windows
         "Super+Shift+H" = "move left";
         "Super+Shift+J" = "move down";
         "Super+Shift+K" = "move up";
         "Super+Shift+L" = "move right";
 
+        # Workspaces 1..9
         "Super+1" = "workspace 1";
         "Super+2" = "workspace 2";
         "Super+3" = "workspace 3";
@@ -134,6 +141,7 @@ if !isMacbook then {} else {
     };
   };
 
+  # Waybar (minimal, Catppuccin Mocha)
   xdg.configFile = {
     "waybar/config.jsonc".text = ''
       {
@@ -181,60 +189,35 @@ if !isMacbook then {} else {
         border-radius: 8px;
       }
     '';
-
-    "mako/config".text = ''
-      background-color=#1e1e2ee6
-      text-color=#cdd6f4
-      border-color=#cba6f7
-      progress-color=over #45475a
-      border-size=2
-      border-radius=10
-      padding=10
-      default-timeout=5000
-      font=JetBrainsMono Nerd Font 10
-    '';
-
-    "fuzzel/fuzzel.ini".text = ''
-      [main]
-      font=JetBrainsMono Nerd Font:size=11
-      prompt="> "
-      width=40
-      lines=12
-
-      [colors]
-      background=#1e1e2eee
-      text=#cdd6f4ff
-      match=#cba6f7ff
-      selection=#45475aff
-      selection-text=#cdd6f4ff
-      border=#cba6f7ff
-    '';
   };
 
-  home.packages = with pkgs; [
-    niri
-    waybar
-    mako
-    fuzzel
-    alacritty
-    wl-clipboard
-    grim
-    slurp
-    swappy
-    playerctl
-  ];
+  # Mako (notifications, Catppuccin Mocha)
+  xdg.configFile."mako/config".text = ''
+    background-color=#1e1e2ee6
+    text-color=#cdd6f4
+    border-color=#cba6f7
+    progress-color=over #45475a
+    border-size=2
+    border-radius=10
+    padding=10
+    default-timeout=5000
+    font=JetBrainsMono Nerd Font 10
+  '';
 
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-wlr
-      xdg-desktop-portal-gtk
-    ];
-  };
+  # Fuzzel (launcher, Catppuccin Mocha)
+  xdg.configFile."fuzzel/fuzzel.ini".text = ''
+    [main]
+    font=JetBrainsMono Nerd Font:size=11
+    prompt="> "
+    width=40
+    lines=12
 
-  home.sessionVariables = {
-    MOZ_ENABLE_WAYLAND = "1";
-    NIXOS_OZONE_WL = "1";
-    QT_QPA_PLATFORM = "wayland";
-  };
+    [colors]
+    background=#1e1e2eee
+    text=#cdd6f4ff
+    match=#cba6f7ff
+    selection=#45475aff
+    selection-text=#cdd6f4ff
+    border=#cba6f7ff
+  '';
 }
