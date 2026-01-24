@@ -6,9 +6,9 @@
 # - keep existing behavior (DEVOPS/QEMU/IMPURE flags, auto-commit support)
 # ==========================================
 
-SHELL := /usr/bin/env bash
+SHELL := /usr/bin/env
 .ONESHELL:
-.SHELLFLAGS := -euo pipefail -c
+.SHELLFLAGS := bash -euo pipefail -c
 
 NIXOS_CONFIG ?= $(HOME)/nixos-config
 HOST ?=
