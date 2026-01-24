@@ -18,7 +18,8 @@ in
     ./modules/apps/rust.nix
 
     # Niri só no macbook
-    (lib.mkIf isMacbook (import ./modules/apps/niri.nix { inherit config pkgs lib; }))
+    ./modules/apps/niri.nix
+
   ];
 
   home.packages = with pkgs; [
