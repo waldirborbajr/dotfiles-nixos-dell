@@ -1,7 +1,7 @@
 # modules/desktops/niri/niri.nix
 #
 # Niri (Wayland compositor) for NixOS (no Home-Manager)
-# - Shows up in GDM session list (like GNOME/Hyprland)
+# - Session is declared by NixOS (shows up in GDM session list)
 # - Configs are Nix-managed in /etc/xdg + optional ~/.config symlinks
 # - IMPORTANT: do NOT set XDG_RUNTIME_DIR manually (systemd/logind manages it)
 
@@ -45,13 +45,9 @@ let
 in
 {
   ##############################################################################
-  # Make Niri appear in GDM (session chooser)
+  # Niri: fully managed by NixOS (session + package + integration)
   ##############################################################################
-  # GDM itself is enabled in your GNOME module; this only adds the session.
-  services.displayManager.sessionPackages = [ pkgs.niri ];
-
-  # If your nixpkgs has the module, you can also enable it (safe either way):
-  # programs.niri.enable = true;
+  programs.niri.enable = true;
 
   ##############################################################################
   # Wayland essentials
@@ -70,14 +66,12 @@ in
   # Packages (keep it lean)
   ##############################################################################
   environment.systemPackages = with pkgs; [
-    niri
-
     # UX
     waybar
     mako
     fuzzel
 
-    # Terminal (you already use it; keep explicit so binds work)
+    # Terminal (explicit so binds work)
     alacritty
 
     # Clipboard / screenshots
