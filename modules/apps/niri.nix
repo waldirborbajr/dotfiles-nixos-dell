@@ -38,10 +38,10 @@ let
   term = "alacritty";
   menu = "fuzzel";
 in
-lib.mkIf isMacbook {
+if !isMacbook then {} else {
   programs.niri = {
     enable = true;
-    package = pkgs.niri;  # stable; use pkgs.unstable.niri para bleeding edge
+    package = pkgs.niri;  # ou pkgs.unstable.niri para bleeding edge
 
     settings = {
       input = {
