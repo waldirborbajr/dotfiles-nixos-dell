@@ -51,7 +51,6 @@
             home-manager.users.borba = { config, pkgs, lib, ... }: {
               imports = [
                 ./home.nix                     # seu home.nix mínimo (zsh, fzf etc.)
-                ./modules/apps/git.nix         # git agora no contexto home-manager
               ];
             };
           }
