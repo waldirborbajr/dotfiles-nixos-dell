@@ -31,35 +31,23 @@ in
   programs.zsh = {
     enable = true;
 
-    # Histórico — remova ou use caminho fixo simples
-    history = {
-      size = 10000;
-      save = 10000;
-      # path = "~/.zsh_history";  # ← opcional: isso é o default anyway
-      ignoreDups = true;
-      ignoreAllDups = true;
-      ignoreSpace = true;
-      share = true;
-      expireDuplicatesFirst = true;
-    };
-
-    shellAliases = {
-      c = "clear";
-      q = "exit";
-      ll = "eza -lg --icons --group-directories-first";
-      la = "eza -lag --icons --group-directories-first";
-      rg = "rg --hidden --smart-case --glob='!.git/' --no-search-zip --trim";
-      gs = "git status --short";
-      ga = "git add";
-      gc = "git commit";
-      gp = "git push";
-      gu = "git pull";
-      gd = "git diff";
-      gds = "git diff --staged";
-      runfree = ''"$@" >/dev/null 2>&1 & disown'';
-    };
-
+    # Histórico agora configurado via setopt (opção válida no NixOS)
     initExtra = ''
+      # Configurações de histórico (equivalente ao que estava em history.*)
+      setopt appendhistory
+      setopt sharehistory
+      setopt hist_ignore_space
+      setopt hist_ignore_all_dups
+      setopt hist_save_no_dups
+      setopt hist_ignore_dups
+      setopt hist_find_no_dups
+      setopt extended_history       # salva timestamp e duração
+      setopt hist_expire_dups_first # expira duplicados primeiro
+
+      HISTSIZE=10000
+      SAVEHIST=10000
+      HISTFILE=~/.zsh_history       # ou ${HOME}/.zsh_history se preferir
+
       # Vi mode
       bindkey -v
       bindkey "^[[A" history-beginning-search-backward
@@ -86,7 +74,7 @@ in
       if command -v fzf >/dev/null 2>&1; then
         export FZF_DEFAULT_OPTS="--info=inline-right --ansi --layout=reverse --border=rounded --height=60%"
 
-        # Key-bindings e completion (Ctrl+R histórico, Ctrl+T arquivos, Alt+C cd)
+        # Key-bindings e completion (Ctrl+R histórico fuzzy, Ctrl+T arquivos, Alt+C cd)
         source ${pkgs.fzf}/share/fzf/key-bindings.zsh
         source ${pkgs.fzf}/share/fzf/completion.zsh
 
@@ -116,6 +104,22 @@ in
         PROMPT="%F{cyan}%~%f$(git_seg) $sym "
       }
     '';
+
+    shellAliases = {
+      c = "clear";
+      q = "exit";
+      ll = "eza -lg --icons --group-directories-first";
+      la = "eza -lag --icons --group-directories-first";
+      rg = "rg --hidden --smart-case --glob='!.git/' --no-search-zip --trim";
+      gs = "git status --short";
+      ga = "git add";
+      gc = "git commit";
+      gp = "git push";
+      gu = "git pull";
+      gd = "git diff";
+      gds = "git diff --staged";
+      runfree = ''"$@" >/dev/null 2>&1 & disown'';
+    };
   };
 
   environment.systemPackages = with pkgs; [
@@ -125,7 +129,7 @@ in
     eza
     bat
     ripgrep
-    fd          # recomendado para FZF_CTRL_T_COMMAND mais rápido
+    fd          # para FZF_CTRL_T_COMMAND mais rápido
     tree        # para preview de dirs no Alt+C
   ];
 
