@@ -21,8 +21,8 @@ let
       counts="$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null || true)"
       left="''${counts%% *}"
       right="''${counts##* }"
-      if [ "''${left:-0}" != "0" ]; then ahead="⇡"; fi
-      if [ "''${right:-0}" != "0" ]; then behind="⇣"; fi
+      if [ "''${left:-0}" != "0" ]; then ahead="⇡''${left}"; fi
+      if [ "''${right:-0}" != "0" ]; then behind="⇣''${right}"; fi
     fi
     printf "%s%s%s%s%s" "$branch" "$staged" "$dirty" "$untracked" "$ahead$behind"
   '';
@@ -58,7 +58,6 @@ in
       runfree = ''"$@" >/dev/null 2>&1 & disown'';
     };
 
-    # Correção: troque initExtra → initContent
     initContent = ''
       # Vi mode
       bindkey -v
@@ -82,14 +81,14 @@ in
         eval "$(zoxide init --cmd cd zsh)"
       fi
 
-      # Prompt customizado com git status
+      # Prompt customizado com git status melhorado
       git_seg() {
         local s branch dirty staged untracked ahead behind color
-        
+
         # Branch name
         branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || true)"
         [ -n "$branch" ] || return 0
-        
+
         # Status
         local st="$(git status --porcelain=v1 2>/dev/null || true)"
         dirty=""
@@ -98,34 +97,33 @@ in
         if echo "$st" | grep -qE '^[ MARC?DU][MD] '; then staged="+"; fi
         if echo "$st" | grep -qE '^[MDARC?DU][ MD] '; then dirty="*"; fi
         if echo "$st" | grep -qE '^\?\? '; then untracked="?"; fi
-        
-        # Ahead / Behind (push / pull)
+
+        # Ahead / Behind (push / pull) – com números
         ahead=""
         behind=""
         if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
-        counts="$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null || true)"
-        left="${counts%% *}"
-        right="${counts##* }"
-        [ "${left:-0}" -gt 0 ] && ahead="⇡$left"
-        [ "${right:-0}" -gt 0 ] && behind="⇣$right"
+          counts="$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null || true)"
+          left="''${counts%% *}"
+          right="''${counts##* }"
+          [ "''${left:-0}" -gt 0 ] && ahead="⇡''${left}"
+          [ "''${right:-0}" -gt 0 ] && behind="⇣''${right}"
         fi
-        
+
         # Cores rápidas e visuais
         if [ -n "$ahead" ]; then
-        color="%F{green}"    # verde = tem para subir (push)
+          color="%F{green}"    # verde = tem para subir (push)
         elif [ -n "$behind" ]; then
-        color="%F{red}"      # vermelho = tem para baixar (pull)
+          color="%F{red}"      # vermelho = tem para baixar (pull)
         elif [ -n "$dirty$staged$untracked" ]; then
-        color="%F{yellow}"   # amarelo = dirty/staged/untracked
+          color="%F{yellow}"   # amarelo = dirty/staged/untracked
         else
-        color="%F{magenta}"  # magenta = clean
+          color="%F{magenta}"  # magenta = clean
         fi
-        
+
         # Monta o segmento
-        s="${color}${branch}${staged}${dirty}${untracked}${ahead}${behind}%f"
+        s="''${color}''${branch}''${staged}''${dirty}''${untracked}''${ahead}''${behind}%f"
         echo " $s"
       }
-
 
       precmd() {
         local code=$?
