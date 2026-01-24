@@ -21,7 +21,7 @@ in
     # Outros módulos comuns aqui (ex: starship, direnv, neovim, etc.)
 
     # Importa Niri SOMENTE no macbook
-    (lib.mkIf isMacbook ./modules/apps/niri.nix)
+    (lib.mkIf isMacbook (import ./modules/apps/niri.nix))
   ];
 
   # Pacotes leves que podem ficar em todos (ou condicional se quiser)
