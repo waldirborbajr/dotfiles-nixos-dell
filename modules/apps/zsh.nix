@@ -31,9 +31,8 @@ in
   programs.zsh = {
     enable = true;
 
-    # Histórico agora configurado via setopt (opção válida no NixOS)
     initExtra = ''
-      # Configurações de histórico (equivalente ao que estava em history.*)
+      # Configurações de histórico
       setopt appendhistory
       setopt sharehistory
       setopt hist_ignore_space
@@ -41,12 +40,12 @@ in
       setopt hist_save_no_dups
       setopt hist_ignore_dups
       setopt hist_find_no_dups
-      setopt extended_history       # salva timestamp e duração
-      setopt hist_expire_dups_first # expira duplicados primeiro
+      setopt extended_history
+      setopt hist_expire_dups_first
 
       HISTSIZE=10000
       SAVEHIST=10000
-      HISTFILE=~/.zsh_history       # ou ${HOME}/.zsh_history se preferir
+      HISTFILE=$HOME/.zsh_history       # ← corrigido: usa $HOME (expande no shell)
 
       # Vi mode
       bindkey -v
@@ -74,15 +73,15 @@ in
       if command -v fzf >/dev/null 2>&1; then
         export FZF_DEFAULT_OPTS="--info=inline-right --ansi --layout=reverse --border=rounded --height=60%"
 
-        # Key-bindings e completion (Ctrl+R histórico fuzzy, Ctrl+T arquivos, Alt+C cd)
+        # Key-bindings e completion (Ctrl+R para histórico fuzzy!)
         source ${pkgs.fzf}/share/fzf/key-bindings.zsh
         source ${pkgs.fzf}/share/fzf/completion.zsh
 
-        # Melhora preview no Ctrl+T (com bat se disponível)
+        # Preview melhorado no Ctrl+T
         export FZF_CTRL_T_COMMAND="fd --type f --hidden --follow --exclude .git || find . -type f"
         export FZF_CTRL_T_OPTS="--preview 'bat --color=always --style=numbers --line-range=:500 {}'"
 
-        # Preview para Alt+C (diretórios)
+        # Preview para Alt+C
         export FZF_ALT_C_OPTS="--preview 'tree -C {} | head -200'"
       fi
 
@@ -129,8 +128,8 @@ in
     eza
     bat
     ripgrep
-    fd          # para FZF_CTRL_T_COMMAND mais rápido
-    tree        # para preview de dirs no Alt+C
+    fd
+    tree
   ];
 
   environment.sessionVariables = {
