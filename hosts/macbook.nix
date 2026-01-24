@@ -16,7 +16,7 @@
     # Desktop apenas no MacBook
     ../modules/desktops/hyprland/default.nix
     ../modules/desktops/gnome.nix
-    ../modules/dektops/niri/default.nix
+    # ../modules/desktops/niri/default.nix
     ../modules/autologin.nix
 
     ../modules/apps/kitty.nix
