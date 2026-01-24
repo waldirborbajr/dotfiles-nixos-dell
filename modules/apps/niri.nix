@@ -2,6 +2,9 @@
 { config, pkgs, lib, ... }:
 
 let
+  hostname = config.networking.hostName or "unknown";
+  isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
+
   # Catppuccin Mocha palette (hex WITHOUT '#')
   cat = {
     rosewater = "f5e0dc";
@@ -35,12 +38,12 @@ let
   term = "alacritty";
   menu = "fuzzel";
 in
-{
+lib.mkIf isMacbook {
+  # Ativa Niri + configurações principais
   programs.niri = {
     enable = true;
-    package = pkgs.niri;  # ou pkgs.unstable.niri se quiser bleeding edge
+    package = pkgs.niri;  # ou pkgs.unstable.niri para bleeding edge
 
-    # Config completa convertida para settings (KDL-like)
     settings = {
       input = {
         keyboard = {
@@ -138,7 +141,7 @@ in
     };
   };
 
-  # Waybar (minimal, Catppuccin)
+  # Waybar (minimal, Catppuccin Mocha)
   xdg.configFile = {
     "waybar/config.jsonc".text = ''
       {
@@ -188,7 +191,7 @@ in
     '';
   };
 
-  # Mako (notifications, Catppuccin)
+  # Mako (notifications, Catppuccin Mocha)
   xdg.configFile."mako/config".text = ''
     background-color=#1e1e2ee6
     text-color=#cdd6f4
@@ -201,7 +204,7 @@ in
     font=JetBrainsMono Nerd Font 10
   '';
 
-  # Fuzzel (launcher, Catppuccin)
+  # Fuzzel (launcher, Catppuccin Mocha)
   xdg.configFile."fuzzel/fuzzel.ini".text = ''
     [main]
     font=JetBrainsMono Nerd Font:size=11
@@ -218,7 +221,7 @@ in
     border=#cba6f7ff
   '';
 
-  # Pacotes necessários (lean)
+  # Pacotes necessários (só instalados no macbook)
   home.packages = with pkgs; [
     niri
     waybar
@@ -232,7 +235,7 @@ in
     playerctl
   ];
 
-  # Wayland essentials (pode manter no sistema ou mover parte para cá)
+  # Wayland essentials (movidos para cá)
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
