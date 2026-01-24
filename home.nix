@@ -2,9 +2,10 @@
 { config, pkgs, lib, ... }:
 
 let
-  # Usa builtins.getEnv para evitar dependência de config (resolve recursão)
-  hostname = builtins.getEnv "HOSTNAME" or "unknown";
-  isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
+  # Pega HOSTNAME do ambiente (não depende de config → sem recursão)
+  hostname = builtins.getEnv "HOSTNAME";
+  # Se HOSTNAME estiver vazio, considera como não-macbook (ou ajuste se quiser default)
+  isMacbook = (hostname == "macbook-nixos") || (hostname == "macbook");
 in
 {
   home.stateVersion = "25.11";
