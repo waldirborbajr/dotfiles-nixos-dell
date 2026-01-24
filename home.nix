@@ -9,6 +9,7 @@
   # Importa os módulos que você quer ativar (padrão modular mantido)
   imports = [
     ./modules/apps/zsh.nix
+    ./modules/apps/fzf.nix
     # Futuro: ./modules/apps/fzf.nix (se criar)
     # ./modules/apps/uv.nix
     # ./modules/apps/poetry.nix
