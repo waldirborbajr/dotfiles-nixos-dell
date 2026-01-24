@@ -47,10 +47,11 @@
               inherit inputs devopsEnabled qemuEnabled;
             };
 
-            home-manager.users.borba = { pkgs, lib, ... }: {
+            # A mudança chave: lambda com imports explícitos
+            home-manager.users.borba = { config, pkgs, lib, ... }: {
               imports = [
-                ./home.nix
-                ./modules/apps/git.nix
+                ./home.nix                     # seu home.nix mínimo (zsh, fzf etc.)
+                ./modules/apps/git.nix         # git agora no contexto home-manager
               ];
             };
           }
