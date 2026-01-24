@@ -10,6 +10,7 @@
   imports = [
     ./modules/apps/zsh.nix
     ./modules/apps/fzf.nix
+    ./modules/apps/git.nix
     # Futuro: ./modules/apps/fzf.nix (se criar)
     # ./modules/apps/uv.nix
     # ./modules/apps/poetry.nix
