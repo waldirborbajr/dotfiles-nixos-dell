@@ -3,14 +3,13 @@
 
 let
   hostname = config.networking.hostName or "unknown";
-  isMacbook = hostname == "macbook-nixos" || hostname == "macbook";  # ajuste se o hostname for diferente
+  isMacbook = hostname == "macbook-nixos" || hostname == "macbook";  # ajuste se necessário
 in
 {
   home.stateVersion = "25.11";
   home.username = "borba";
   home.homeDirectory = lib.mkForce "/home/borba";
 
-  # Importa os módulos comuns a todos os hosts
   imports = [
     ./modules/apps/zsh.nix
     ./modules/apps/fzf.nix
@@ -18,15 +17,13 @@ in
     ./modules/apps/gh.nix
     ./modules/apps/go.nix
     ./modules/apps/rust.nix
-    # Outros módulos comuns aqui (ex: starship, direnv, neovim, etc.)
 
-    # Importa Niri SOMENTE no macbook
-    (lib.mkIf isMacbook (import ./modules/apps/niri.nix))
+    # Niri só no macbook — avalia o módulo corretamente
+    (lib.mkIf isMacbook (import ./modules/apps/niri.nix { inherit config pkgs lib; }))
   ];
 
-  # Pacotes leves que podem ficar em todos (ou condicional se quiser)
+  # Pacotes comuns a todos
   home.packages = with pkgs; [
-    # Exemplos leves que rodam bem no dell
     git
     fzf
     zoxide
@@ -35,8 +32,8 @@ in
     ripgrep
     fd
     tree
-  ] ++ (lib.mkIf isMacbook (with pkgs; [
-    # Pacotes pesados só no macbook
+  ] ++ lib.optional isMacbook (with pkgs; [
+    # Pacotes específicos do Niri (só no macbook)
     waybar
     mako
     fuzzel
@@ -46,9 +43,8 @@ in
     slurp
     swappy
     playerctl
-  ]));
+  ]);
 
-  # Variáveis comuns
   home.sessionVariables = {
     EDITOR = "nvim";
     VISUAL = "nvim";
