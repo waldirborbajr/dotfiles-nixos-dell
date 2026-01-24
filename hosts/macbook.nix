@@ -24,7 +24,6 @@
     ../modules/apps/alacritty.nix
     # ../modules/apps/zsh.nix
     ../modules/apps/tmux.nix
-    ../modules/apps/git.nix
 
     #../modules/apps/uv.nix
     #../modules/apps/poetry.nix
