@@ -5,9 +5,12 @@ let
   gitPrompt = pkgs.writeShellScriptBin "git-prompt" ''
     #!/usr/bin/env bash
     set -euo pipefail
+
     if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then exit 0; fi
+
     branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || true)"
     [ -n "''${branch:-}" ] || exit 0
+
     st="$(git status --porcelain=v1 2>/dev/null || true)"
     dirty=""
     staged=""
@@ -15,15 +18,19 @@ let
     if echo "$st" | grep -qE '^[ MARC?DU][MD] '; then staged="+"; fi
     if echo "$st" | grep -qE '^[MDARC?DU][ MD] '; then dirty="*"; fi
     if echo "$st" | grep -qE '^\?\? '; then untracked="?"; fi
+
     ahead=""
     behind=""
     if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
       counts="$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null || true)"
-      left="''${counts%% *}"
-      right="''${counts##* }"
-      if [ "''${left:-0}" != "0" ]; then ahead="⇡''${left}"; fi
-      if [ "''${right:-0}" != "0" ]; then behind="⇣''${right}"; fi
+      # Corrige tabulação → transforma em espaço para parsing seguro
+      counts=$(echo "$counts" | tr '\t' ' ')
+      left=$(echo "$counts" | awk '{print $1}')
+      right=$(echo "$counts" | awk '{print $2}')
+      [ "''${left:-0}" -gt 0 ] && ahead="⇡''${left}"
+      [ "''${right:-0}" -gt 0 ] && behind="⇣''${right}"
     fi
+
     printf "%s%s%s%s%s" "$branch" "$staged" "$dirty" "$untracked" "$ahead$behind"
   '';
 in
@@ -103,8 +110,9 @@ in
         behind=""
         if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
           counts="$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null || true)"
-          left="''${counts%% *}"
-          right="''${counts##* }"
+          counts=$(echo "$counts" | tr '\t' ' ')
+          left=$(echo "$counts" | awk '{print $1}')
+          right=$(echo "$counts" | awk '{print $2}')
           [ "''${left:-0}" -gt 0 ] && ahead="⇡''${left}"
           [ "''${right:-0}" -gt 0 ] && behind="⇣''${right}"
         fi
@@ -136,7 +144,7 @@ in
         PROMPT="%F{cyan}%~%f$(git_seg)$sym "
       }
 
-      # Integração fzf (só se disponível – loose coupling)
+      # Integração fzf (loose coupling)
       if command -v fzf >/dev/null 2>&1; then
         source ${pkgs.fzf}/share/fzf/key-bindings.zsh
         source ${pkgs.fzf}/share/fzf/completion.zsh
