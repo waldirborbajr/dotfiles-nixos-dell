@@ -2,7 +2,7 @@
 { config, pkgs, lib, ... }:
 
 {
-  # Pacotes
+  # Pacotes Nix-managed
   home.packages = with pkgs; [
     alacritty
     nerd-fonts.jetbrains-mono  # JetBrainsMono Nerd Font
@@ -119,7 +119,7 @@
     ]
   '';
 
-  # Opcional: força sobrescrita se o arquivo já existir (útil na primeira migração)
-  # Remova ou comente depois da primeira ativação se não quiser mais forçar
+  # Opcional: força sobrescrita na primeira ativação (se já tiver arquivo antigo)
+  # Remova ou comente após o primeiro rebuild bem-sucedido
   # xdg.configFile."alacritty/alacritty.toml".force = true;
 }
