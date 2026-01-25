@@ -38,8 +38,6 @@
     networkmanagerapplet
     blueman
 
-    # Terminal requested
-    alacritty
   ];
 
   ############################################
