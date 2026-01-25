@@ -2,19 +2,14 @@
 { config, pkgs, lib, ... }:
 
 {
-  ############################################
-  # Packages (Nix-managed)
-  ############################################
-  environment.systemPackages = with pkgs; [
+  # Pacotes
+  home.packages = with pkgs; [
     alacritty
-    nerd-fonts.jetbrains-mono
+    nerd-fonts.jetbrains-mono  # JetBrainsMono Nerd Font
   ];
 
-  ############################################
-  # Alacritty config (Nix-managed)
-  # Canonical: /etc/xdg/alacritty/alacritty.toml
-  ############################################
-  environment.etc."xdg/alacritty/alacritty.toml".text = ''
+  # Config declarativa (alacritty.toml em ~/.config/alacritty/)
+  xdg.configFile."alacritty/alacritty.toml".text = ''
     # =========================
     # Ambiente
     # =========================
@@ -54,11 +49,9 @@
     [font]
     size = 13.0
     builtin_box_drawing = true
-
     normal = { family = "JetBrainsMono Nerd Font", style = "Regular" }
-    bold   = { family = "JetBrainsMono Nerd Font", style = "Bold" }
+    bold = { family = "JetBrainsMono Nerd Font", style = "Bold" }
     italic = { family = "JetBrainsMono Nerd Font", style = "Italic" }
-
     offset = { x = 0, y = 1 }
     glyph_offset = { x = 0, y = 0 }
 
@@ -110,44 +103,23 @@
     [keyboard]
     bindings = [
       # Clipboard
-      { key = "C", mods = "Control|Shift", action = "Copy" },
-      { key = "V", mods = "Control|Shift", action = "Paste" },
-
+      { key = "C", mods = "Control|Shift", action = "Copy" }
+      { key = "V", mods = "Control|Shift", action = "Paste" }
       # Fonte
-      { key = "Key0",   mods = "Control", action = "ResetFontSize" },
-      { key = "Equals", mods = "Control", action = "IncreaseFontSize" },
-      { key = "Minus",  mods = "Control", action = "DecreaseFontSize" },
-
+      { key = "Key0", mods = "Control", action = "ResetFontSize" }
+      { key = "Equals", mods = "Control", action = "IncreaseFontSize" }
+      { key = "Minus", mods = "Control", action = "DecreaseFontSize" }
       # Fullscreen
-      { key = "F11", action = "ToggleFullscreen" },
-
+      { key = "F11", action = "ToggleFullscreen" }
       # Clear + scrollback
-      { key = "L", mods = "Control", chars = "\u000c" },
-
+      { key = "L", mods = "Control", chars = "\u000c" }
       # Scroll manual
-      { key = "K", mods = "Control|Shift", action = "ScrollPageUp" },
-      { key = "J", mods = "Control|Shift", action = "ScrollPageDown" },
+      { key = "K", mods = "Control|Shift", action = "ScrollPageUp" }
+      { key = "J", mods = "Control|Shift", action = "ScrollPageDown" }
     ]
   '';
 
-  ############################################
-  # Symlink into ~/.config (no Home-Manager)
-  # - Only creates link if the target does not exist
-  ############################################
-  systemd.user.services."xdg-config-links-alacritty" = {
-    description = "Symlink Alacritty XDG config from /etc/xdg to ~/.config";
-    wantedBy = [ "default.target" ];
-    serviceConfig = {
-      Type = "oneshot";
-      RemainAfterExit = true;
-    };
-    script = ''
-      set -euo pipefail
-
-      mkdir -p "$HOME/.config/alacritty"
-
-      # Alacritty
-      [ -e "$HOME/.config/alacritty/alacritty.toml" ] || ln -s /etc/xdg/alacritty/alacritty.toml "$HOME/.config/alacritty/alacritty.toml"
-    '';
-  };
+  # Opcional: força sobrescrita se o arquivo já existir (útil na primeira migração)
+  # Remova ou comente depois da primeira ativação se não quiser mais forçar
+  # xdg.configFile."alacritty/alacritty.toml".force = true;
 }
