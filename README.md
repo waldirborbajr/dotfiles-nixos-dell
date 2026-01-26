@@ -1,4 +1,6 @@
-[![NixOS CI](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos.yaml/badge.svg)](https://github.com/waldirborbajr/nixos-config/actions/workflows/nixos.yaml)
+[![NixOS CI](https://github.com/waldirborbajr/nixos-config/workflows/NixOS%20Configuration%20CI/badge.svg?branch=REFACTORv2)](https://github.com/waldirborbajr/nixos-config/actions/workflows/ci.yml)
+[![Nix Flake](https://img.shields.io/badge/nix-flakes-blue?logo=nixos&logoColor=white)](https://nixos.org)
+[![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
 # BORBA JR W – NixOS Configuration ❄️
 
@@ -295,6 +297,45 @@ nix develop
 - Python, Node.js
 
 **Documentação completa:** [DEVSHELLS.md](DEVSHELLS.md)
+
+---
+
+## 🔍 CI/CD & Quality Assurance
+
+This repository includes **automated validation** on every push/PR to ensure configurations are always working.
+
+### GitHub Actions CI Pipeline
+
+The CI workflow (`.github/workflows/ci.yml`) validates:
+
+✅ **Flake Check** - Validates flake syntax and dependencies  
+✅ **Build Configurations** - Tests both `macbook` and `dell` builds  
+✅ **Devshells** - Verifies all 11 development shells work  
+✅ **Format Check** - Ensures consistent Nix code formatting
+
+### Local Testing
+
+Before pushing, run all CI checks locally:
+
+```bash
+# Run all tests (recommended before pushing)
+./scripts/test-all.sh
+
+# Or run individual checks:
+./scripts/ci-checks.sh        # Flake validation
+./scripts/ci-build.sh macbook # Build specific host
+./scripts/ci-eval.sh          # Evaluate all configs
+nix fmt -- --check .          # Format check
+```
+
+### CI Status
+
+All commits are automatically validated:
+- ✅ **REFACTORv2 branch** - Protected, requires passing CI
+- ✅ **Pull Requests** - Must pass all checks before merge
+- 📦 **Artifacts** - Build logs stored for 7 days
+
+**Documentation:** [.github/workflows/README.md](.github/workflows/README.md)
 
 **Integração com direnv:** Veja [.envrc.example](.envrc.example)
 
