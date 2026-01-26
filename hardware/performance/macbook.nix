@@ -24,6 +24,9 @@
   ############################################
   # TLP Power Management (Laptop-specific)
   ############################################
+  # Disable power-profiles-daemon (conflicts with TLP)
+  services.power-profiles-daemon.enable = false;
+  
   services.tlp = {
     enable = true;
     settings = {

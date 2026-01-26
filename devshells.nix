@@ -57,7 +57,7 @@ flake-utils.lib.eachDefaultSystem (system:
         
         # Database clients
         postgresql
-        mariadb-client
+        mariadb.client
         sqlite
       ];
 
@@ -99,7 +99,7 @@ flake-utils.lib.eachDefaultSystem (system:
         
         # Database clients
         postgresql
-        mariadb-client
+        mariadb.client
         sqlite
       ];
 
@@ -136,7 +136,7 @@ flake-utils.lib.eachDefaultSystem (system:
         
         # Database clients
         postgresql
-        mariadb-client
+        mariadb.client
         sqlite
       ];
 
@@ -264,7 +264,7 @@ flake-utils.lib.eachDefaultSystem (system:
       buildInputs = with pkgs; [
         postgresql
         pgcli        # PostgreSQL CLI with autocomplete
-        pgFormatter  # SQL formatter
+        pgformatter  # SQL formatter (lowercase)
       ];
 
       shellHook = ''
@@ -350,7 +350,7 @@ flake-utils.lib.eachDefaultSystem (system:
         # PostgreSQL
         postgresql
         pgcli
-        pgFormatter
+        pgformatter
         
         # MariaDB
         mariadb
