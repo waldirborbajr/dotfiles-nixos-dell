@@ -1,5 +1,5 @@
 # home.nix
-{ config, pkgs, lib, hostname, ... }:  # ← recebe hostname do specialArgs
+{ config, pkgs, lib, hostname, ... }:
 
 let
   isMacbook = (hostname == "macbook-nixos") || (hostname == "macbook");
@@ -10,40 +10,32 @@ in
   home.homeDirectory = lib.mkForce "/home/borba";
 
   imports = [
-    ./modules/apps/zsh.nix
-    ./modules/apps/fzf.nix
-     ./modules/apps/bat.nix
-    ./modules/apps/git.nix
-    ./modules/apps/gh.nix
-    ./modules/apps/go.nix
-    ./modules/apps/rust.nix
+    # Apps consolidados
+    ./modules/apps/shell.nix       # zsh + fzf + bat
+    ./modules/apps/terminals.nix   # alacritty + kitty
+    ./modules/apps/dev-tools.nix   # git + gh + go + rust
 
-    # Niri só no macbook
-    ./modules/apps/niri.nix
-
-    ./modules/apps/alacritty.nix
-
+    # Niri no macbook (está em desktops agora)
+  ] ++ lib.optionals isMacbook [
+    ./modules/desktops/niri.nix
   ];
 
   home.packages = with pkgs; [
-    git
-    fzf
     zoxide
     eza
-    
     ripgrep
     fd
     tree
-    ] ++ lib.optionals isMacbook (with pkgs; [
-      waybar
-      mako
-      fuzzel
-      wl-clipboard
-      grim
-      slurp
-      swappy
-      playerctl
-    ]);
+  ] ++ lib.optionals isMacbook (with pkgs; [
+    waybar
+    mako
+    fuzzel
+    wl-clipboard
+    grim
+    slurp
+    swappy
+    playerctl
+  ]);
 
   home.sessionVariables = {
     EDITOR = "nvim";

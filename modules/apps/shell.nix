@@ -1,39 +1,7 @@
-# modules/apps/zsh.nix
+# modules/apps/shell.nix
+# Consolidado: zsh + fzf + bat
 { config, pkgs, lib, ... }:
 
-let
-  gitPrompt = pkgs.writeShellScriptBin "git-prompt" ''
-    #!/usr/bin/env bash
-    set -euo pipefail
-
-    if ! git rev-parse --is-inside-work-tree >/dev/null 2>&1; then exit 0; fi
-
-    branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || true)"
-    [ -n "''${branch:-}" ] || exit 0
-
-    st="$(git status --porcelain=v1 2>/dev/null || true)"
-    dirty=""
-    staged=""
-    untracked=""
-    if echo "$st" | grep -qE '^[ MARC?DU][MD] '; then staged="+"; fi
-    if echo "$st" | grep -qE '^[MDARC?DU][ MD] '; then dirty="*"; fi
-    if echo "$st" | grep -qE '^\?\? '; then untracked="?"; fi
-
-    ahead=""
-    behind=""
-    if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
-      counts="$(git rev-list --left-right --count HEAD...@{u} 2>/dev/null || true)"
-      # Corrige tabulação → transforma em espaço para parsing seguro
-      counts=$(echo "$counts" | tr '\t' ' ')
-      left=$(echo "$counts" | awk '{print $1}')
-      right=$(echo "$counts" | awk '{print $2}')
-      [ "''${left:-0}" -gt 0 ] && ahead="⇡''${left}"
-      [ "''${right:-0}" -gt 0 ] && behind="⇣''${right}"
-    fi
-
-    printf "%s%s%s%s%s" "$branch" "$staged" "$dirty" "$untracked" "$ahead$behind"
-  '';
-in
 {
   programs.zsh = {
     enable = true;
@@ -63,6 +31,9 @@ in
       gd = "git diff";
       gds = "git diff --staged";
       runfree = ''"$@" >/dev/null 2>&1 & disown'';
+      cat = "bat";
+      fzf-preview = "fzf --preview 'bat --color=always {}'";
+      fzf-history = "history | fzf";
     };
 
     initContent = ''
@@ -92,11 +63,9 @@ in
       git_seg() {
         local s branch dirty staged untracked ahead behind color
 
-        # Branch name
         branch="$(git symbolic-ref --quiet --short HEAD 2>/dev/null || git rev-parse --short HEAD 2>/dev/null || true)"
         [ -n "$branch" ] || return 0
 
-        # Status
         local st="$(git status --porcelain=v1 2>/dev/null || true)"
         dirty=""
         staged=""
@@ -105,7 +74,6 @@ in
         if echo "$st" | grep -qE '^[MDARC?DU][ MD] '; then dirty="*"; fi
         if echo "$st" | grep -qE '^\?\? '; then untracked="?"; fi
 
-        # Ahead / Behind (push / pull) – com números
         ahead=""
         behind=""
         if git rev-parse --abbrev-ref --symbolic-full-name @{u} >/dev/null 2>&1; then
@@ -117,18 +85,16 @@ in
           [ "''${right:-0}" -gt 0 ] && behind="⇣''${right}"
         fi
 
-        # Cores rápidas e visuais
         if [ -n "$ahead" ]; then
-          color="%F{green}"    # verde = tem para subir (push)
+          color="%F{green}"
         elif [ -n "$behind" ]; then
-          color="%F{red}"      # vermelho = tem para baixar (pull)
+          color="%F{red}"
         elif [ -n "$dirty$staged$untracked" ]; then
-          color="%F{yellow}"   # amarelo = dirty/staged/untracked
+          color="%F{yellow}"
         else
-          color="%F{magenta}"  # magenta = clean
+          color="%F{magenta}"
         fi
 
-        # Monta o segmento
         s="''${color}''${branch}''${staged}''${dirty}''${untracked}''${ahead}''${behind}%f"
         echo " $s"
       }
@@ -144,7 +110,7 @@ in
         PROMPT="%F{cyan}%~%f$(git_seg)$sym "
       }
 
-      # Integração fzf (loose coupling)
+      # Integração fzf
       if command -v fzf >/dev/null 2>&1; then
         source ${pkgs.fzf}/share/fzf/key-bindings.zsh
         source ${pkgs.fzf}/share/fzf/completion.zsh
@@ -152,27 +118,20 @@ in
     '';
   };
 
+  # bat e fzf configurados
+  programs.bat.enable = true;
+
   home.packages = with pkgs; [
-    git
     fzf
-    zoxide
-    eza
     bat
-    ripgrep
     fd
     tree
   ];
 
   home.sessionVariables = {
-    EDITOR = "nvim";
-    VISUAL = "nvim";
-    SUDO_EDITOR = "nvim";
-    BROWSER = "com.brave.Browser";
-    TERMINAL = "kitty";
-    NPM_CONFIG_UPDATE_NOTIFIER = "false";
-    NPM_CONFIG_FUND = "false";
-    NPM_CONFIG_AUDIT = "false";
-    PYTHONDONTWRITEBYTECODE = "1";
-    PIP_DISABLE_PIP_VERSION_CHECK = "1";
+    FZF_DEFAULT_OPTS = "--info=inline-right --ansi --layout=reverse --border=rounded --height=60%";
+    FZF_CTRL_T_COMMAND = "fd --type f --hidden --follow --exclude .git || find . -type f";
+    FZF_CTRL_T_OPTS = "--preview 'bat --color=always --style=numbers --line-range=:500 {}'";
+    FZF_ALT_C_OPTS = "--preview 'tree -C {} | head -200'";
   };
 }

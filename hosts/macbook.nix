@@ -1,5 +1,5 @@
 # hosts/macbook.nix
-# ---
+# Config completa do host MacBook
 { config, pkgs, lib, ... }:
 
 {
@@ -9,25 +9,17 @@
   # Hardware & Performance
   ############################################
   imports = [
-    ../modules/hardware/macbook.nix
-    ../modules/performance/macbook.nix
-    ../hardware-configuration-macbook.nix
+    ../hardware/macbook.nix
+    ../hardware/performance/macbook.nix
+    ../hardware/macbook-hw-config.nix
 
     # Desktop apenas no MacBook
-    # disabled to focus on Niri and avoid config conflict
-    # ../modules/desktops/hyprland/default.nix
     ../modules/desktops/gnome.nix
-    # ../modules/desktops/niri/default.nix
     ../modules/autologin.nix
 
+    # Apps system-level
     ../modules/apps/kitty.nix
-    # ../modules/apps/alacritty.nix
-    # ../modules/apps/zsh.nix
     ../modules/apps/tmux.nix
-
-    #../modules/apps/uv.nix
-    #../modules/apps/poetry.nix
-
   ];
 
   ############################################
@@ -36,7 +28,7 @@
   networking.hostName = "macbook-nixos";
 
   ############################################
-  # GNOME services (safe)
+  # GNOME services
   ############################################
   services.gnome.gnome-keyring.enable = true;
 
@@ -51,9 +43,6 @@
   ############################################
   console.keyMap = "us";
 
-  ############################################
-  # X11 layout (needed for GDM / GNOME selection screen)
-  ############################################
   services.xserver.enable = true;
   services.xserver.xkb = {
     layout = "us";
@@ -61,15 +50,12 @@
   };
 
   ############################################
-  # Permitir pacote Broadcom STA inseguro
+  # Broadcom Wi-Fi (insecure package)
   ############################################
   nixpkgs.config.permittedInsecurePackages = [
     "broadcom-sta-6.30.223.271-59-6.12.66"
   ];
 
-  ############################################
-  # Pacotes extras para Wi-Fi e debug
-  ############################################
   environment.systemPackages = with pkgs; [
     iw
     wirelesstools

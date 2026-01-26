@@ -1,24 +1,21 @@
-# modules/apps/alacritty.nix
+# modules/apps/terminals.nix
+# Consolidado: Alacritty + Kitty
 { config, pkgs, lib, ... }:
 
 {
-  # Pacotes Nix-managed
+  # ========================================
+  # Alacritty (Home Manager)
+  # ========================================
   home.packages = with pkgs; [
     alacritty
-    nerd-fonts.jetbrains-mono  # JetBrainsMono Nerd Font
+    kitty
+    nerd-fonts.jetbrains-mono
   ];
 
-  # Config declarativa (alacritty.toml em ~/.config/alacritty/)
   xdg.configFile."alacritty/alacritty.toml".text = ''
-    # =========================
-    # Ambiente
-    # =========================
     [env]
     TERM = "xterm-256color"
 
-    # =========================
-    # Janela
-    # =========================
     [window]
     padding = { x = 8, y = 8 }
     decorations = "None"
@@ -28,24 +25,15 @@
     resize_increments = true
     startup_mode = "Fullscreen"
 
-    # =========================
-    # Performance / Debug
-    # =========================
     [debug]
     render_timer = false
     persistent_logging = false
     log_level = "Off"
 
-    # =========================
-    # Shell (NO tmux autostart)
-    # =========================
     [terminal.shell]
     program = "${pkgs.zsh}/bin/zsh"
     args = ["-l"]
 
-    # =========================
-    # Fonte
-    # =========================
     [font]
     size = 13.0
     builtin_box_drawing = true
@@ -55,24 +43,15 @@
     offset = { x = 0, y = 1 }
     glyph_offset = { x = 0, y = 0 }
 
-    # =========================
-    # Cursor
-    # =========================
     [cursor]
     unfocused_hollow = true
     style = "Beam"
     vi_mode_style = "Block"
 
-    # =========================
-    # Scrolling
-    # =========================
     [scrolling]
     history = 5000
     multiplier = 3
 
-    # =========================
-    # Cores — Catppuccin Mocha
-    # =========================
     [colors.primary]
     background = "#1e1e2e"
     foreground = "#cdd6f4"
@@ -96,11 +75,5 @@
     magenta = "#f5c2e7"
     cyan    = "#94e2d5"
     white   = "#a6adc8"
-
-  
   '';
-
-  # Opcional: força sobrescrita na primeira ativação (se já tiver arquivo antigo)
-  # Remova ou comente após o primeiro rebuild bem-sucedido
-  # xdg.configFile."alacritty/alacritty.toml".force = true;
 }

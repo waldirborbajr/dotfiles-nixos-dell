@@ -4,20 +4,14 @@
 { ... }:
 {
   imports = [
-    # Nixpkgs global + overlays/unfree
-    ./modules/nixpkgs.nix
-
-    # Base system (boot, locale, time, security básica, etc.)
-    ./modules/base.nix
-
-    # Networking (hosts, firewall, resolved, etc.)
-    ./modules/networking.nix
-
-    # Áudio (pipewire, etc.)
-    ./modules/audio.nix
-
-    # Fontes globais
-    ./modules/fonts.nix
+    # Sistema base (em modules/system/)
+    ./modules/system/nixpkgs.nix
+    ./modules/system/base.nix
+    ./modules/system/networking.nix
+    ./modules/system/audio.nix
+    ./modules/system/fonts.nix
+    ./modules/system/ssh.nix
+    ./modules/system/system-packages.nix
 
     # Features on-demand (devops tools, qemu)
     ./modules/features/devops.nix
@@ -26,19 +20,12 @@
     # Usuário principal
     ./modules/users/borba.nix
 
-    # Pacotes globais do sistema (se precisar, senão mover para HM)
-    ./modules/system-packages.nix
+    # Languages (system-level)
+    ./modules/languages/python.nix
+    ./modules/languages/nodejs.nix
 
-    # Python/NodeJS global (se for usado por serviços ou múltiplos users)
-    ./modules/python/default.nix
-    ./modules/nodejs/default.nix
-
-    # Flatpak + portal (precisa de system services)
-    ./modules/flatpak/enable.nix
-    ./modules/flatpak/packages.nix
+    # Flatpak + portal (system services)
+    ./modules/apps/flatpak.nix
     ./modules/xdg-portal.nix
-
-    # SSH global (keys, config)
-    ./modules/ssh.nix
   ];
 }
