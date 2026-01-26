@@ -97,26 +97,7 @@
     cyan    = "#94e2d5"
     white   = "#a6adc8"
 
-    # =========================
-    # Teclado
-    # =========================
-    [keyboard]
-    bindings = [
-      # Clipboard
-      { key = "C", mods = "Control|Shift", action = "Copy" }
-      { key = "V", mods = "Control|Shift", action = "Paste" }
-      # Fonte
-      { key = "Key0", mods = "Control", action = "ResetFontSize" }
-      { key = "Equals", mods = "Control", action = "IncreaseFontSize" }
-      { key = "Minus", mods = "Control", action = "DecreaseFontSize" }
-      # Fullscreen
-      { key = "F11", action = "ToggleFullscreen" }
-      # Clear + scrollback
-      { key = "L", mods = "Control", chars = "\u000c" }
-      # Scroll manual
-      { key = "K", mods = "Control|Shift", action = "ScrollPageUp" }
-      { key = "J", mods = "Control|Shift", action = "ScrollPageDown" }
-    ]
+  
   '';
 
   # Opcional: força sobrescrita na primeira ativação (se já tiver arquivo antigo)
