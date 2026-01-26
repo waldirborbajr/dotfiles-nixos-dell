@@ -112,7 +112,7 @@ in
       # Modern CLI Utilities
       ##########################################
       eza
-      bat
+      
       fd
       ripgrep
       yazi
