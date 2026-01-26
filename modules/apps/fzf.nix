@@ -6,7 +6,7 @@
   home.packages = with pkgs; [
     fzf
     fd          # mais rápido que find para Ctrl+T
-    bat         # preview de arquivos
+    
     tree        # preview de diretórios no Alt+C
   ];
 
