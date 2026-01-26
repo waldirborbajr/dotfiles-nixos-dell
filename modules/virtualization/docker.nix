@@ -1,47 +1,25 @@
-# modules/containers/docker.nix
+# modules/virtualization/docker.nix
+# Docker container runtime
+# Pode ser desabilitado via: virtualisation.docker.enable = false;
+
 { config, pkgs, lib, ... }:
 
 {
   virtualisation.docker = {
-    enable = true;
-    enableOnBoot = true;
+    enable = lib.mkDefault true;
+    enableOnBoot = lib.mkDefault true;
     daemon.settings.features.buildkit = true;
   };
 
-  environment.systemPackages =
-    lib.optionals config.virtualisation.docker.enable [
-      pkgs.docker
-      pkgs.docker-compose
-      pkgs.docker-buildx
-      pkgs.lazydocker
-    ];
+  environment.systemPackages = lib.mkIf config.virtualisation.docker.enable [
+    pkgs.docker
+    pkgs.docker-compose
+    pkgs.docker-buildx
+    pkgs.lazydocker
+  ];
 
-  users.users.borba.extraGroups = lib.mkAfter [ "docker" ];
+  users.users.borba.extraGroups = lib.mkIf config.virtualisation.docker.enable [
+    "docker"
+  ];
 }
-
-
-# # modules/containers/docker.nix
-# # ---
-# { config, pkgs, lib, ... }:
-
-# {
-#   virtualisation.docker = {
-#     enable = true;
-#     enableOnBoot = true;
-#     daemon.settings = {
-#       features = {
-#         buildkit = true;
-#       };
-#     };
-#   };
-
-#   environment.systemPackages = with pkgs; [
-#     docker
-#     docker-compose
-#     docker-buildx
-#     lazydocker
-#   ];
-
-#   users.users.borba.extraGroups = lib.mkAfter [ "docker" ];
-# }
 

@@ -1,50 +1,25 @@
-# modules/containers/podman.nix
-# ---
+# modules/virtualization/podman.nix
+# Podman container runtime (Docker alternative)
+# Pode ser desabilitado via: virtualisation.podman.enable = false;
+
 { config, pkgs, lib, ... }:
 
 {
   virtualisation.podman = {
-    enable = true;
-    dockerCompat = true;
+    enable = lib.mkDefault true;
+    dockerCompat = true;  # Alias 'docker' command to podman
     defaultNetwork.settings.dns_enabled = true;
   };
 
-  environment.systemPackages =
-    lib.optionals config.virtualisation.podman.enable (with pkgs; [
-      podman
-      podman-compose
-      buildah
-      skopeo
-    ]);
+  environment.systemPackages = lib.mkIf config.virtualisation.podman.enable [
+    pkgs.podman
+    pkgs.podman-compose
+    pkgs.buildah
+    pkgs.skopeo
+  ];
 
-  services.userManagement.enable = true;
-
-  users.users.borba.linger = true;
+  # Podman rootless support
+  users.users.borba = lib.mkIf config.virtualisation.podman.enable {
+    linger = true;
+  };
 }
-
-
-# # modules/containers/podman.nix
-# # ---
-# { config, pkgs, lib, ... }:
-
-# {
-#   virtualisation.podman = {
-#     enable = true;
-#     dockerCompat = true;
-#     defaultNetwork.settings.dns_enabled = true;
-#   };
-
-#   environment.systemPackages = with pkgs; [
-#     podman
-#     podman-compose
-#     buildah
-#     skopeo
-#   ];
-
-#   # Podman rootless correto
-#   services.userManagement.enable = true;
-
-#   users.users.borba = {
-#     linger = true;
-#   };
-# }

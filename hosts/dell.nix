@@ -17,10 +17,9 @@
 
   ############################################
   # Hard-disable virtualization (slow machine)
+  # All virtualization services disabled by default
+  # in modules/virtualization/, no overrides needed
   ############################################
-  virtualisation.docker.enable = lib.mkForce false;
-  services.k3s.enable = lib.mkForce false;
-  virtualisation.libvirtd.enable = lib.mkForce false;
 
   ############################################
   # Host identity

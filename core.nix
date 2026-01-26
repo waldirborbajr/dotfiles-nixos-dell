@@ -16,6 +16,9 @@
     ./modules/system/ssh.nix
     ./modules/system/system-packages.nix
 
+    # Virtualization & Containers (Docker/Podman/QEMU/K3s)
+    ./modules/virtualization
+
     # Features on-demand (devops tools, qemu)
     ./modules/features/devops.nix
     ./modules/features/qemu.nix

@@ -1,12 +1,13 @@
-# modules/containers/k3s.nix
-# ---
+# modules/virtualization/k3s.nix
+# K3s - Lightweight Kubernetes cluster
+# Pode ser desabilitado via: services.k3s.enable = false;
+
 { config, pkgs, lib, ... }:
 
 {
   services.k3s = {
-    enable = true;
+    enable = lib.mkDefault false;  # Disabled by default
     role = "server";
-
     extraFlags = [
       "--write-kubeconfig-mode=644"
       "--disable=traefik"
@@ -14,35 +15,13 @@
     ];
   };
 
-  networking.firewall.allowedTCPPorts =
-    lib.optionals config.services.k3s.enable [
-      6443
-    ];
+  networking.firewall.allowedTCPPorts = lib.mkIf config.services.k3s.enable [
+    6443  # Kubernetes API
+  ];
+
+  environment.systemPackages = lib.mkIf config.services.k3s.enable [
+    pkgs.k9s
+    pkgs.kubectl
+    pkgs.kubernetes-helm
+  ];
 }
-
-# # modules/containers/k3s.nix
-# # ---
-# { config, pkgs, ... }:
-
-# {
-#   ############################################
-#   # K3s (single-node workstation cluster)
-#   ############################################
-#   services.k3s = {
-#     enable = true;
-#     role = "server";
-
-#     extraFlags = [
-#       "--write-kubeconfig-mode=644"
-#       "--disable=traefik"
-#       "--disable=servicelb"
-#     ];
-#   };
-
-#   ############################################
-#   # Firewall
-#   ############################################
-#   networking.firewall.allowedTCPPorts = [
-#     6443 # Kubernetes API
-#   ];
-# }
