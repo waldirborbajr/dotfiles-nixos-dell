@@ -10,7 +10,25 @@ DevShells são **ambientes de desenvolvimento isolados** definidos no `flake.nix
 - ✅ São reproduzíveis entre máquinas
 - ✅ Perfeitos para CI/CD
 
-## 🚀 Shells Disponíveis
+## � Estrutura Modular
+
+As DevShells foram extraídas para um arquivo dedicado para manter o `flake.nix` limpo:
+
+```
+/workspaces/nixos-config/
+├── flake.nix          # ~130 linhas (importa devshells.nix)
+├── devshells.nix      # ~280 linhas (definições completas)
+├── core.nix
+└── home.nix
+```
+
+**Benefícios:**
+- ✅ `flake.nix` 60% menor e mais legível
+- ✅ DevShells organizadas logicamente em um arquivo
+- ✅ Separação de responsabilidades
+- ✅ Manutenção simplificada
+
+## �🚀 Shells Disponíveis
 
 ### 1. **Default** (desenvolvimento geral)
 ```bash
@@ -247,7 +265,7 @@ cd ../worker && cargo run
 
 ### Adicionar dependências ao shell Rust
 
-Edite `flake.nix`:
+Edite `devshells.nix`:
 
 ```nix
 devShells.rust = pkgs.mkShell {
@@ -265,6 +283,8 @@ devShells.rust = pkgs.mkShell {
 
 ### Criar shell para linguagem específica
 
+Edite `devshells.nix` e adicione uma nova entrada:
+
 ```nix
 devShells.python = pkgs.mkShell {
   buildInputs = with pkgs; [
@@ -279,6 +299,8 @@ devShells.python = pkgs.mkShell {
   '';
 };
 ```
+
+**Nota:** Todas as definições de DevShells estão em `devshells.nix`, não no `flake.nix`.
 
 ---
 
