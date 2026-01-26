@@ -41,6 +41,26 @@
     warn-dirty = false;
     keep-outputs = true;
     keep-derivations = true;
+    
+    # Build optimization
+    max-jobs = "auto";
+    cores = 0;  # 0 = use all available cores
+    builders-use-substitutes = true;
+    
+    # Parallel downloads
+    http-connections = 50;
+    max-substitution-jobs = 8;
+  };
+
+  ############################################
+  # Earlyoom: Prevent system freezes
+  ############################################
+  
+  services.earlyoom = {
+    enable = true;
+    enableNotifications = true;
+    freeMemThreshold = 5;  # Kill when <5% RAM free
+    freeSwapThreshold = 10;
   };
 
   ############################################

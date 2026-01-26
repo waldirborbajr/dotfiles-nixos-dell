@@ -28,15 +28,17 @@ in
 
       security.polkit.enable = true;
 
-      # Tooling (opcional aqui; se já estiver no system-packages, pode remover daqui)
+      # Tooling (only installed when QEMU is enabled)
       environment.systemPackages = with pkgs; [
         virt-manager
         virt-viewer
         qemu
+        qemu_kvm
         spice
         spice-gtk
         spice-protocol
-        virtio-win
+        virtio-win    # Windows drivers (~500MB)
+        OVMF          # UEFI firmware for VMs
       ];
 
       users.users.borba.extraGroups = lib.mkAfter [ "libvirtd" "kvm" ];

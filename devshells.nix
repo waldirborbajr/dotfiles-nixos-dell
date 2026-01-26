@@ -378,6 +378,52 @@ flake-utils.lib.eachDefaultSystem (system:
     };
 
     # ==========================================
+    # DevShell: DevOps Tools
+    # ==========================================
+    devShells.devops = pkgs.mkShell {
+      name = "devops";
+      
+      buildInputs = with pkgs; [
+        # Container tools
+        k9s
+        cri-tools
+        
+        # Development workflow
+        commitizen
+        devcontainer
+        
+        # Kubernetes
+        kubectl
+        kubernetes-helm
+        kubectx
+        kubecolor
+        stern
+        
+        # Infrastructure as Code
+        terraform
+        ansible
+      ];
+
+      shellHook = ''
+        echo "🚀 DevOps Development Environment"
+        echo ""
+        echo "Container tools:"
+        echo "  - k9s (Kubernetes TUI)"
+        echo "  - cri-tools (crictl)"
+        echo ""
+        echo "Kubernetes:"
+        echo "  - kubectl, helm, kubectx, stern"
+        echo ""
+        echo "IaC:"
+        echo "  - terraform, ansible"
+        echo ""
+        echo "Workflow:"
+        echo "  - commitizen (git commits)"
+        echo "  - devcontainer (VS Code)"
+      '';
+    };
+
+    # ==========================================
     # DevShell: Default
     # ==========================================
     devShells.default = pkgs.mkShell {
@@ -398,6 +444,7 @@ flake-utils.lib.eachDefaultSystem (system:
         echo "  nix develop .#lua          → Lua + LuaJIT"
         echo "  nix develop .#nix-dev      → Nix development tools"
         echo "  nix develop .#fullstack    → Rust + Go + Node"
+        echo "  nix develop .#devops       → K8s, Terraform, Ansible"
         echo ""
         echo "Databases:"
         echo "  nix develop .#postgresql   → PostgreSQL + tools"

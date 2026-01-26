@@ -20,7 +20,7 @@
   # GNOME Services (minimal but complete)
   # ============================================
   services.gnome = {
-    core-apps.enable = true;
+    core-apps.enable = false;  # Disabled: Calendar, Contacts, Clock, etc. (~500MB)
     gnome-keyring.enable = true;
     gnome-browser-connector.enable = true;  # For GNOME Shell extensions
   };

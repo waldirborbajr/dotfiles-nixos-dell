@@ -38,7 +38,8 @@ let
   ];
 in
 {
-  services.flatpak.enable = true;
+  # Enable only when needed to save RAM (~100-200MB)
+  services.flatpak.enable = lib.mkDefault false;
 
   environment.systemPackages = lib.optionals config.services.flatpak.enable [
     pkgs.flatpak

@@ -31,8 +31,7 @@ in
       # Shells & Multiplexers
       ##########################################
       zsh
-      fish
-      #tmux
+      # NOTE: tmux configured via home-manager in modules/apps/tmux.nix
       tmuxifier
       zellij
 
@@ -48,22 +47,12 @@ in
       #git
       #gh
       lazygit
-      commitizen
-      devcontainer
 
       ##########################################
       # Virtualization / Kubernetes (non-runtime)
       ##########################################
-      k9s
-      cri-tools
-
-      virt-manager
-      virt-viewer
-      qemu
-      virtio-win
-      spice
-      spice-gtk
-      spice-protocol
+      # NOTE: k9s, cri-tools, devcontainer moved to devshells
+      # QEMU/virt-manager moved to conditional qemu.nix module
 
       ##########################################
       # Languages / Toolchains
@@ -122,15 +111,14 @@ in
       sd
       jq
       fx
+      # HTTP client (choose one: httpie is most user-friendly)
       httpie
-      curlie
       fzf
       direnv
       entr
       procs
-      bottom
+      # System monitor (btop is most feature-complete)
       btop
-      htop
 
       ##########################################
       # Clipboard / Wayland

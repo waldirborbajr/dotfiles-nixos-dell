@@ -16,7 +16,7 @@ done
 
 echo "\n==> Evaluating all devshells"
 
-SHELLS=("default" "rust" "rust-nightly" "go" "lua" "nix-dev" "fullstack" "postgresql" "mariadb" "sqlite" "databases")
+SHELLS=("default" "rust" "rust-nightly" "go" "lua" "nix-dev" "fullstack" "devops" "postgresql" "mariadb" "sqlite" "databases")
 
 for SHELL in "${SHELLS[@]}"; do
     echo "\nEvaluating devshell: $SHELL"

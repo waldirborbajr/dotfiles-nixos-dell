@@ -7,7 +7,7 @@
 {
   virtualisation.docker = {
     enable = lib.mkDefault true;
-    enableOnBoot = lib.mkDefault true;
+    enableOnBoot = lib.mkDefault false;  # Start on-demand to save RAM (~300MB)
     daemon.settings.features.buildkit = true;
   };
 

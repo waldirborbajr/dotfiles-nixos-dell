@@ -3,6 +3,18 @@
 
 {
   ############################################
+  # Intel GPU Hardware Acceleration (VA-API)
+  ############################################
+  hardware.graphics = {
+    enable = true;
+    extraPackages = with pkgs; [
+      intel-media-driver  # Modern Intel (iHD)
+      intel-vaapi-driver  # Older Intel (i965) - MacBook 2011 uses this
+      libvdpau-va-gl
+    ];
+  };
+
+  ############################################
   # Broadcom / Wireless
   ############################################
   hardware.enableRedistributableFirmware = true;

@@ -134,7 +134,24 @@ nix develop .#nix-dev
 
 ---
 
-### 8. **PostgreSQL**
+### 8. **DevOps**
+```bash
+nix develop .#devops
+```
+
+**Includes:**
+- Container tools: k9s, cri-tools
+- Kubernetes: kubectl, helm, kubectx, stern
+- Infrastructure as Code: terraform, ansible
+- Workflow: commitizen, devcontainer
+
+**Ideal for:** DevOps workflows, Kubernetes management, Infrastructure automation
+
+**Note:** Docker/Podman runtime is managed separately in `modules/virtualization/`
+
+---
+
+### 9. **PostgreSQL**
 ```bash
 nix develop .#postgresql
 ```
@@ -157,7 +174,7 @@ psql mydb
 
 ---
 
-### 9. **MariaDB**
+### 10. **MariaDB**
 ```bash
 nix develop .#mariadb
 ```
@@ -179,7 +196,7 @@ mysql -u root
 
 ---
 
-### 10. **SQLite**
+### 11. **SQLite**
 ```bash
 nix develop .#sqlite
 ```
@@ -200,7 +217,7 @@ litecli mydb.db
 
 ---
 
-### 11. **All Databases**
+### 12. **All Databases**
 ```bash
 nix develop .#databases
 ```

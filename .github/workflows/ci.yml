@@ -125,6 +125,7 @@ jobs:
           - lua
           - nix-dev
           - fullstack
+          - devops
           - postgresql
           - mariadb
           - sqlite
