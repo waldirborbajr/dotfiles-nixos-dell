@@ -5,7 +5,7 @@ Centralized theme configuration for the entire NixOS system.
 ## Overview
 
 This module provides a single source of truth for theming across:
-- **Terminals** (Alacritty, Kitty)
+- **Terminal** (Alacritty)
 - **File Manager** (Yazi)
 - **Desktop Environments** (Hyprland, GNOME, i3, Niri)
 - **CLI Tools** (bat, fzf, and more)
@@ -88,7 +88,6 @@ sudo nixos-rebuild switch --flake .#hostname
 | Application | Auto-themed | Location |
 |-------------|-------------|----------|
 | Alacritty   | ✅ | [`modules/apps/terminals.nix`](../apps/terminals.nix) |
-| Kitty       | ✅ | [`modules/apps/terminals.nix`](../apps/terminals.nix) |
 | Yazi        | ✅ | [`modules/apps/yazi.nix`](../apps/yazi.nix) |
 | Bat         | ✅ | [`modules/apps/shell.nix`](../apps/shell.nix) |
 | FZF         | ✅ | [`modules/apps/shell.nix`](../apps/shell.nix) |

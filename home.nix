@@ -15,7 +15,7 @@ in
 
     # Apps consolidados
     ./modules/apps/shell.nix       # zsh + fzf + bat
-    ./modules/apps/terminals.nix   # alacritty + kitty
+    ./modules/apps/terminals.nix   # alacritty terminal
     ./modules/apps/dev-tools.nix   # git + gh (core tools)
     ./modules/apps/ripgrep.nix     # ripgrep with DevOps config
     ./modules/apps/yazi.nix        # yazi file manager with DevOps optimizations
@@ -53,7 +53,7 @@ in
     VISUAL = "nvim";
     SUDO_EDITOR = "nvim";
     BROWSER = "com.brave.Browser";
-    TERMINAL = "kitty";
+    TERMINAL = "alacritty";
     NPM_CONFIG_UPDATE_NOTIFIER = "false";
     NPM_CONFIG_FUND = "false";
     NPM_CONFIG_AUDIT = "false";

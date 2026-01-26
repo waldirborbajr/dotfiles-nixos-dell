@@ -100,7 +100,7 @@ This repository is the **single source of truth** for my personal Linux infrastr
 │   │   ├── dev-tools.nix    # git + gh + go + rust
 │   │   ├── flatpak.nix      # flatpak enable + packages
 │   │   ├── shell.nix        # zsh + fzf + bat
-│   │   ├── terminals.nix    # alacritty + kitty
+│   │   ├── terminals.nix    # alacritty
 │   │   └── tmux.nix
 │   │
 │   ├── desktops/         # ✨ Desktop environments
@@ -180,7 +180,7 @@ Flags are **independent** and can be combined freely.
 
 **Applications** (`modules/apps/`)
 - `shell.nix` - ZSH + FZF + bat configuration
-- `terminals.nix` - Alacritty + Kitty terminal emulators
+- `terminals.nix` - Alacritty terminal emulator
 - `dev-tools.nix` - Git, GitHub CLI, Go, Rust toolchains
 - `flatpak.nix` - Flatpak service + application list
 - `tmux.nix` - Terminal multiplexer
@@ -217,7 +217,7 @@ Flags are **independent** and can be combined freely.
 1. **Consolidated Modules**: Related functionality grouped together
    - Shell tools (zsh + fzf + bat) in one module
    - Dev tools (git + gh + go + rust) in one module
-   - Terminals (alacritty + kitty) in one module
+   - Terminal (alacritty) configuration
 
 2. **Logical Organization**: 
    - System-level configs in `modules/system/`
