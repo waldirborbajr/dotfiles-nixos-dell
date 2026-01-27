@@ -3,12 +3,15 @@
 { config, pkgs, lib, ... }:
 
 {
+  # Instalar o fastfetch
+  home.packages = with pkgs; [ fastfetch ];
+
   # Configuração customizada do fastfetch
   home.file.".config/fastfetch/config.jsonc".text = ''
     {
       "$schema": "https://github.com/fastfetch-cli/fastfetch/raw/dev/doc/json_schema.json",
       "logo": {
-        "type": "auto",
+        "type": "nixos",
         "padding": {
           "top": 1,
           "left": 2
@@ -60,6 +63,11 @@
         {
           "type": "terminalfont",
           "key": "Font",
+          "keyColor": "cyan"
+        },
+        {
+          "type": "de",
+          "key": "DE",
           "keyColor": "cyan"
         },
         {

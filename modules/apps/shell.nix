@@ -116,8 +116,8 @@
         source ${pkgs.fzf}/share/fzf/completion.zsh
       fi
 
-      # Fastfetch automático apenas no Alacritty
-      if [[ "$TERM" == "alacritty" ]] && command -v fastfetch >/dev/null 2>&1; then
+      # Fastfetch automático sempre que o zsh iniciar
+      if command -v fastfetch >/dev/null 2>&1; then
         fastfetch
       fi
     '';

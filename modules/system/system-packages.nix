@@ -101,7 +101,6 @@ in
       # Modern CLI Utilities
       ##########################################
       eza
-      fastfetch  # Modern system info tool (successor to neofetch)
       fd
       dust
       ncdu
