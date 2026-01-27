@@ -84,7 +84,7 @@
               imports = [
                 ./home.nix
                 # Theme: Catppuccin Home Manager module
-                catppuccin.homeManagerModules.catppuccin
+                catppuccin.homeModules.catppuccin
                 # Outros módulos podem usar hostname se necessário
               ];
             };

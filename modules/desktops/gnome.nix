@@ -29,7 +29,7 @@
   # Performance Optimizations
   # ============================================
   # Disable unnecessary GNOME services
-  services.gnome.core-utilities.enable = lib.mkDefault false;  # Calendar, Contacts, etc.
+  services.gnome.core-apps.enable = lib.mkDefault false;  # Calendar, Contacts, etc.
   services.gnome.games.enable = false;
   
   # Exclude bloat packages
