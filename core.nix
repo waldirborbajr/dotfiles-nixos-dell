@@ -15,6 +15,7 @@
     ./modules/system/fonts.nix
     ./modules/system/ssh.nix
     ./modules/system/system-packages.nix
+    ./modules/system/serial-devices.nix
 
     # Virtualization & Containers (Docker/Podman/QEMU/K3s)
     ./modules/virtualization
