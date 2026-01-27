@@ -116,19 +116,19 @@ Edit hosts/<newhost>.nix and adjust the following:
 
 Edit flake.nix and add a new entry under nixosConfigurations using the mkHost helper function.
 
-The current flake uses a simplified helper function. Add your host like this:
+The current flake uses a simplified helper function. Add your host like this (replace `newhost` with your actual hostname):
 
 ```nix
 nixosConfigurations = {
   macbook = mkHost { hostname = "macbook"; system = "x86_64-linux"; };
   dell = mkHost { hostname = "dell"; system = "x86_64-linux"; };
-  <newhost> = mkHost { hostname = "<newhost>"; system = "x86_64-linux"; };
+  newhost = mkHost { hostname = "newhost"; system = "x86_64-linux"; };
 };
 ```
 
 For ARM-based systems (like Apple Silicon or Raspberry Pi), use:
 ```nix
-  <newhost> = mkHost { hostname = "<newhost>"; system = "aarch64-linux"; };
+  newhost = mkHost { hostname = "newhost"; system = "aarch64-linux"; };
 ```
 
 The mkHost function automatically:
