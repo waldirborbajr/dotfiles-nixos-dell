@@ -12,19 +12,19 @@ let
     window-rule {
       match app-id=r#"^org\.gnome\.Calculator$"#
       default-column-width { fixed 400; }
-      open-floating
+      open-floating true
     }
 
     window-rule {
       match app-id=r#"^pavucontrol$"#
       default-column-width { fixed 600; }
-      open-floating
+      open-floating true
     }
 
     window-rule {
       match app-id=r#"^nm-connection-editor$"#
       default-column-width { fixed 500; }
-      open-floating
+      open-floating true
     }
 
     window-rule {
@@ -44,7 +44,7 @@ let
 
     window-rule {
       match title=r#"^Picture-in-Picture$"#
-      open-floating
+      open-floating true
       open-on-output "eDP-1"
     }
   '';

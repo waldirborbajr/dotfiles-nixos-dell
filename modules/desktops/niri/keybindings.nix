@@ -16,8 +16,7 @@ let
     // KEYBINDINGS
     // ============================================
     binds {
-      // Mod key
-      Mod { Super; }
+      // Mod = Super (Windows key)
 
       // ========================================
       // APPLICATIONS
