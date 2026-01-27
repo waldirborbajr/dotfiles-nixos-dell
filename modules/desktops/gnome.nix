@@ -73,12 +73,9 @@
   # ============================================
   # GNOME provides its own portal implementation
   # xdg-desktop-portal-gnome is automatically enabled with GNOME
-  xdg.portal = {
-    enable = true;
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk  # Fallback for non-GNOME apps
-    ];
-  };
+  xdg.portal.extraPortals = with pkgs; [
+    xdg-desktop-portal-gtk  # Fallback for non-GNOME apps
+  ];
 
   # ============================================
   # Essential GNOME Packages

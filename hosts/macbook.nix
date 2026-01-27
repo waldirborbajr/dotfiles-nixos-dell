@@ -13,8 +13,9 @@
     ../hardware/performance/macbook.nix
     ../hardware/macbook-hw-config.nix
 
-    # Desktop apenas no MacBook
+    # Desktops - Multiple sessions available at GDM
     ../modules/desktops/gnome.nix
+    ../modules/desktops/niri/system.nix  # Niri as alternative session
     ../modules/autologin.nix
   ];
 

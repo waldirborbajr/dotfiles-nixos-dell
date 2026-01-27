@@ -6,7 +6,8 @@ This directory contains a modular Niri configuration, organized by responsibilit
 
 ```
 modules/desktops/niri/
-├── default.nix          # Main module, imports all sub-modules
+├── default.nix          # Main module, imports all sub-modules (home-manager)
+├── system.nix           # System-level config for GDM session selector
 ├── config.nix           # Generates main config.kdl with includes
 ├── input.nix            # Input devices (keyboard, mouse, touchpad)
 ├── output.nix           # Monitor/display configuration
@@ -19,6 +20,20 @@ modules/desktops/niri/
 ├── fuzzel.nix           # Fuzzel application launcher
 └── README.md            # This file
 ```
+
+## Two-Level Configuration
+
+Niri is configured at two levels:
+
+1. **System level** (`system.nix`): Enables Niri as a GDM session option
+   - Imported in `hosts/macbook.nix`
+   - Makes Niri available in the GDM session selector
+   - Configures XDG portals for system integration
+
+2. **Home-manager level** (`default.nix`): User-specific Niri configuration
+   - Imported in `home.nix`
+   - Configures keybindings, layouts, appearance, and per-user settings
+   - Generates ~/.config/niri/ files
 
 ## Generated Configuration
 

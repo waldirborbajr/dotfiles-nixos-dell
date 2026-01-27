@@ -1,16 +1,15 @@
 # modules/xdg-portal.nix
+# Basic XDG Portal setup - Desktop modules extend this
 { config, pkgs, lib, ... }:
 
 {
   xdg.portal = {
-    enable = true;
-
-    # GTK portal provides good compatibility for most applications
-    extraPortals = with pkgs; [
-      xdg-desktop-portal-gtk  # Fallback + GNOME/Niri compat
-    ];
-
-    # Configuração recomendada para evitar conflitos
-    config.common.default = "*";  # usa o portal mais apropriado por app
+    enable = lib.mkDefault true;
+    xdgOpenUsePortal = lib.mkDefault true;
+    
+    # Minimal fallback portal for non-desktop environments
+    extraPortals = lib.mkDefault (with pkgs; [
+      xdg-desktop-portal-gtk
+    ]);
   };
 }
