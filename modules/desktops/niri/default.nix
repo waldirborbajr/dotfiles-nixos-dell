@@ -37,7 +37,7 @@ in
     ];
 
     # Wallpaper
-    home.file.".config/niri/wallpaper.svg".source = ../../wallpapers/devops-dark.svg;
+    home.file.".config/niri/wallpaper.svg".source = ../../../wallpapers/devops-dark.svg;
 
     # Wayland environment variables
     home.sessionVariables = {
