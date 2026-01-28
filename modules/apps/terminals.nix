@@ -59,6 +59,25 @@
         persistent_logging = false;
         log_level = "Off";
       };
+
+      keyboard.bindings = [
+        { key = "V"; mods = "Control|Shift"; action = "Paste"; }
+        { key = "C"; mods = "Control|Shift"; action = "Copy"; }
+        { key = "Insert"; mods = "Shift"; action = "PasteSelection"; }
+        { key = "Key0"; mods = "Control"; action = "ResetFontSize"; }
+        { key = "Equals"; mods = "Control"; action = "IncreaseFontSize"; }
+        { key = "Plus"; mods = "Control"; action = "IncreaseFontSize"; }
+        { key = "Minus"; mods = "Control"; action = "DecreaseFontSize"; }
+        { key = "F11"; mods = "None"; action = "ToggleFullscreen"; }
+        { key = "Paste"; mods = "None"; action = "Paste"; }
+        { key = "Copy"; mods = "None"; action = "Copy"; }
+        { key = "L"; mods = "Control"; action = "ClearLogNotice"; }
+        { key = "L"; mods = "Control"; chars = "\f"; }
+        { key = "PageUp"; mods = "None"; mode = "~Alt"; action = "ScrollPageUp"; }
+        { key = "PageDown"; mods = "None"; mode = "~Alt"; action = "ScrollPageDown"; }
+        { key = "Home"; mods = "Shift"; mode = "~Alt"; action = "ScrollToTop"; }
+        { key = "End"; mods = "Shift"; mode = "~Alt"; action = "ScrollToBottom"; }
+      ];
     };
   };
 }

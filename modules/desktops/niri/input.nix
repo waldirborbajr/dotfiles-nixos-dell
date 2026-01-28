@@ -18,6 +18,8 @@ let
         repeat-delay 250
         repeat-rate 35
         track-layout "global"
+        // Enable numlock on startup
+        numlock
       }
 
       touchpad {
@@ -49,7 +51,9 @@ let
         accel-profile "adaptive"
       }
 
-      focus-follows-mouse
+      // Focus windows and outputs automatically when moving the mouse into them
+      // Setting max-scroll-amount="0%" makes it work only on windows already fully on screen
+      focus-follows-mouse max-scroll-amount="0%"
       workspace-auto-back-and-forth
     }
   '';

@@ -9,6 +9,28 @@ let
     // ============================================
     // WINDOW RULES
     // ============================================
+    
+    // Applications that should open maximized
+    window-rule {
+      match app-id=r#"audacity$"#
+      match app-id=r#"brave-browser$"#
+      match app-id=r#"discord$"#
+      match app-id=r#"gimp$"#
+      match app-id=r#"kdenlive$"#
+      match app-id=r#"qutebrowser$"#
+      match app-id=r#"tasty.javafx.launcher.LauncherFxApp$"# title="^dt.*"
+      match app-id=r#"tasty.javafx.launcher.LauncherFxApp$"# title="^tastytrade v.*"
+      open-maximized true
+    }
+
+    // Applications that should float
+    window-rule {
+      match app-id=r#"qalculate-gtk$"#
+      match app-id=r#"tasty.javafx.launcher.LauncherFxApp$"# title="Dashboard"
+      match app-id=r#"tasty.javafx.launcher.LauncherFxApp$"# title="tastytrade - Portfolio Report"
+      open-floating true
+    }
+
     window-rule {
       match app-id=r#"^org\.gnome\.Calculator$"#
       default-column-width { fixed 400; }
@@ -46,6 +68,12 @@ let
       match title=r#"^Picture-in-Picture$"#
       open-floating true
       open-on-output "eDP-1"
+    }
+
+    // Enable rounded corners for all windows
+    window-rule {
+      geometry-corner-radius 6
+      clip-to-geometry true
     }
   '';
 in

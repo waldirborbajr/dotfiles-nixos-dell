@@ -17,7 +17,9 @@ let
     //   - config.d/output.kdl       → Monitor configuration
     //   - config.d/layout.kdl       → Layout, gaps, borders, focus-ring
     //   - config.d/keybindings.kdl  → All keyboard shortcuts
-    //   - config.d/window-rules.kdl → Per-application window rules          - config.d/animations.kdl   → Animation settings
+    //   - config.d/window-rules.kdl → Per-application window rules
+    //   - config.d/animations.kdl   → Animation settings
+    //   - dms/cursor.kdl            → DMS cursor configuration
     //
     // Companion apps (Waybar, Mako, Fuzzel) are configured separately
     // in their respective nix modules.
@@ -29,6 +31,7 @@ let
     include "config.d/keybindings.kdl"
     include "config.d/window-rules.kdl"
     include "config.d/animations.kdl"
+    include "dms/cursor.kdl"
   '';
 in
 lib.mkIf isMacbook {

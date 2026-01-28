@@ -17,8 +17,8 @@ let
     // LAYOUT CONFIGURATION
     // ============================================
     layout {
-      gaps 8
-      center-focused-column "on-overflow"
+      gaps 14
+      center-focused-column "never"
       
       preset-column-widths {
         proportion 0.33333
@@ -29,13 +29,21 @@ let
       default-column-width { proportion 0.5; }
       
       focus-ring {
-        width 2
-        active-color "${hex cat.mauve}"
-        inactive-color "${hex cat.surface1}"
+        width 3
+        active-color "#7fc8ff"
+        inactive-color "#282c34"
       }
 
       border {
         off
+      }
+
+      shadow {
+        on
+        softness 30
+        spread 5
+        offset x=0 y=5
+        color "#0007"
       }
 
       struts {
@@ -52,6 +60,17 @@ let
     cursor {
       xcursor-theme "Adwaita"
       xcursor-size 24
+      // Hide cursor when typing; also hides cursor from screenshots
+      hide-when-typing
+    }
+
+    // ============================================
+    // GESTURES
+    // ============================================
+    gestures {
+      hot-corners {
+        off // Disables only the top-left corner
+      }
     }
 
     // ============================================
@@ -75,6 +94,8 @@ let
     // ENVIRONMENT VARIABLES
     // ============================================
     environment {
+      DISPLAY ":1"
+      _JAVA_AWT_WM_NONREPARENTING "1"
       QT_QPA_PLATFORM "wayland"
       MOZ_ENABLE_WAYLAND "1"
       NIXOS_OZONE_WL "1"
@@ -83,7 +104,10 @@ let
     // ============================================
     // STARTUP APPLICATIONS
     // ============================================
-    spawn-at-startup "swaybg" "-i" "$HOME/.config/niri/wallpaper.svg" "-m" "fill"
+    spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-monitors"
+    spawn-at-startup "waypaper" "--backend" "swaybg" "--restore"
+    spawn-sh-at-startup "dms run"
+    spawn-at-startup "/usr/bin/emacs" "--daemon"
     spawn-at-startup "mako"
     spawn-at-startup "waybar"
     spawn-at-startup "wl-paste" "--watch" "cliphist" "store"

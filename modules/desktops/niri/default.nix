@@ -14,6 +14,10 @@ in
     ./keybindings.nix
     ./window-rules.nix
     ./animations.nix
+    ./dank-material-shell.nix
+    ./dms-autostart.nix
+    ./dms-scripts.nix
+    ./dms-cursor.nix
     ./waybar.nix
     ./mako.nix
     ./fuzzel.nix
