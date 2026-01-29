@@ -181,8 +181,8 @@ let
       Mod+Ctrl+Shift+WheelScrollUp { move-column-left; }
 
       // Monitor focus
-      Mod+Comma { focus-monitor-previous; }
-      Mod+Period { focus-monitor-next; }
+      Mod+Ctrl+Comma { focus-monitor-previous; }
+      Mod+Ctrl+Period { focus-monitor-next; }
 
       // Move to monitors
       Mod+Shift+Ctrl+H { move-column-to-monitor-left; }
@@ -197,7 +197,7 @@ let
       Mod+Shift+C repeat=false hotkey-overlay-title="Close window" { close-window; }
       
       // Floating windows
-      Mod+V { toggle-window-floating; }
+      Mod+Alt+V { toggle-window-floating; }
       Mod+Shift+V { switch-focus-between-floating-and-tiling; }
       Mod+Shift+Space { toggle-window-floating; }
       
