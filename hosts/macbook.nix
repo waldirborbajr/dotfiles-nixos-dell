@@ -59,6 +59,8 @@
     "broadcom-sta-6.30.223.271-59-6.12.66"
   ];
 
+  # Wi-Fi driver packages (system-level, hardware requirement)
+  # Other packages moved to home-manager
   environment.systemPackages = with pkgs; [
     iw
     wirelesstools

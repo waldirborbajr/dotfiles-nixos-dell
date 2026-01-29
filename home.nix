@@ -26,6 +26,7 @@ in
   # Enable apps via options
   # ==========================================
   apps = {
+    # Core apps
     shell.enable = true;
     terminals.enable = true;
     fastfetch.enable = true;
@@ -33,25 +34,40 @@ in
     ripgrep.enable = true;
     yazi.enable = true;
     tmux.enable = true;
-    chirp.enable = false;  # Only enable if needed
+    chirp.enable = false;
+    
+    # User apps (migrated from system)
+    browsers.enable = true;
+    communication.enable = true;
+    editors.enable = true;
+    ides.enable = true;
+    knowledge.enable = true;
+    media.enable = true;
+    productivity.enable = true;
+    remote.enable = false;      # Enable if needed
+    clipboard.enable = true;
+    multiplexers.enable = true;
   };
 
   # ==========================================
-  # Enable languages via options (home-manager level only)
+  # Enable languages via options
   # ==========================================
   languages = {
-    go.enable = false;        # Enable per-project
-    rust.enable = false;      # Enable per-project
-    lua.enable = false;       # Enable if using Neovim plugins
-    nix-dev.enable = true;    # Always useful for NixOS
+    # Home-manager level (per-project/optional)
+    go.enable = false;
+    rust.enable = false;
+    lua.enable = false;
+    nix-dev.enable = true;
+    
+    # System-level toolchains (home-manager configs)
+    python.enable = true;
+    nodejs.enable = true;
   };
 
-  home.packages = with pkgs; [
-    zoxide
-    eza
-    fd
-    tree
-  ] ++ lib.optionals isMacbook (with pkgs; [
+  # ==========================================
+  # Wayland/Desktop packages (conditional)
+  # ==========================================
+  home.packages = lib.optionals isMacbook (with pkgs; [
     waybar
     mako
     fuzzel
@@ -62,16 +78,11 @@ in
     playerctl
   ]);
 
+  # ==========================================
+  # Session variables (non-redundant)
+  # ==========================================
   home.sessionVariables = {
-    EDITOR = "nvim";
-    VISUAL = "nvim";
-    SUDO_EDITOR = "nvim";
-    BROWSER = "com.brave.Browser";
+    # Terminal preference
     TERMINAL = "alacritty";
-    NPM_CONFIG_UPDATE_NOTIFIER = "false";
-    NPM_CONFIG_FUND = "false";
-    NPM_CONFIG_AUDIT = "false";
-    PYTHONDONTWRITEBYTECODE = "1";
-    PIP_DISABLE_PIP_VERSION_CHECK = "1";
   };
 }

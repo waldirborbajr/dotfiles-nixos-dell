@@ -135,11 +135,6 @@
     # catppuccin.enable = true;  # FIXME: Module not available in current catppuccin/nix version
   };
 
-  home.packages = with pkgs; [
-    fd
-    tree
-  ];
-
   home.sessionVariables = lib.mkForce {
     FZF_DEFAULT_OPTS = "--info=inline-right --ansi --layout=reverse --border=rounded --height=60%";
     FZF_CTRL_T_COMMAND = "fd --type f --hidden --follow --exclude .git || find . -type f";
