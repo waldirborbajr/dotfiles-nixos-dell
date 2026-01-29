@@ -90,6 +90,40 @@ imports = [
   ../modules/desktops/gnome.nix
   # ../modules/desktops/i3.nix
   # ../modules/desktops/niri/system.nix
+  
+  # System configuration
+  ../modules/system/base.nix
+  ../modules/system/networking.nix
+  # ../modules/system/audio.nix
+  # ../modules/system/fonts.nix
+  # ../modules/system/ssh.nix
+  
+  # Applications (optional)
+  # ../modules/apps/dev-tools.nix
+  # ../modules/apps/terminals.nix
+  # ../modules/apps/shell.nix
+  # ../modules/apps/tmux.nix
+  # ../modules/apps/yazi.nix
+  # ../modules/apps/ripgrep.nix
+  # ../modules/apps/fastfetch.nix
+  # ../modules/apps/chirp.nix
+  
+  # Development languages (optional)
+  # ../modules/languages/nix-dev.nix
+  # ../modules/languages/rust.nix
+  # ../modules/languages/python.nix
+  # ../modules/languages/nodejs.nix
+  # ../modules/languages/go.nix
+  # ../modules/languages/lua.nix
+  
+  # Virtualization (optional - already included in features)
+  # ../modules/virtualization/docker.nix
+  # ../modules/virtualization/podman.nix
+  # ../modules/virtualization/libvirt.nix
+  # ../modules/virtualization/k3s.nix
+  
+  # User-specific configuration
+  # ../modules/users/borba.nix
 ];
 ```
 
@@ -125,10 +159,15 @@ services.xserver.xkb = {
 
 ### Optional changes
 
-- Desktop environment services (GNOME keyring, etc.)
-- Hardware-specific packages (Wi-Fi tools, firmware)
-- Insecure packages (if needed for specific hardware)
-- Virtualization settings (already handled via DEVOPS/QEMU flags)
+- **Desktop environment services** (GNOME keyring, etc.)
+- **Hardware-specific packages** (Wi-Fi tools, firmware)
+- **Insecure packages** (if needed for specific hardware)
+- **Virtualization settings** (already handled via DEVOPS/QEMU flags)
+- **User-specific modules** (import from `modules/users/`)
+- **Application modules** (import from `modules/apps/`)
+- **Language support** (import from `modules/languages/`)
+- **System modules** (import from `modules/system/` as needed)
+- **Themes** (import from `modules/themes/`)
 
 ## 4. Register the Host in flake.nix
 
@@ -220,6 +259,56 @@ make hosts
 make doctor
 ```
 
+## Available Modules
+
+### Desktop Environments
+- `modules/desktops/gnome.nix` - GNOME desktop
+- `modules/desktops/i3.nix` - i3 window manager
+- `modules/desktops/niri/system.nix` - Niri window manager with Dank Material Shell
+
+### System Configuration
+- `modules/system/base.nix` - Base system configuration
+- `modules/system/audio.nix` - Audio system (PulseAudio/PipeWire)
+- `modules/system/fonts.nix` - Font configuration
+- `modules/system/networking.nix` - Network configuration
+- `modules/system/nixpkgs.nix` - Nixpkgs configuration
+- `modules/system/serial-devices.nix` - Serial device access
+- `modules/system/ssh.nix` - SSH configuration
+- `modules/system/system-packages.nix` - Common system packages
+
+### Applications
+- `modules/apps/dev-tools.nix` - Development tools
+- `modules/apps/terminals.nix` - Terminal emulators
+- `modules/apps/shell.nix` - Shell configurations
+- `modules/apps/tmux.nix` - Tmux terminal multiplexer
+- `modules/apps/yazi.nix` - Yazi file manager
+- `modules/apps/ripgrep.nix` - Ripgrep search tool
+- `modules/apps/fastfetch.nix` - Fastfetch system info
+- `modules/apps/chirp.nix` - Chirp application
+
+### Development Languages
+- `modules/languages/nix-dev.nix` - Nix development
+- `modules/languages/rust.nix` - Rust toolchain
+- `modules/languages/python.nix` - Python development
+- `modules/languages/nodejs.nix` - Node.js development
+- `modules/languages/go.nix` - Go development
+- `modules/languages/lua.nix` - Lua development
+
+### Virtualization & DevOps
+- `modules/features/devops.nix` - DevOps tools (Docker, Kubernetes, etc.)
+- `modules/features/qemu.nix` - QEMU/KVM virtualization
+- `modules/virtualization/docker.nix` - Docker
+- `modules/virtualization/podman.nix` - Podman
+- `modules/virtualization/libvirt.nix` - Libvirt/KVM
+- `modules/virtualization/k3s.nix` - K3s lightweight Kubernetes
+
+### Other
+- `modules/autologin.nix` - Auto-login configuration
+- `modules/fzf.nix` - Fuzzy finder integration
+- `modules/xdg-portal.nix` - XDG portal (required for some apps)
+- `modules/themes/default.nix` - System theme configuration
+- `modules/users/borba.nix` - User-specific configuration example
+
 ## Summary Checklist
 
 To add a new host, you need to create these files:
@@ -233,7 +322,7 @@ To add a new host, you need to create these files:
 Then run:
 
 ```bash
-make check                    # Validate syntax
+make check                      # Validate syntax
 make test-build HOST=<newhost>  # Test build
 make switch HOST=<newhost>      # Apply configuration
 ```
@@ -264,9 +353,58 @@ nixos-config/
 │   └── <host>.nix                     # Host-specific configuration
 └── modules/
     ├── desktops/                      # Desktop environments
-    ├── system/                        # System services
+    │   ├── gnome.nix
+    │   ├── i3.nix
+    │   └── niri/                      # Niri window manager & Dank Material Shell
+    │       ├── system.nix
+    │       ├── config.nix
+    │       ├── keybindings.nix
+    │       ├── animations.nix
+    │       ├── layout.nix
+    │       ├── waybar.nix
+    │       ├── mako.nix
+    │       ├── fuzzel.nix
+    │       └── ... (other niri config files)
+    ├── system/                        # System services & core config
+    │   ├── base.nix
+    │   ├── audio.nix
+    │   ├── fonts.nix
+    │   ├── networking.nix
+    │   ├── nixpkgs.nix
+    │   ├── serial-devices.nix
+    │   ├── ssh.nix
+    │   └── system-packages.nix
     ├── apps/                          # Applications
-    └── virtualization/                # Virtualization options
+    │   ├── dev-tools.nix
+    │   ├── terminals.nix
+    │   ├── shell.nix
+    │   ├── tmux.nix
+    │   ├── yazi.nix
+    │   ├── ripgrep.nix
+    │   ├── fastfetch.nix
+    │   └── chirp.nix
+    ├── languages/                     # Development languages
+    │   ├── nix-dev.nix
+    │   ├── rust.nix
+    │   ├── python.nix
+    │   ├── nodejs.nix
+    │   ├── go.nix
+    │   └── lua.nix
+    ├── features/                      # Feature flags
+    │   ├── devops.nix                # Docker, K3s, etc.
+    │   └── qemu.nix                  # KVM virtualization
+    ├── virtualization/                # Virtualization options
+    │   ├── docker.nix
+    │   ├── podman.nix
+    │   ├── libvirt.nix
+    │   └── k3s.nix
+    ├── themes/                        # System themes
+    │   └── default.nix
+    ├── users/                         # User-specific configs
+    │   └── borba.nix
+    ├── autologin.nix                  # Auto-login configuration
+    ├── fzf.nix                        # Fuzzy finder
+    └── xdg-portal.nix                 # XDG portal
 ```
 
 ## Troubleshooting
