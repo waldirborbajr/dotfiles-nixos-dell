@@ -39,7 +39,8 @@ in
     # User apps (migrated from system)
     browsers.enable = true;
     communication.enable = true;
-    editors.enable = true;
+    helix.enable = false;
+    neovim.enable = true;
     ides.enable = true;
     knowledge.enable = true;
     media.enable = true;

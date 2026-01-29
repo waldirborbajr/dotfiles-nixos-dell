@@ -17,7 +17,8 @@
     # New apps (migrated from system)
     ./browsers.nix
     ./communication.nix
-    ./editors.nix
+    ./helix.nix
+    ./neovim.nix
     ./ides.nix
     ./knowledge.nix
     ./media.nix
@@ -109,11 +110,18 @@
       };
     };
 
-    editors = {
+    helix = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Enable text editors (Helix, Neovim)";
+        description = "Enable Helix editor";
+      };
+    };
+    neovim = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Neovim editor";
       };
     };
 ides = {
