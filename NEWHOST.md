@@ -154,7 +154,7 @@ nixosConfigurations = {
 
 This makes the host selectable via the flake.
 
-## 5. Build the System on the New Machine
+## 6. Build the System on the New Machine
 
 Clone the repository on the new machine:
 
