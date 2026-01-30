@@ -17,7 +17,7 @@ let
     // ============================================
     binds {
       // Keyboard layout switching (US ⟷ US-intl)
-      Mod+Space { switch-layout "next"; }
+      Mod+Slash { switch-layout "next"; }
       // Mod = Super (Windows key)
 
       // ========================================
