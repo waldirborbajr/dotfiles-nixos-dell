@@ -50,6 +50,16 @@ in
     clipboard.enable = true;
     multiplexers.enable = true;
     latex.enable = false;       # Enable for LaTeX documents
+    
+    # Virtualization tools
+    virtualbox.enable = false;
+    distrobox.enable = false;
+    
+    # Fun CLI tools
+    cbonsai.enable = true;
+    cmatrix.enable = false;
+    pipes.enable = false;
+    tty-clock.enable = false;
   };
 
   # ==========================================

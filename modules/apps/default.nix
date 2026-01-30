@@ -28,6 +28,11 @@
     ./clipboard.nix
     ./multiplexers.nix
     ./latex.nix
+    ./fun-tools.nix
+    
+    # Virtualization tools (Home Manager level)
+    ../virtualization/virtualbox.nix
+    ../virtualization/distrobox.nix
   ];
 
   options.apps = {
@@ -194,6 +199,56 @@ ides = {
         type = lib.types.bool;
         default = false;
         description = "Enable LaTeX typesetting system and tools";
+      };
+    };
+
+    # Virtualization tools
+    virtualbox = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable VirtualBox virtualization";
+      };
+    };
+
+    distrobox = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable Distrobox container tool";
+      };
+    };
+
+    # Fun CLI tools
+    cbonsai = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable cbonsai bonsai tree generator";
+      };
+    };
+
+    cmatrix = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable cmatrix Matrix-style screen";
+      };
+    };
+
+    pipes = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable pipes animated pipes screen";
+      };
+    };
+
+    tty-clock = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable tty-clock terminal clock";
       };
     };
   };
