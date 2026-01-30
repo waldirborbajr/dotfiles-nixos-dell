@@ -17,6 +17,9 @@
     pkgs.podman-tui
     pkgs.buildah
     pkgs.skopeo
+    pkgs.ctop
+    pkgs.dive
+    pkgs.trivy
   ];
 
   # Podman rootless support

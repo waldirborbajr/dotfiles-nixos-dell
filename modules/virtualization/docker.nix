@@ -16,6 +16,9 @@
     pkgs.docker-compose
     pkgs.docker-buildx
     pkgs.lazydocker
+    pkgs.ctop
+    pkgs.dive
+    pkgs.trivy
   ];
 
   users.users.borba.extraGroups = lib.mkIf config.virtualisation.docker.enable [
