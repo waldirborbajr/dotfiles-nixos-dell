@@ -38,10 +38,26 @@ in
       pavucontrol
       networkmanagerapplet
       swaybg
+      waypaper
+      swayidle
     ];
 
     # Wallpaper
     home.file.".config/niri/wallpaper.svg".source = ../../../wallpapers/devops-dark.svg;
+
+    # Waypaper configuration
+    xdg.configFile."waypaper/config.ini".text = ''
+      [Settings]
+      language = en
+      folder = ${config.home.homeDirectory}/.config/niri
+      backend = swaybg
+      monitors = All
+      fill = fill
+      sort = name
+      color = #1e1e2e
+      subfolders = False
+      wallpaper = ${config.home.homeDirectory}/.config/niri/wallpaper.svg
+    '';
 
     # Wayland environment variables
     home.sessionVariables = {
