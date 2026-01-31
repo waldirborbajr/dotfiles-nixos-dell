@@ -205,7 +205,7 @@
         set -g @tmux-last-pager 'less -r'
         set -g @tmux-last-pager 'less'
         set -g @tmux-last-prompt-pattern ' '
-        set -g @tmux-nerd-font-window-name-shell-icon ''
+        set -g @tmux-nerd-font-window-name-shell-icon ""
         set -g @tmux-nerd-font-window-name-show-name false
         set -g @tnotify-custom-cmd 'bash ~/c/dotfiles/bin/tmux-notify.sh'
 
