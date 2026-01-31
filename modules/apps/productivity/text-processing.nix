@@ -7,6 +7,7 @@
     home.packages = with pkgs; [
       sd             # Modern sed replacement
       jq             # JSON processor
+      yq-go          # YAML processor
       fx             # JSON viewer
       tldr           # Simplified man pages
     ];
