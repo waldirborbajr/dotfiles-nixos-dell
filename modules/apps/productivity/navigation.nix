@@ -9,7 +9,7 @@
     ];
 
     # Zoxide integration
-    programs.zsh.initExtra = lib.mkIf config.programs.zsh.enable ''
+    programs.zsh.initContent = lib.mkIf config.programs.zsh.enable ''
       # Zoxide integration
       if command -v zoxide >/dev/null 2>&1; then
         eval "$(zoxide init --cmd cd zsh)"
