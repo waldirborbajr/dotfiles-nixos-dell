@@ -80,9 +80,9 @@ flake-check:
 # Check flake syntax with --impure
 [group: 'validation']
 check:
-    @echo "Verificando sintaxe do flake com --impure..."
+    @echo "Checking flake syntax with --impure..."
     @nix --extra-experimental-features "nix-command flakes" flake check --impure
-    @echo "✓ Sintaxe OK!"
+    @echo "✓ Syntax OK!"
 
 # Evaluate host configuration
 [group: 'validation']
@@ -121,7 +121,7 @@ _check_git_status:
         git add .
         git commit -m "{{_git_commit_msg}}" || { echo "Commit skipped (nothing new after add)"; true; }
         if [ "{{GIT_PUSH}}" = "1" ]; then
-            git push origin main || { echo "Push falhou (pode ser auth/upstream). Continuando..."; true; }
+            git push origin main || { echo "Push failed (may be auth/upstream). Continuing..."; true; }
         fi
     fi
 
@@ -174,14 +174,14 @@ dry-build HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @just _nixos_cmd {{HOST}} build {{DEVOPS}} {{QEMU}} {{IMPURE}} "--dry-run"
 
-# Test build (não aplica mudanças)
+# Test build (no changes applied)
 [group: 'build']
 test-build HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    @echo "Test build (não aplica mudanças) para host: {{HOST}}"
+    @echo "Test build (no changes applied) for host: {{HOST}}"
     @just _nixos_cmd {{HOST}} build {{DEVOPS}} {{QEMU}} {{IMPURE}}
-    @echo "✓ Test build concluído! Nenhuma mudança foi aplicada."
-    @echo "Para aplicar mudanças: just switch {{HOST}}"
+    @echo "✓ Test build complete! No changes were applied."
+    @echo "To apply changes: just switch {{HOST}}"
 
 # Build system configuration
 [group: 'build']
@@ -291,7 +291,7 @@ rollback CONFIRM="":
 fmt:
     @echo "Formatting Nix files..."
     @git ls-files '*.nix' | xargs nixpkgs-fmt
-    @echo "✓ Formatação concluída!"
+    @echo "✓ Formatting complete!"
     @git status --short
 
 # Format specific file or directory
@@ -299,14 +299,14 @@ fmt:
 fmt-path PATH:
     @echo "Formatting: {{PATH}}"
     @nixpkgs-fmt {{PATH}}
-    @echo "✓ Formatação de {{PATH}} concluída!"
+    @echo "✓ Formatting of {{PATH}} complete!"
 
 # Format only tracked Nix files (explicit, safe)
 [group: 'maintenance']
 fmt-tracked:
     @echo "Formatting tracked .nix files..."
     @git ls-files '*.nix' | xargs nixpkgs-fmt
-    @echo "✓ Formatação concluída!"
+    @echo "✓ Formatting complete!"
     @git status --short
 
 # Check systemd user jobs
