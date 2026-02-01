@@ -5,7 +5,7 @@
 {
   config = lib.mkIf config.apps.productivity.workflow.enable {
     home.packages = with pkgs; [
-      entr           # Run commands when files change
+      entr # Run commands when files change
     ];
 
     # Direnv integration

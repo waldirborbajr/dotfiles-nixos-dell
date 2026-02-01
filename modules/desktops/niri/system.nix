@@ -8,10 +8,10 @@
     enable = true;
     package = pkgs.niri;
   };
-  
+
   # Additional packages for Niri
   environment.systemPackages = with pkgs; [
-    xwayland-satellite  # For X11 apps on Wayland
+    xwayland-satellite # For X11 apps on Wayland
   ];
 
   # XDG Portal configuration for Niri

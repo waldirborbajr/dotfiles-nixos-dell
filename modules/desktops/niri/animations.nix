@@ -4,7 +4,7 @@
 
 let
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
-  
+
   animationsConfig = ''
     // ============================================
     // ANIMATIONS

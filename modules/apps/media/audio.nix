@@ -5,8 +5,8 @@
 {
   config = lib.mkIf config.apps.media.audio.enable {
     home.packages = with pkgs; [
-      audacity       # Audio editor
-      mpv            # Media player
+      audacity # Audio editor
+      mpv # Media player
     ];
   };
 }

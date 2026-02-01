@@ -4,13 +4,13 @@
 
 let
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
-  
+
   # Applications
   term = "alacritty";
   menu = "fuzzel";
   browser = "firefox";
   fileManager = "yazi";
-  
+
   keybindingsConfig = ''
     // ============================================
     // KEYBINDINGS

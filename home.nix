@@ -35,7 +35,7 @@ in
     yazi.enable = true;
     tmux.enable = true;
     chirp.enable = false;
-    
+
     # User apps (migrated from system)
     browsers.enable = true;
     communication.enable = true;
@@ -44,7 +44,7 @@ in
     starship.enable = true;
     ides.enable = true;
     knowledge.enable = true;
-    
+
     # Media tools - granular options available (Dendritic Pattern)
     # Use: apps.media.enable = true; for all, or enable individually:
     #   apps.media.image.enable = true;    # GIMP, Inkscape, ImageMagick
@@ -52,7 +52,7 @@ in
     #   apps.media.video.enable = true;    # Handbrake
     #   apps.media.torrents.enable = true; # Transmission
     media.enable = true;
-    
+
     # Productivity tools - granular options available (Dendritic Pattern)
     # Use: apps.productivity.enable = true; for all, or enable individually:
     #   apps.productivity.file-tools.enable = true;      # eza, fd, dust, ncdu, tree
@@ -64,16 +64,16 @@ in
     #   apps.productivity.monitoring.enable = true;      # procs, btop
     #   apps.productivity.git-ui.enable = true;          # lazygit
     productivity.enable = true;
-    
-    remote.enable = false;      # Enable if needed
+
+    remote.enable = false; # Enable if needed
     clipboard.enable = true;
-    zellij.enable = false;      # Tmux alternative (disabled by default)
-    latex.enable = false;       # Enable for LaTeX documents
-    
+    zellij.enable = false; # Tmux alternative (disabled by default)
+    latex.enable = false; # Enable for LaTeX documents
+
     # Virtualization tools
     virtualbox.enable = false;
     distrobox.enable = false;
-    
+
     # Fun CLI tools
     cbonsai.enable = true;
     cmatrix.enable = false;
@@ -90,7 +90,7 @@ in
     rust.enable = false;
     lua.enable = false;
     nix-dev.enable = true;
-    
+
     # System-level toolchains (home-manager configs)
     python.enable = true;
     nodejs.enable = true;

@@ -20,7 +20,7 @@
   };
 
   # Novo: define o grupo primário (resolve o erro atual)
-  users.groups.borba = {};
+  users.groups.borba = { };
 
   # Opcional: associa explicitamente o grupo ao usuário (boa prática)
   users.users.borba.group = "borba";

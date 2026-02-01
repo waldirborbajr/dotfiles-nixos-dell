@@ -5,7 +5,7 @@
 {
   config = lib.mkIf config.apps.productivity.navigation.enable {
     home.packages = with pkgs; [
-      zoxide         # Smart directory jumper
+      zoxide # Smart directory jumper
     ];
 
     # Zoxide integration

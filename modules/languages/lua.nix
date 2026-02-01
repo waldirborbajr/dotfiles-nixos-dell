@@ -8,24 +8,24 @@
     # Lua packages (global)
     # ========================================
     home.packages = with pkgs; [
-    lua5_4           # Lua interpreter
-    luajit           # JIT compiler (faster)
-    luarocks         # Package manager
-    lua-language-server  # LSP
-    stylua           # Formatter
-    selene           # Linter
-  ];
+      lua5_4 # Lua interpreter
+      luajit # JIT compiler (faster)
+      luarocks # Package manager
+      lua-language-server # LSP
+      stylua # Formatter
+      selene # Linter
+    ];
 
     # ========================================
     # Shell aliases
     # ========================================
     programs.zsh.shellAliases = lib.mkIf config.programs.zsh.enable {
-    lua   = "lua5.4";
-    luai  = "lua5.4 -i";  # Interactive mode
-    luac  = "luac5.4";    # Compiler
-    lrocks = "luarocks";
-    lfmt  = "stylua";
-  };
+      lua = "lua5.4";
+      luai = "lua5.4 -i"; # Interactive mode
+      luac = "luac5.4"; # Compiler
+      lrocks = "luarocks";
+      lfmt = "stylua";
+    };
 
     # ========================================
     # Environment variables

@@ -13,7 +13,7 @@
     ./yazi.nix
     ./tmux.nix
     ./chirp.nix
-    
+
     # New apps (migrated from system)
     ./browsers.nix
     ./communication.nix
@@ -27,11 +27,11 @@
     ./zellij.nix
     ./latex.nix
     ./fun-tools.nix
-    
+
     # Modular apps (Dendritic Pattern)
-    ./media            # Aggregator with submodules
-    ./productivity     # Aggregator with submodules
-    
+    ./media # Aggregator with submodules
+    ./productivity # Aggregator with submodules
+
     # Virtualization tools (Home Manager level)
     ../virtualization/virtualbox.nix
     ../virtualization/distrobox.nix
@@ -139,7 +139,7 @@
         description = "Enable Starship prompt";
       };
     };
-ides = {
+    ides = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
@@ -147,7 +147,7 @@ ides = {
       };
     };
 
-    
+
     knowledge = {
       enable = lib.mkOption {
         type = lib.types.bool;
@@ -184,7 +184,7 @@ ides = {
 
     multiplexers = lib.mkOption {
       type = lib.types.attrs;
-      default = {};
+      default = { };
       description = "DEPRECATED: Use zellij.enable instead. This option remains for backwards compatibility.";
       internal = true;
     };

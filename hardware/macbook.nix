@@ -8,8 +8,8 @@
   hardware.graphics = {
     enable = true;
     extraPackages = with pkgs; [
-      intel-media-driver  # Modern Intel (iHD)
-      intel-vaapi-driver  # Older Intel (i965) - MacBook 2011 uses this
+      intel-media-driver # Modern Intel (iHD)
+      intel-vaapi-driver # Older Intel (i965) - MacBook 2011 uses this
       libvdpau-va-gl
     ];
   };
@@ -39,8 +39,8 @@
   # Pacotes úteis para debug e configuração wireless
   ############################################
   #environment.systemPackages = with pkgs; [
-    #iw
-    #wirelesstools
+  #iw
+  #wirelesstools
   #  util-linux
   #  linuxPackages.broadcom_sta    
   #];

@@ -5,7 +5,7 @@
 {
   config = lib.mkIf config.apps.productivity.http-clients.enable {
     home.packages = with pkgs; [
-      httpie         # User-friendly HTTP client
+      httpie # User-friendly HTTP client
     ];
   };
 }

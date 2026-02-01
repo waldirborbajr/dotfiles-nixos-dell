@@ -7,8 +7,8 @@
 
 {
   virtualisation.libvirtd = {
-    enable = lib.mkDefault false;  # Disabled by default - enable only when needed
-    qemu.swtpm.enable = true;      # TPM support for Windows 11 VMs
+    enable = lib.mkDefault false; # Disabled by default - enable only when needed
+    qemu.swtpm.enable = true; # TPM support for Windows 11 VMs
     allowedBridges = [ "virbr0" "br0" ];
   };
 

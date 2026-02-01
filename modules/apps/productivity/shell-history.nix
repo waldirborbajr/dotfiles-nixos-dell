@@ -5,7 +5,7 @@
 {
   config = lib.mkIf config.apps.productivity.shell-history.enable {
     home.packages = with pkgs; [
-      atuin          # Magical shell history
+      atuin # Magical shell history
     ];
 
     # Atuin integration

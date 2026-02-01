@@ -9,15 +9,15 @@
     home.packages = with pkgs; [
       yazi
       # Dependencies for full functionality
-      ffmpegthumbnailer  # Video thumbnails
-      unar              # Archive preview
-      jq                # JSON preview
-      poppler-utils     # PDF preview
-      fd                # File searching
-      ripgrep           # Content searching
-      fzf               # Fuzzy finding
-      zoxide            # Smart directory jumping
-      imagemagick       # Image operations
+      ffmpegthumbnailer # Video thumbnails
+      unar # Archive preview
+      jq # JSON preview
+      poppler-utils # PDF preview
+      fd # File searching
+      ripgrep # Content searching
+      fzf # Fuzzy finding
+      zoxide # Smart directory jumping
+      imagemagick # Image operations
     ];
 
     programs.yazi = {
@@ -35,10 +35,10 @@
       # Plugin configuration
       plugins = with pkgs.yaziPlugins; {
         inherit
-          git              # Git integration
-          chmod            # Permission management
-          full-border      # Better borders
-          smart-enter      # Smart directory navigation
+          git# Git integration
+          chmod# Permission management
+          full-border# Better borders
+          smart-enter# Smart directory navigation
           ;
       };
 
@@ -51,22 +51,22 @@
       # Main settings
       settings = {
         mgr = {
-          show_hidden = true;           # Show hidden files by default
-          sort_by = "natural";          # Natural sorting
-          sort_sensitive = false;       # Case-insensitive sorting
-          sort_dir_first = true;        # Directories first
-          linemode = "size";            # Show file sizes
-          show_symlink = true;          # Show symlink targets
+          show_hidden = true; # Show hidden files by default
+          sort_by = "natural"; # Natural sorting
+          sort_sensitive = false; # Case-insensitive sorting
+          sort_dir_first = true; # Directories first
+          linemode = "size"; # Show file sizes
+          show_symlink = true; # Show symlink targets
         };
 
         preview = {
-          tab_size = 2;                 # Tab size for preview
-          max_width = 1500;             # Max preview width
-          max_height = 1500;            # Max preview height
-          cache_dir = "";               # Use default cache
-          image_filter = "lanczos3";    # High-quality image filtering
-          image_quality = 90;           # Image quality (1-100)
-          sixel_fraction = 15;          # Sixel fraction
+          tab_size = 2; # Tab size for preview
+          max_width = 1500; # Max preview width
+          max_height = 1500; # Max preview height
+          cache_dir = ""; # Use default cache
+          image_filter = "lanczos3"; # High-quality image filtering
+          image_quality = 90; # Image quality (1-100)
+          sixel_fraction = 15; # Sixel fraction
         };
 
         opener = {
@@ -284,13 +284,13 @@
 
     # Shell aliases for yazi
     programs.zsh.shellAliases = lib.mkIf config.programs.zsh.enable {
-      y = "yazi";                          # Quick launch
-      yy = "yazi .";                       # Open in current directory
-      yh = "yazi ~";                       # Open in home
-      yc = "yazi ~/.config";               # Open config directory
-      yp = "yazi ~/Projects";              # Open projects directory
-      yd = "yazi ~/Downloads";             # Open downloads
-      yt = "yazi /tmp";                    # Open temp directory
+      y = "yazi"; # Quick launch
+      yy = "yazi ."; # Open in current directory
+      yh = "yazi ~"; # Open in home
+      yc = "yazi ~/.config"; # Open config directory
+      yp = "yazi ~/Projects"; # Open projects directory
+      yd = "yazi ~/Downloads"; # Open downloads
+      yt = "yazi /tmp"; # Open temp directory
     };
 
     programs.bash.shellAliases = lib.mkIf config.programs.bash.enable {

@@ -17,7 +17,7 @@
       venv = "uv venv";
       py = "uv run python";
       pip = "uv pip";
-      
+
       # Poetry alternative (if using poetry instead)
       # py = "poetry run python";
     };

@@ -4,7 +4,7 @@
 
 let
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
-  
+
   # Toggle DMS launcher
   dmsToggleLauncher = pkgs.writeShellScriptBin "dms-toggle-launcher" ''
     #!/usr/bin/env bash
@@ -18,7 +18,7 @@ let
       notify-send "DMS" "DankMaterialShell is not running"
     fi
   '';
-  
+
   # Toggle notifications
   dmsToggleNotifications = pkgs.writeShellScriptBin "dms-toggle-notifications" ''
     #!/usr/bin/env bash
@@ -32,7 +32,7 @@ let
       notify-send "DMS" "DankMaterialShell is not running"
     fi
   '';
-  
+
   # Toggle control center
   dmsToggleControlCenter = pkgs.writeShellScriptBin "dms-toggle-control-center" ''
     #!/usr/bin/env bash
@@ -46,7 +46,7 @@ let
       notify-send "DMS" "DankMaterialShell is not running"
     fi
   '';
-  
+
   # Toggle clipboard history
   dmsToggleClipboard = pkgs.writeShellScriptBin "dms-toggle-clipboard" ''
     #!/usr/bin/env bash
@@ -61,7 +61,7 @@ let
       cliphist list | fuzzel --dmenu | cliphist decode | wl-copy
     fi
   '';
-  
+
   # Restart DMS
   dmsRestart = pkgs.writeShellScriptBin "dms-restart" ''
     #!/usr/bin/env bash
@@ -76,7 +76,7 @@ let
       notify-send "DMS Error" "DankMaterialShell binary not found"
     fi
   '';
-  
+
   # Show DMS status
   dmsStatus = pkgs.writeShellScriptBin "dms-status" ''
     #!/usr/bin/env bash
@@ -95,7 +95,7 @@ let
       notify-send "DMS Status" "Not running"
     fi
   '';
-  
+
   # Apply DMS theme
   dmsApplyTheme = pkgs.writeShellScriptBin "dms-apply-theme" ''
     #!/usr/bin/env bash
@@ -144,6 +144,6 @@ lib.mkIf isMacbook {
     dmsRestart
     dmsStatus
     dmsApplyTheme
-    pkgs.jq  # For config manipulation
+    pkgs.jq # For config manipulation
   ];
 }

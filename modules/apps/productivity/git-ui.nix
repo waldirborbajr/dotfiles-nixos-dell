@@ -5,7 +5,7 @@
 {
   config = lib.mkIf config.apps.productivity.git-ui.enable {
     home.packages = with pkgs; [
-      lazygit        # Terminal UI for git
+      lazygit # Terminal UI for git
     ];
 
     # Shell alias

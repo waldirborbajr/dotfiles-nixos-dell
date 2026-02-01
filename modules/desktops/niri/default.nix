@@ -68,12 +68,12 @@ in
       QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
       SDL_VIDEODRIVER = "wayland";
       CLUTTER_BACKEND = "wayland";
-      
+
       # XDG
       XDG_CURRENT_DESKTOP = "niri";
       XDG_SESSION_TYPE = "wayland";
       XDG_SESSION_DESKTOP = "niri";
-      
+
       # Qt theming
       QT_QPA_PLATFORMTHEME = "qt5ct";
     };

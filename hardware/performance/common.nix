@@ -12,13 +12,13 @@
   ############################################
   # systemd startup optimizations
   ############################################
-  
+
   systemd.services.systemd-udev-settle.enable = false;
   systemd.services.systemd-timesyncd.enable = true;
-  
+
   systemd.settings.Manager = {
     DefaultTimeoutStartSec = "10s";
-    DefaultTimeoutStopSec  = "10s";
+    DefaultTimeoutStopSec = "10s";
   };
 
   ############################################
@@ -41,12 +41,12 @@
     warn-dirty = false;
     keep-outputs = true;
     keep-derivations = true;
-    
+
     # Build optimization
     max-jobs = "auto";
-    cores = 0;  # 0 = use all available cores
+    cores = 0; # 0 = use all available cores
     builders-use-substitutes = true;
-    
+
     # Parallel downloads
     http-connections = 50;
     max-substitution-jobs = 8;
@@ -55,11 +55,11 @@
   ############################################
   # Earlyoom: Prevent system freezes
   ############################################
-  
+
   services.earlyoom = {
     enable = true;
     enableNotifications = true;
-    freeMemThreshold = 5;  # Kill when <5% RAM free
+    freeMemThreshold = 5; # Kill when <5% RAM free
     freeSwapThreshold = 10;
   };
 
@@ -79,7 +79,7 @@
   ############################################
 
   services.udisks2.enable = lib.mkDefault true;
-  services.fwupd.enable  = lib.mkDefault false;
+  services.fwupd.enable = lib.mkDefault false;
   services.printing.enable = lib.mkDefault false;
 
   ############################################

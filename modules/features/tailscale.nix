@@ -23,7 +23,7 @@
     networking.firewall = {
       # Allow Tailscale traffic
       trustedInterfaces = [ "tailscale0" ];
-      
+
       # Allow the Tailscale UDP port through the firewall
       allowedUDPPorts = [ config.services.tailscale.port ];
     };

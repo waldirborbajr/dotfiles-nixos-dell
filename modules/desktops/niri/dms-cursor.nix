@@ -4,7 +4,7 @@
 
 let
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
-  
+
   dmsCursorConfig = ''
     // ============================================
     // DMS CURSOR CONFIGURATION

@@ -4,14 +4,14 @@
 
 let
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
-  
+
   # Catppuccin Mocha colors
   cat = {
     mauve = "cba6f7";
     surface1 = "45475a";
   };
   hex = c: "#${c}";
-  
+
   layoutConfig = ''
     // ============================================
     // LAYOUT CONFIGURATION

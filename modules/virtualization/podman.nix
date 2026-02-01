@@ -7,7 +7,7 @@
 {
   virtualisation.podman = {
     enable = lib.mkDefault true;
-    dockerCompat = true;  # Alias 'docker' command to podman
+    dockerCompat = true; # Alias 'docker' command to podman
     defaultNetwork.settings.dns_enabled = true;
   };
 

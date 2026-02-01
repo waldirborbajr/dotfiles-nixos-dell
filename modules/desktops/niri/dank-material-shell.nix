@@ -14,16 +14,16 @@ lib.mkIf isMacbook {
     gtk4
     libadwaita
     libnotify
-    
+
     # Additional utilities for DMS features
     wireplumber
     bluez
     networkmanager
     upower
-    
+
     # Temperature monitoring
     lm_sensors
-    
+
     # System monitoring
     htop
     btop
@@ -35,18 +35,18 @@ lib.mkIf isMacbook {
     currentThemeName = "catppuccin-mocha";
     currentThemeCategory = "registry";
     customThemeFile = "";
-    registryThemeVariants = {};
+    registryThemeVariants = { };
     matugenScheme = "scheme-tonal-spot";
     runUserMatugenTemplates = true;
     matugenTargetMonitor = "";
-    
+
     # Transparency and Appearance
     popupTransparency = 0.95;
     dockTransparency = 0.95;
     widgetBackgroundColor = "sc";
     widgetColorMode = "default";
     cornerRadius = 12;
-    
+
     # Niri-specific Layout Settings
     niriLayoutGapsOverride = 8;
     niriLayoutRadiusOverride = 12;
@@ -57,12 +57,12 @@ lib.mkIf isMacbook {
     mangoLayoutGapsOverride = -1;
     mangoLayoutRadiusOverride = -1;
     mangoLayoutBorderSize = -1;
-    
+
     # Clock Settings
     use24HourClock = true;
     showSeconds = true;
     useFahrenheit = false;
-    
+
     # Visual Settings
     nightModeEnabled = false;
     animationSpeed = 1;
@@ -70,17 +70,17 @@ lib.mkIf isMacbook {
     wallpaperFillMode = "Fill";
     blurredWallpaperLayer = false;
     blurWallpaperOnOverview = false;
-    
+
     # Top Bar Widgets - Left
     showLauncherButton = true;
     showWorkspaceSwitcher = true;
     showFocusedWindow = true;
-    
+
     # Top Bar Widgets - Center
     showWeather = true;
     showMusic = true;
     showClock = true;
-    
+
     # Top Bar Widgets - Right
     showClipboard = true;
     showCpuUsage = true;
@@ -88,13 +88,13 @@ lib.mkIf isMacbook {
     showCpuTemp = true;
     showGpuTemp = false;
     selectedGpuIndex = 0;
-    enabledGpuPciIds = [];
+    enabledGpuPciIds = [ ];
     showSystemTray = true;
     showNotificationButton = true;
     showBattery = true;
     showControlCenterButton = true;
     showCapsLockIndicator = true;
-    
+
     # Control Center Configuration
     controlCenterShowNetworkIcon = true;
     controlCenterShowBluetoothIcon = true;
@@ -108,13 +108,13 @@ lib.mkIf isMacbook {
     controlCenterShowBatteryIcon = true;
     controlCenterShowPrinterIcon = false;
     controlCenterShowScreenSharingIcon = true;
-    
+
     # Privacy Indicators
     showPrivacyButton = true;
     privacyShowMicIcon = true;
     privacyShowCameraIcon = true;
     privacyShowScreenShareIcon = true;
-    
+
     # Control Center Widgets
     controlCenterWidgets = [
       { id = "volumeSlider"; enabled = true; width = 50; }
@@ -126,7 +126,7 @@ lib.mkIf isMacbook {
       { id = "nightMode"; enabled = true; width = 50; }
       { id = "darkMode"; enabled = true; width = 50; }
     ];
-    
+
     # Workspace Configuration
     showWorkspaceIndex = true;
     showWorkspaceName = false;
@@ -145,14 +145,14 @@ lib.mkIf isMacbook {
     workspaceFocusedBorderEnabled = true;
     workspaceFocusedBorderColor = "primary";
     workspaceFocusedBorderThickness = 2;
-    workspaceNameIcons = {};
-    
+    workspaceNameIcons = { };
+
     # Media Player Features
     waveProgressEnabled = true;
     scrollTitleEnabled = true;
     audioVisualizerEnabled = true;
     audioScrollMode = "volume";
-    
+
     # Compact Modes
     clockCompactMode = false;
     focusedWindowCompactMode = false;
@@ -160,14 +160,14 @@ lib.mkIf isMacbook {
     keyboardLayoutNameCompactMode = false;
     runningAppsCurrentWorkspace = false;
     runningAppsGroupByApp = true;
-    appIdSubstitutions = [];
-    
+    appIdSubstitutions = [ ];
+
     # Layout Preferences
     centeringMode = "index";
     clockDateFormat = "%a %d %b";
     lockDateFormat = "%A, %B %d";
     mediaSize = 1;
-    
+
     # App Launcher
     appLauncherViewMode = "grid";
     spotlightModalViewMode = "grid";
@@ -175,13 +175,13 @@ lib.mkIf isMacbook {
     appLauncherGridColumns = 6;
     spotlightCloseNiriOverview = true;
     niriOverviewOverlayEnabled = true;
-    
+
     # Weather & Location
     useAutoLocation = false;
     weatherEnabled = true;
     networkPreference = "auto";
     vpnLastConnected = "";
-    
+
     # Theme & Icons
     iconTheme = "Papirus-Dark";
     cursorSettings = {
@@ -200,7 +200,7 @@ lib.mkIf isMacbook {
         cursorHideTimeout = 0;
       };
     };
-    
+
     # Launcher Logo
     launcherLogoMode = "apps";
     launcherLogoCustomPath = "";
@@ -209,13 +209,13 @@ lib.mkIf isMacbook {
     launcherLogoBrightness = 0.5;
     launcherLogoContrast = 1;
     launcherLogoSizeOffset = 0;
-    
+
     # Fonts
     fontFamily = "JetBrainsMono Nerd Font";
     monoFontFamily = "JetBrainsMono Nerd Font Mono";
     fontWeight = 600;
     fontScale = 1.15;
-    
+
     # Notepad
     notepadUseMonospace = true;
     notepadFontFamily = "JetBrainsMono Nerd Font Mono";
@@ -223,14 +223,14 @@ lib.mkIf isMacbook {
     notepadShowLineNumbers = true;
     notepadTransparencyOverride = -1;
     notepadLastCustomTransparency = 0.9;
-    
+
     # Sounds
     soundsEnabled = true;
     useSystemSoundTheme = true;
     soundNewNotification = true;
     soundVolumeChanged = false;
     soundPluggedIn = true;
-    
+
     # Power Management
     acMonitorTimeout = 900;
     acLockTimeout = 1800;
@@ -249,23 +249,23 @@ lib.mkIf isMacbook {
     fadeToLockGracePeriod = 5;
     fadeToDpmsEnabled = true;
     fadeToDpmsGracePeriod = 10;
-    
+
     # Launch Prefix
     launchPrefix = "";
-    
+
     # Device Pins
-    brightnessDevicePins = {};
-    wifiNetworkPins = {};
-    bluetoothDevicePins = {};
-    audioInputDevicePins = {};
-    audioOutputDevicePins = {};
-    
+    brightnessDevicePins = { };
+    wifiNetworkPins = { };
+    bluetoothDevicePins = { };
+    audioInputDevicePins = { };
+    audioOutputDevicePins = { };
+
     # GTK/Qt Theming with Catppuccin
     gtkThemingEnabled = true;
     qtThemingEnabled = true;
     syncModeWithPortal = true;
     terminalsAlwaysDark = false;
-    
+
     # Matugen Templates for Catppuccin
     runDmsMatugenTemplates = true;
     matugenTemplateGtk = true;
@@ -288,7 +288,7 @@ lib.mkIf isMacbook {
     matugenTemplateDgop = false;
     matugenTemplateKcolorscheme = false;
     matugenTemplateVscode = true;
-    
+
     # Dock Configuration (Disabled by default)
     showDock = false;
     dockAutoHide = false;
@@ -305,11 +305,11 @@ lib.mkIf isMacbook {
     dockBorderOpacity = 1;
     dockBorderThickness = 2;
     dockIsolateDisplays = false;
-    
+
     # Notifications
     notificationOverlayEnabled = true;
     modalDarkenBackground = true;
-    
+
     # Lock Screen
     lockScreenShowPowerActions = true;
     lockScreenShowSystemIcons = true;
@@ -322,10 +322,10 @@ lib.mkIf isMacbook {
     lockScreenActiveMonitor = "all";
     lockScreenInactiveColor = "#1e1e2e";
     lockScreenNotificationMode = 1;
-    
+
     # Brightness Slider
     hideBrightnessSlider = false;
-    
+
     # Notification Settings
     notificationTimeoutLow = 3000;
     notificationTimeoutNormal = 5000;
@@ -338,7 +338,7 @@ lib.mkIf isMacbook {
     notificationHistorySaveLow = true;
     notificationHistorySaveNormal = true;
     notificationHistorySaveCritical = true;
-    
+
     # OSD (On-Screen Display)
     osdAlwaysShowValue = true;
     osdPosition = 5;
@@ -350,7 +350,7 @@ lib.mkIf isMacbook {
     osdCapsLockEnabled = true;
     osdPowerProfileEnabled = true;
     osdAudioOutputEnabled = true;
-    
+
     # Power Menu
     powerActionConfirm = true;
     powerActionHoldDuration = 0.5;
@@ -369,20 +369,20 @@ lib.mkIf isMacbook {
     customPowerActionHibernate = "";
     customPowerActionReboot = "";
     customPowerActionPowerOff = "";
-    
+
     # System Updater
     updaterHideWidget = false;
     updaterUseCustomCommand = false;
     updaterCustomCommand = "";
     updaterTerminalAdditionalParams = "";
-    
+
     # Display Configuration
     displayNameMode = "system";
-    screenPreferences = {};
-    showOnLastDisplay = {};
-    niriOutputSettings = {};
-    hyprlandOutputSettings = {};
-    
+    screenPreferences = { };
+    showOnLastDisplay = { };
+    niriOutputSettings = { };
+    hyprlandOutputSettings = { };
+
     # Bar Configuration
     barConfigs = [
       {
@@ -392,7 +392,7 @@ lib.mkIf isMacbook {
         position = 0;
         screenPreferences = [ "all" ];
         showOnLastDisplay = true;
-        
+
         leftWidgets = [
           { id = "launcherButton"; enabled = true; }
           { id = "separator"; enabled = true; }
@@ -400,12 +400,12 @@ lib.mkIf isMacbook {
           { id = "separator"; enabled = true; }
           { id = "focusedWindow"; enabled = true; }
         ];
-        
+
         centerWidgets = [
           { id = "clock"; enabled = true; }
           { id = "weather"; enabled = true; }
         ];
-        
+
         rightWidgets = [
           { id = "music"; enabled = true; }
           { id = "separator"; enabled = true; }
@@ -417,7 +417,7 @@ lib.mkIf isMacbook {
           { id = "notificationButton"; enabled = true; }
           { id = "controlCenterButton"; enabled = true; }
         ];
-        
+
         spacing = 12;
         innerPadding = 8;
         bottomGap = 6;
@@ -454,7 +454,7 @@ lib.mkIf isMacbook {
         shadowCustomColor = "#000000";
       }
     ];
-    
+
     # Desktop Clock
     desktopClockEnabled = false;
     desktopClockStyle = "analog";
@@ -481,7 +481,7 @@ lib.mkIf isMacbook {
     desktopClockWidth = 280;
     desktopClockHeight = 180;
     desktopClockDisplayPreferences = [ "all" ];
-    
+
     # System Monitor
     systemMonitorEnabled = false;
     systemMonitorShowHeader = true;
@@ -520,25 +520,25 @@ lib.mkIf isMacbook {
     systemMonitorWidth = 400;
     systemMonitorHeight = 600;
     systemMonitorDisplayPreferences = [ "all" ];
-    systemMonitorVariants = [];
-    
+    systemMonitorVariants = [ ];
+
     # Desktop Widget Positions
-    desktopWidgetPositions = {};
-    desktopWidgetGridSettings = {};
-    desktopWidgetInstances = [];
-    desktopWidgetGroups = [];
-    
+    desktopWidgetPositions = { };
+    desktopWidgetGridSettings = { };
+    desktopWidgetInstances = [ ];
+    desktopWidgetGroups = [ ];
+
     # Built-in Plugin Settings
     builtInPluginSettings = {
       dms_settings_search = {
         trigger = "?";
       };
     };
-    
+
     # Config Version
     configVersion = 5;
   };
-  
+
   # Session variables for DankMaterialShell
   home.sessionVariables = {
     DMS_COMPOSITOR = "niri";

@@ -4,7 +4,7 @@
 {
   programs.fzf = {
     enable = true;
-    enableZshIntegration = true;          # ← isso ativa Ctrl+R, Ctrl+T e Alt+C no zsh
+    enableZshIntegration = true; # ← isso ativa Ctrl+R, Ctrl+T e Alt+C no zsh
 
     # Opcional: suas preferências de visual / comportamento
     defaultOptions = [

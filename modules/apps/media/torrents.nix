@@ -5,7 +5,7 @@
 {
   config = lib.mkIf config.apps.media.torrents.enable {
     home.packages = with pkgs; [
-      transmission_4-gtk    # BitTorrent client
+      transmission_4-gtk # BitTorrent client
     ];
   };
 }

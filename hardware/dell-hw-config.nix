@@ -7,7 +7,8 @@
 
 {
   imports =
-    [ (modulesPath + "/installer/scan/not-detected.nix")
+    [
+      (modulesPath + "/installer/scan/not-detected.nix")
     ];
 
   boot.initrd.availableKernelModules = [ "ehci_pci" "ahci" "ums_realtek" "usb_storage" "sd_mod" "sr_mod" ];
@@ -15,10 +16,10 @@
   boot.kernelModules = [ "kvm-intel" ];
   boot.extraModulePackages = [ ];
 
-#  fileSystems."/" =
-#    { device = "/dev/disk/by-uuid/1acae91f-ffb3-40e6-8e0d-dd2b63c6c4bb";
-#      fsType = "ext4";
-#    };
+  #  fileSystems."/" =
+  #    { device = "/dev/disk/by-uuid/1acae91f-ffb3-40e6-8e0d-dd2b63c6c4bb";
+  #      fsType = "ext4";
+  #    };
 
   fileSystems."/" = {
     device = "/dev/disk/by-uuid/1acae91f-ffb3-40e6-8e0d-dd2b63c6c4bb";
@@ -28,7 +29,7 @@
       "nodiratime"
       "commit=60"
     ];
-  };    
+  };
 
   swapDevices = [ ];
 

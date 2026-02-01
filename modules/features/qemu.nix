@@ -37,8 +37,8 @@ in
         spice
         spice-gtk
         spice-protocol
-        virtio-win    # Windows drivers (~500MB)
-        OVMF          # UEFI firmware for VMs
+        virtio-win # Windows drivers (~500MB)
+        OVMF # UEFI firmware for VMs
       ];
 
       users.users.borba.extraGroups = lib.mkAfter [ "libvirtd" "kvm" ];

@@ -1,10 +1,9 @@
 # modules/hardware/dell.nix
 # ---
-{
-  config,
-  pkgs,
-  lib,
-  ...
+{ config
+, pkgs
+, lib
+, ...
 }:
 
 {
@@ -25,7 +24,7 @@
   # To disable WiFi completely and remove this risk:
   # Comment out: networking.enableB43Firmware = true;
   # ============================================
-  
+
   networking.enableB43Firmware = true;
 
   # Allow insecure broadcom-sta package

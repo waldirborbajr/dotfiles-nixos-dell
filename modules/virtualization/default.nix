@@ -20,20 +20,20 @@
     # ============================================
     # CONTAINER RUNTIME (escolha apenas 1)
     # ============================================
-    
+
     # Docker (padrão atual - migração em andamento)
     ./docker.nix
-    
+
     # Podman (próximo padrão - descomentar quando migração concluir)
     # ./podman.nix
-    
+
     # ============================================
     # OUTROS SERVIÇOS (independentes)
     # ============================================
-    
+
     # K3s - Kubernetes leve (se necessário)
     # ./k3s.nix
-    
+
     # Libvirt - VMs com QEMU/KVM (se necessário)
     # ./libvirt.nix
   ];

@@ -11,7 +11,7 @@
   services.displayManager.gdm = {
     enable = true;
     wayland = true;
-    autoSuspend = false;  # Prevent auto-suspend at login screen
+    autoSuspend = false; # Prevent auto-suspend at login screen
   };
 
   services.desktopManager.gnome.enable = true;
@@ -20,9 +20,9 @@
   # GNOME Services (minimal but complete)
   # ============================================
   services.gnome = {
-    core-apps.enable = false;  # Disabled: Calendar, Contacts, Clock, etc. (~500MB)
+    core-apps.enable = false; # Disabled: Calendar, Contacts, Clock, etc. (~500MB)
     gnome-keyring.enable = true;
-    gnome-browser-connector.enable = true;  # For GNOME Shell extensions
+    gnome-browser-connector.enable = true; # For GNOME Shell extensions
   };
 
   # ============================================
@@ -30,18 +30,18 @@
   # ============================================
   # Disable unnecessary GNOME services
   services.gnome.games.enable = false;
-  
+
   # Exclude bloat packages
   environment.gnome.excludePackages = with pkgs; [
     gnome-tour
-    epiphany      # GNOME Web browser
-    geary         # Email client
+    epiphany # GNOME Web browser
+    geary # Email client
     gnome-music
     gnome-photos
-    totem         # Video player
-    cheese        # Webcam app
+    totem # Video player
+    cheese # Webcam app
     simple-scan
-    yelp          # Help viewer
+    yelp # Help viewer
     gnome-maps
     gnome-weather
     gnome-contacts
@@ -59,12 +59,12 @@
     QT_WAYLAND_DISABLE_WINDOWDECORATION = "1";
     SDL_VIDEODRIVER = "wayland";
     CLUTTER_BACKEND = "wayland";
-    
+
     # XDG
     XDG_SESSION_TYPE = "wayland";
-    
+
     # GNOME-specific
-    MUTTER_DEBUG_ENABLE_ATOMIC_KMS = "0";  # Better stability on some hardware
+    MUTTER_DEBUG_ENABLE_ATOMIC_KMS = "0"; # Better stability on some hardware
     MUTTER_DEBUG_FORCE_KMS_MODE = "simple";
   };
 
@@ -74,7 +74,7 @@
   # GNOME provides its own portal implementation
   # xdg-desktop-portal-gnome is automatically enabled with GNOME
   xdg.portal.extraPortals = with pkgs; [
-    xdg-desktop-portal-gtk  # Fallback for non-GNOME apps
+    xdg-desktop-portal-gtk # Fallback for non-GNOME apps
   ];
 
   # ============================================
@@ -84,14 +84,14 @@
     gnome-tweaks
     gnome-extension-manager
     dconf-editor
-    
+
     # File manager integration
     nautilus
-    sushi  # File previewer for Nautilus
-    
+    sushi # File previewer for Nautilus
+
     # System utilities
     gnome-system-monitor
-    
+
     # Terminal (if not using Alacritty/others)
     gnome-console
   ];

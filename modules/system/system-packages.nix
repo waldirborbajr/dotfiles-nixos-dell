@@ -9,120 +9,120 @@ in
 {
   config = lib.mkIf config.system-config.systemPackages.enable {
     environment.systemPackages =
-    # ----------------------------
-    # Stable packages (default)
-    # ----------------------------
-    (with pkgs; [
+      # ----------------------------
+      # Stable packages (default)
+      # ----------------------------
+      (with pkgs; [
 
-      ##########################################
-      # Networking / Diagnostics (system-level)
-      ##########################################
-      iw
-      wirelesstools
-      util-linux
-      linuxPackages.broadcom_sta
+        ##########################################
+        # Networking / Diagnostics (system-level)
+        ##########################################
+        iw
+        wirelesstools
+        util-linux
+        linuxPackages.broadcom_sta
 
-      ##########################################
-      # Shells (system-level requirement)
-      ##########################################
-      zsh
+        ##########################################
+        # Shells (system-level requirement)
+        ##########################################
+        zsh
 
-      ##########################################
-      # Languages / Toolchains (system-level)
-      ##########################################
-      gcc
-      libgcc
-      glibc
-      libcxx
+        ##########################################
+        # Languages / Toolchains (system-level)
+        ##########################################
+        gcc
+        libgcc
+        glibc
+        libcxx
 
-      ##########################################
-      # Build essentials
-      ##########################################
-      gnumake
-      binutils
-      pkg-config
-      cmake
-      ninja
-      meson
-      autoconf
-      automake
-      libtool
-      patchelf
+        ##########################################
+        # Build essentials
+        ##########################################
+        gnumake
+        binutils
+        pkg-config
+        cmake
+        ninja
+        meson
+        autoconf
+        automake
+        libtool
+        patchelf
 
-      ##########################################
-      # Common native deps used in builds
-      ##########################################
-      openssl
-      zlib
+        ##########################################
+        # Common native deps used in builds
+        ##########################################
+        openssl
+        zlib
 
-      ##########################################
-      # Nix Tooling
-      ##########################################
-      nixd
-      nil
-      statix
-      deadnix
-      nixfmt-rfc-style
+        ##########################################
+        # Nix Tooling
+        ##########################################
+        nixd
+        nil
+        statix
+        deadnix
+        nixfmt-rfc-style
 
-      ##########################################
-      # Core UNIX utilities (system essential)
-      ##########################################
-      coreutils
-      curl
-      wget
-      gnupg
-      file
-      rsync
-      unzip
-      zip
-      procps
-      psmisc
-      tree
-      stow
+        ##########################################
+        # Core UNIX utilities (system essential)
+        ##########################################
+        coreutils
+        curl
+        wget
+        gnupg
+        file
+        rsync
+        unzip
+        zip
+        procps
+        psmisc
+        tree
+        stow
 
-      ##########################################
-      # Hardware diagnostics
-      ##########################################
-      lshw
-      pciutils
-      usbutils
-      lm_sensors
+        ##########################################
+        # Hardware diagnostics
+        ##########################################
+        lshw
+        pciutils
+        usbutils
+        lm_sensors
 
-      ##########################################
-      # Networking tools
-      ##########################################
-      iwd
-      iproute2
-      iputils
-      traceroute
-      dnsutils
-      nmap
+        ##########################################
+        # Networking tools
+        ##########################################
+        iwd
+        iproute2
+        iputils
+        traceroute
+        dnsutils
+        nmap
 
-      ##########################################
-      # Storage
-      ##########################################
-      e2fsprogs
-      ntfs3g
-      dosfstools
+        ##########################################
+        # Storage
+        ##########################################
+        e2fsprogs
+        ntfs3g
+        dosfstools
 
-      ##########################################
-      # Certificates
-      ##########################################
-      cacert
-    ])
+        ##########################################
+        # Certificates
+        ##########################################
+        cacert
+      ])
 
-    # ----------------------------
-    # Unstable packages (explicit)
-    # ----------------------------
-    ++ (with unstablePkgs; [
-      ##########################################
-      # Compilers & Debuggers (system-level)
-      ##########################################
-      clang
-      llvm
-      lld
-      gdb
-      lldb
-    ]);
+      # ----------------------------
+      # Unstable packages (explicit)
+      # ----------------------------
+      ++ (with unstablePkgs; [
+        ##########################################
+        # Compilers & Debuggers (system-level)
+        ##########################################
+        clang
+        llvm
+        lld
+        gdb
+        lldb
+      ]);
   };
 }

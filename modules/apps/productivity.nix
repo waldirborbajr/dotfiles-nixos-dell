@@ -11,32 +11,32 @@
       dust
       ncdu
       tree
-      
+
       # Navigation
       zoxide
-      
+
       # Shell history
       atuin
-      
+
       # Documentation
       tldr
-      
+
       # Text processing
       sd
       jq
       fx
-      
+
       # HTTP client
       httpie
-      
+
       # Development workflow
       direnv
       entr
-      
+
       # System monitoring
       procs
       btop
-      
+
       # Git UI
       lazygit
     ];
@@ -75,18 +75,18 @@
       ll = "eza -lg --icons --group-directories-first";
       la = "eza -lag --icons --group-directories-first";
       lt = "eza --tree --level=2 --icons";
-      
+
       # Modern replacements
       cat = "bat";
       find = "fd";
-      
+
       # Git UI
       lg = "lazygit";
-      
+
       # Disk usage
       du = "dust";
       df = "dust";
-      
+
       # Process monitoring
       ps = "procs";
       top = "btop";

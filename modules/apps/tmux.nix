@@ -18,13 +18,13 @@
     # Tmux Dependencies
     ############################################
     home.packages = with pkgs; [
-      sesh       # Smart session manager for tmux
-      gitmux     # Show git status in tmux status line
-      tmuxifier  # Tmux project/session manager
-      fd         # Fast find alternative (used by sesh)
-      zoxide     # Smart directory jumper (used by sesh)
-      jq         # JSON processor (used in tmux bindings)
-      yq-go      # YAML processor
+      sesh # Smart session manager for tmux
+      gitmux # Show git status in tmux status line
+      tmuxifier # Tmux project/session manager
+      fd # Fast find alternative (used by sesh)
+      zoxide # Smart directory jumper (used by sesh)
+      jq # JSON processor (used in tmux bindings)
+      yq-go # YAML processor
     ];
 
     ############################################
@@ -32,23 +32,23 @@
     ############################################
     programs.tmux = {
       enable = true;
-      
+
       shell = "${pkgs.zsh}/bin/zsh";
       terminal = "xterm-256color";
       historyLimit = 1000000;
       baseIndex = 1;
-      
+
       # Key bindings
       prefix = "C-a";
       keyMode = "vi";
       mouse = true;
-      
+
       # Plugins
       plugins = with pkgs.tmuxPlugins; [
         vim-tmux-navigator
         # Note: fzf-url, nerd-font-window-name, sessionx, floax, notify need to be added via TPM
       ];
-      
+
       extraConfig = ''
         #
         # ████████╗███╗   ███╗██╗   ██╗██╗  ██╗

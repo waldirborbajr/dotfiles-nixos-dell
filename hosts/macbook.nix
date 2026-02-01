@@ -16,7 +16,7 @@
 
     # Desktops - Multiple sessions available at GDM
     ../modules/desktops/gnome.nix
-    ../modules/desktops/niri/system.nix  # Niri as alternative session
+    ../modules/desktops/niri/system.nix # Niri as alternative session
     ../modules/autologin.nix
   ];
 
@@ -49,7 +49,7 @@
   services.xserver.enable = true;
   services.xserver.xkb = {
     layout = "us,us";
-    variant = ",intl";  # US puro (default), US-intl (com dead keys)
+    variant = ",intl"; # US puro (default), US-intl (com dead keys)
   };
 
   ############################################

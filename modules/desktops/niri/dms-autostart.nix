@@ -4,7 +4,7 @@
 
 let
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
-  
+
   # DankMaterialShell start script
   dmsStart = pkgs.writeShellScriptBin "dms-start" ''
     #!/usr/bin/env bash
@@ -28,7 +28,7 @@ let
 in
 lib.mkIf isMacbook {
   home.packages = [ dmsStart ];
-  
+
   # Add autostart entry
   xdg.configFile."autostart/dank-material-shell.desktop".text = ''
     [Desktop Entry]

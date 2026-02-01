@@ -5,8 +5,8 @@
 {
   config = lib.mkIf config.apps.productivity.monitoring.enable {
     home.packages = with pkgs; [
-      procs          # Modern ps replacement
-      btop           # Resource monitor
+      procs # Modern ps replacement
+      btop # Resource monitor
     ];
 
     # Shell aliases
