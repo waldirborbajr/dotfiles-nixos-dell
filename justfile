@@ -203,7 +203,7 @@ test-build HOST DEVOPS="" QEMU="" IMPURE="":
 # Build system configuration
 build HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{/if}}
+    @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
     @just _check_git_status
     @just flake-check
     @echo "Before:" && just current-system
@@ -213,7 +213,7 @@ build HOST DEVOPS="" QEMU="" IMPURE="":
 # Switch to new configuration
 switch HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{/if}}
+    @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
     @just _check_git_status
     @echo "Before:" && just current-system
     @just _nixos_cmd {{HOST}} switch {{DEVOPS}} {{QEMU}} {{IMPURE}}
@@ -222,7 +222,7 @@ switch HOST DEVOPS="" QEMU="" IMPURE="":
 # Production switch (with flake check)
 switch-prod HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{/if}}
+    @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
     @just _check_git_status
     @just flake-check
     @echo "Before:" && just current-system
@@ -248,7 +248,7 @@ upgrade HOST DEVOPS="" QEMU="" IMPURE="":
 # Debug build with verbose output
 build-debug HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{/if}}
+    @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
     @just _check_git_status
     @just flake-check
     @just _nixos_cmd {{HOST}} switch {{DEVOPS}} {{QEMU}} {{IMPURE}} "--verbose --show-trace" 2>&1 | tee {{DEBUG_LOG}}
