@@ -175,10 +175,10 @@ _require_host HOST:
 _nixos_cmd HOST ACTION DEVOPS="" QEMU="" IMPURE="" FLAGS="":
     #!/usr/bin/env bash
     CMD="sudo nixos-rebuild {{ACTION}} --flake {{NIXOS_CONFIG}}#{{HOST}}"
-    {{if IMPURE != ""}}CMD="$CMD --impure"{{fi}}
-    {{if FLAGS != ""}}CMD="$CMD {{FLAGS}}"{{fi}}
-    {{if DEVOPS != ""}}export DEVOPS=1{{fi}}
-    {{if QEMU != ""}}export QEMU=1{{fi}}
+    [[ -n "{{IMPURE}}" ]] && CMD="$CMD --impure"
+    [[ -n "{{FLAGS}}" ]] && CMD="$CMD {{FLAGS}}"
+    [[ -n "{{DEVOPS}}" ]] && export DEVOPS=1
+    [[ -n "{{QEMU}}" ]] && export QEMU=1
     echo ">>> Running: $CMD"
     eval $CMD
 
@@ -203,7 +203,7 @@ test-build HOST DEVOPS="" QEMU="" IMPURE="":
 # Build system configuration
 build HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{fi}}
+    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{/if}}
     @just _check_git_status
     @just flake-check
     @echo "Before:" && just current-system
@@ -213,7 +213,7 @@ build HOST DEVOPS="" QEMU="" IMPURE="":
 # Switch to new configuration
 switch HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{fi}}
+    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{/if}}
     @just _check_git_status
     @echo "Before:" && just current-system
     @just _nixos_cmd {{HOST}} switch {{DEVOPS}} {{QEMU}} {{IMPURE}}
@@ -222,7 +222,7 @@ switch HOST DEVOPS="" QEMU="" IMPURE="":
 # Production switch (with flake check)
 switch-prod HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{fi}}
+    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{/if}}
     @just _check_git_status
     @just flake-check
     @echo "Before:" && just current-system
@@ -248,7 +248,7 @@ upgrade HOST DEVOPS="" QEMU="" IMPURE="":
 # Debug build with verbose output
 build-debug HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
-    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{fi}}
+    {{if AUTO_UPDATE_FLAKE == "1"}}just update-flake{{else}}echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."{{/if}}
     @just _check_git_status
     @just flake-check
     @just _nixos_cmd {{HOST}} switch {{DEVOPS}} {{QEMU}} {{IMPURE}} "--verbose --show-trace" 2>&1 | tee {{DEBUG_LOG}}
