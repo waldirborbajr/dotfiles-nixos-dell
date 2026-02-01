@@ -23,7 +23,7 @@
     programs.yazi = {
       enable = true;
       enableZshIntegration = true;
-      
+
       # Use 'y' as shell wrapper for directory changing
       shellWrapperName = "y";
 
