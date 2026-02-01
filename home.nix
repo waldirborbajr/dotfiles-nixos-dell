@@ -34,7 +34,7 @@ in
     ripgrep.enable = true;
     yazi.enable = true;
     tmux.enable = true;
-    chirp.enable = false;
+    chirp.enable = true;
 
     # User apps (migrated from system)
     browsers.enable = true;
