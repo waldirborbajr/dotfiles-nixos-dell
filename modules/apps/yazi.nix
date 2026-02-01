@@ -16,25 +16,26 @@
 
 let
   # Custom plugins not yet in nixpkgs
+  # Hashes obtained via: nix-prefetch-github <owner> <repo> --rev <rev>
   searchjump = pkgs.fetchFromGitHub {
     owner = "DreamMaoMao";
     repo = "searchjump.yazi";
-    rev = "cab627c";
+    rev = "cab627ce87d0d0d6251e79f0f66526254f0e1674";
     sha256 = "sha256-xcz2+zepICZ3ji0Hm0SSUBSaEpabWUrIdG7JmxUl/ts=";
   };
 
   starship = pkgs.fetchFromGitHub {
     owner = "Rolv-Apneseth";
     repo = "starship.yazi";
-    rev = "eca1861";
-    sha256 = lib.fakeSha256;  # Run build to get correct hash
+    rev = "eca18616402e37dd4bb9a5e4854e8e5dcba2bbab";
+    sha256 = "sha256-0000000000000000000000000000000000000000000=";  # Will fail and show correct hash
   };
 
   bookmarks = pkgs.fetchFromGitHub {
     owner = "dedukun";
     repo = "bookmarks.yazi";
-    rev = "9ef1254";
-    sha256 = lib.fakeSha256;  # Run build to get correct hash
+    rev = "9ef125482f3e62c5d409d8e1a41ee21c01814400";
+    sha256 = "sha256-0000000000000000000000000000000000000000000=";  # Will fail and show correct hash
   };
 in
 
@@ -408,8 +409,8 @@ in
       source = pkgs.fetchFromGitHub {
         owner = "yazi-rs";
         repo = "flavors";
-        rev = "4a1802a";
-        sha256 = lib.fakeSha256;  # Run build to get correct hash
+        rev = "4a1802a296ca33b65f56be8349b089a7e19ff485";
+        sha256 = "sha256-0000000000000000000000000000000000000000000=";  # Will fail and show correct hash
       } + "/catppuccin-macchiato.yazi";
       recursive = true;
     };
