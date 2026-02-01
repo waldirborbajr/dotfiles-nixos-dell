@@ -167,6 +167,7 @@
       tig
       gh
       gh-dash
+      jujutsu # Modern VCS, compatible with Git
       just # Command runner (Make alternative)
     ];
   };
