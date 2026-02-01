@@ -86,7 +86,7 @@ check:
 
 # Evaluate host configuration
 [group: 'validation']
-eval-host HOST:
+eval-host HOST="macbook":
     #!/usr/bin/env bash
     if [[ -z "{{HOST}}" ]]; then
         echo "ERROR: HOST is required."
@@ -164,19 +164,19 @@ _nixos_cmd HOST ACTION DEVOPS="" QEMU="" IMPURE="" FLAGS="":
 
 # Dry run switch
 [group: 'build']
-dry-switch HOST DEVOPS="" QEMU="" IMPURE="":
+dry-switch HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @just _nixos_cmd {{HOST}} switch {{DEVOPS}} {{QEMU}} {{IMPURE}} "--dry-run"
 
 # Dry run build
 [group: 'build']
-dry-build HOST DEVOPS="" QEMU="" IMPURE="":
+dry-build HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @just _nixos_cmd {{HOST}} build {{DEVOPS}} {{QEMU}} {{IMPURE}} "--dry-run"
 
 # Test build (no changes applied)
 [group: 'build']
-test-build HOST DEVOPS="" QEMU="" IMPURE="":
+test-build HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @echo "Test build (no changes applied) for host: {{HOST}}"
     @just _nixos_cmd {{HOST}} build {{DEVOPS}} {{QEMU}} {{IMPURE}}
@@ -185,7 +185,7 @@ test-build HOST DEVOPS="" QEMU="" IMPURE="":
 
 # Build system configuration
 [group: 'build']
-build HOST DEVOPS="" QEMU="" IMPURE="":
+build HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
     @just _check_git_status
@@ -196,7 +196,7 @@ build HOST DEVOPS="" QEMU="" IMPURE="":
 
 # Switch to new configuration
 [group: 'build']
-switch HOST DEVOPS="" QEMU="" IMPURE="":
+switch HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
     @just _check_git_status
@@ -206,7 +206,7 @@ switch HOST DEVOPS="" QEMU="" IMPURE="":
 
 # Production switch (with flake check)
 [group: 'build']
-switch-prod HOST DEVOPS="" QEMU="" IMPURE="":
+switch-prod HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
     @just _check_git_status
@@ -217,7 +217,7 @@ switch-prod HOST DEVOPS="" QEMU="" IMPURE="":
 
 # Switch without GUI (multi-user.target)
 [group: 'build']
-switch-off HOST DEVOPS="" QEMU="" IMPURE="":
+switch-off HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     sudo systemctl isolate multi-user.target
     @just _nixos_cmd {{HOST}} switch {{DEVOPS}} {{QEMU}} {{IMPURE}}
@@ -225,7 +225,7 @@ switch-off HOST DEVOPS="" QEMU="" IMPURE="":
 
 # Upgrade system (update flake + switch)
 [group: 'build']
-upgrade HOST DEVOPS="" QEMU="" IMPURE="":
+upgrade HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @just update-flake
     @just _check_git_status
@@ -235,7 +235,7 @@ upgrade HOST DEVOPS="" QEMU="" IMPURE="":
 
 # Debug build with verbose output
 [group: 'build']
-build-debug HOST DEVOPS="" QEMU="" IMPURE="":
+build-debug HOST="macbook" DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
     @just _check_git_status
