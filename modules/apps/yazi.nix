@@ -20,21 +20,21 @@ let
     owner = "DreamMaoMao";
     repo = "searchjump.yazi";
     rev = "cab627c";
-    hash = "sha256-4df5f3783cbbfed60466f1aa9bc45b5e0000000000000000000000000000";
+    sha256 = lib.fakeSha256;  # Run build to get correct hash
   };
 
   starship = pkgs.fetchFromGitHub {
     owner = "Rolv-Apneseth";
     repo = "starship.yazi";
     rev = "eca1861";
-    hash = "sha256-e519d894e94ded741e06aae4d477598100000000000000000000000000000";
+    sha256 = lib.fakeSha256;  # Run build to get correct hash
   };
 
   bookmarks = pkgs.fetchFromGitHub {
     owner = "dedukun";
     repo = "bookmarks.yazi";
     rev = "9ef1254";
-    hash = "sha256-92fbb5483657fa7976cdf4e0104e18e000000000000000000000000000000";
+    sha256 = lib.fakeSha256;  # Run build to get correct hash
   };
 in
 
@@ -409,7 +409,7 @@ in
         owner = "yazi-rs";
         repo = "flavors";
         rev = "4a1802a";
-        hash = "sha256-b069dba45e199684b16fa12d385642ed0000000000000000000000000000";
+        sha256 = lib.fakeSha256;  # Run build to get correct hash
       } + "/catppuccin-macchiato.yazi";
       recursive = true;
     };
