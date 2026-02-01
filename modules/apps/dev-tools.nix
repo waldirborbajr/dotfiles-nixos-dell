@@ -144,6 +144,7 @@
     tig
     gh
     gh-dash
+    just           # Command runner (Make alternative)
   ];
   };
 }
