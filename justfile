@@ -113,8 +113,7 @@ update-flake:
 [private]
 _check_git_status:
     #!/usr/bin/env bash
-    echo "Checking Git status in {{NIXOS_CONFIG}}..."
-    cd {{NIXOS_CONFIG}}
+    echo "Checking Git status..."
     if [ -z "$(git status --porcelain)" ]; then
         echo "Git tree clean. No changes."
     else
