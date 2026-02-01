@@ -1,7 +1,42 @@
 # modules/apps/yazi.nix
 # Modern terminal file manager with preview support
 # Optimized for DevOps workflows
+#
+# Plugin Migration from Pop!_OS:
+# ✅ full-border   → pkgs.yaziPlugins.full-border
+# ✅ git           → pkgs.yaziPlugins.git
+# ✅ searchjump    → Added via fetchFromGitHub
+# ✅ starship      → Added via fetchFromGitHub
+# ✅ bookmarks     → Added via fetchFromGitHub
+# ⚠️  catppuccin   → Waiting for catppuccin.homeModules support
+#
+# NOTE: No need for 'ya pkg upgrade' anymore! 
+#       Updates happen via: just upgrade macbook
 { config, pkgs, lib, ... }:
+
+let
+  # Custom plugins not yet in nixpkgs
+  searchjump = pkgs.fetchFromGitHub {
+    owner = "DreamMaoMao";
+    repo = "searchjump.yazi";
+    rev = "cab627c";
+    hash = "sha256-4df5f3783cbbfed60466f1aa9bc45b5e0000000000000000000000000000";
+  };
+
+  starship = pkgs.fetchFromGitHub {
+    owner = "Rolv-Apneseth";
+    repo = "starship.yazi";
+    rev = "eca1861";
+    hash = "sha256-e519d894e94ded741e06aae4d477598100000000000000000000000000000";
+  };
+
+  bookmarks = pkgs.fetchFromGitHub {
+    owner = "dedukun";
+    repo = "bookmarks.yazi";
+    rev = "9ef1254";
+    hash = "sha256-92fbb5483657fa7976cdf4e0104e18e000000000000000000000000000000";
+  };
+in
 
 {
   config = lib.mkIf config.apps.yazi.enable {
@@ -35,17 +70,26 @@
       # Plugin configuration
       plugins = with pkgs.yaziPlugins; {
         inherit
-          git# Git integration
-          chmod# Permission management
-          full-border# Better borders
-          smart-enter# Smart directory navigation
+          git           # Git integration
+          chmod         # Permission management
+          full-border   # Better borders (yazi-rs/plugins:full-border)
+          smart-enter   # Smart directory navigation
           ;
+        
+        # Additional plugins from Pop!_OS setup
+        # Note: Some may need manual installation via fetchFromGitHub if not in nixpkgs
+        # searchjump = ...;   # DreamMaoMao/searchjump (need manual setup)
+        # starship = ...;     # Rolv-Apneseth/starship (need manual setup)
+        # bookmarks = ...;    # dedukun/bookmarks (need manual setup)
       };
 
       # Lua initialization for plugins
       initLua = ''
         require("full-border"):setup()
         require("git"):setup()
+        require("searchjump"):setup()
+        require("starship"):setup()
+        require("bookmarks"):setup()
       '';
 
       # Main settings
@@ -57,6 +101,11 @@
           sort_dir_first = true; # Directories first
           linemode = "size"; # Show file sizes
           show_symlink = true; # Show symlink targets
+        };
+
+        # Use Catppuccin Macchiato theme (matching Pop!_OS setup)
+        flavor = {
+          use = "catppuccin-macchiato";
         };
 
         preview = {
@@ -275,6 +324,28 @@
             run = "toggle sort_sensitive";
             desc = "Toggle case sensitivity";
           }
+
+          # Custom plugins from Pop!_OS
+          {
+            on = "s";
+            run = "plugin searchjump";
+            desc = "Search and jump to file";
+          }
+          {
+            on = [ "'" ];
+            run = "plugin bookmarks --args=save";
+            desc = "Save bookmark";
+          }
+          {
+            on = [ "\"" ];
+            run = "plugin bookmarks --args=jump";
+            desc = "Jump to bookmark";
+          }
+          {
+            on = [ "b" "d" ];
+            run = "plugin bookmarks --args=delete";
+            desc = "Delete bookmark";
+          }
         ];
       };
 
@@ -291,6 +362,9 @@
       yp = "yazi ~/Projects"; # Open projects directory
       yd = "yazi ~/Downloads"; # Open downloads
       yt = "yazi /tmp"; # Open temp directory
+      
+      # Educational alias for muscle memory from Pop!_OS
+      ya = "echo '⚠️  NixOS Tip: Yazi plugins are managed declaratively via nix!' && echo 'To update: just upgrade macbook' && echo 'Edit: modules/apps/yazi.nix'";
     };
 
     programs.bash.shellAliases = lib.mkIf config.programs.bash.enable {
@@ -311,6 +385,33 @@
       yp = "yazi ~/Projects";
       yd = "yazi ~/Downloads";
       yt = "yazi /tmp";
+    };
+
+    # Install custom plugins not available in nixpkgs
+    home.file.".config/yazi/plugins/searchjump.yazi" = {
+      source = searchjump;
+      recursive = true;
+    };
+
+    home.file.".config/yazi/plugins/starship.yazi" = {
+      source = starship;
+      recursive = true;
+    };
+
+    home.file.".config/yazi/plugins/bookmarks.yazi" = {
+      source = bookmarks;
+      recursive = true;
+    };
+
+    # Catppuccin flavor (matching your Pop!_OS setup)
+    home.file.".config/yazi/flavors/catppuccin-macchiato.yazi" = {
+      source = pkgs.fetchFromGitHub {
+        owner = "yazi-rs";
+        repo = "flavors";
+        rev = "4a1802a";
+        hash = "sha256-b069dba45e199684b16fa12d385642ed0000000000000000000000000000";
+      } + "/catppuccin-macchiato.yazi";
+      recursive = true;
     };
   };
 }
