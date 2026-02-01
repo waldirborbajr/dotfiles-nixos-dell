@@ -20,7 +20,7 @@ let
     owner = "DreamMaoMao";
     repo = "searchjump.yazi";
     rev = "cab627c";
-    sha256 = lib.fakeSha256;  # Run build to get correct hash
+    sha256 = "sha256-xcz2+zepICZ3ji0Hm0SSUBSaEpabWUrIdG7JmxUl/ts=";
   };
 
   starship = pkgs.fetchFromGitHub {
