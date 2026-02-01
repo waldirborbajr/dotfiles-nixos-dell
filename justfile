@@ -11,7 +11,6 @@ set shell := ["bash", "-euo", "pipefail", "-c"]
 set dotenv-load := true
 
 # Variables
-NIXOS_CONFIG := env_var_or_default("NIXOS_CONFIG", env_var("HOME") + "/nixos-config")
 DEBUG_LOG := "/tmp/nixos-build-debug.log"
 GIT_PUSH := env_var_or_default("GIT_PUSH", "1")
 AUTO_UPDATE_FLAKE := env_var_or_default("AUTO_UPDATE_FLAKE", "0")
@@ -34,38 +33,38 @@ default:
 [group: 'discovery']
 hosts:
     #!/usr/bin/env bash
-    if [[ ! -e "{{NIXOS_CONFIG}}/flake.nix" ]]; then
-        echo "ERROR: flake.nix not found in: {{NIXOS_CONFIG}}"
+    if [[ ! -e "flake.nix" ]]; then
+        echo "ERROR: flake.nix not found in current directory"
         exit 1
     fi
     echo "Available hosts from flake outputs:"
-    cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake show --json \
+    nix --extra-experimental-features "nix-command flakes" flake show --json \
         | jq -r '.nixosConfigurations | keys[]' 2>/dev/null || \
         (echo "HINT: install jq for pretty listing, or run: just flake-show"; exit 0)
 
 # Show full flake outputs
 [group: 'discovery']
 flake-show:
-    cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake show
+    nix --extra-experimental-features "nix-command flakes" flake show
 
 # Check system health
 [group: 'discovery']
 doctor:
     #!/usr/bin/env bash
-    if [[ ! -e "{{NIXOS_CONFIG}}/flake.nix" ]]; then
-        echo "ERROR: flake.nix not found in: {{NIXOS_CONFIG}}"
+    if [[ ! -e "flake.nix" ]]; then
+        echo "ERROR: flake.nix not found in current directory"
         exit 1
     fi
     if ! command -v nix >/dev/null 2>&1; then
         echo "ERROR: nix command not found."
         exit 1
     fi
-    if ! nix --extra-experimental-features "nix-command flakes" flake show "{{NIXOS_CONFIG}}" >/dev/null 2>&1; then
+    if ! nix --extra-experimental-features "nix-command flakes" flake show >/dev/null 2>&1; then
         echo "ERROR: flakes not working or flake is invalid."
         exit 1
     fi
     echo "OK: repo + nix + flakes look good."
-    echo "Repo: {{NIXOS_CONFIG}}"
+    echo "Repo: $(pwd)"
     echo "Tip: just hosts"
 
 # ==========================================
@@ -76,13 +75,13 @@ doctor:
 [group: 'validation']
 flake-check:
     @echo "Running flake check (fast sanity)..."
-    cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake check
+    @nix --extra-experimental-features "nix-command flakes" flake check
 
 # Check flake syntax with --impure
 [group: 'validation']
 check:
     @echo "Verificando sintaxe do flake com --impure..."
-    cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake check --impure
+    @nix --extra-experimental-features "nix-command flakes" flake check --impure
     @echo "✓ Sintaxe OK!"
 
 # Evaluate host configuration
@@ -96,7 +95,7 @@ eval-host HOST:
         exit 1
     fi
     echo "Evaluating toplevel drvPath for host {{HOST}}..."
-    cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" eval --raw \
+    nix --extra-experimental-features "nix-command flakes" eval --raw \
         ".#nixosConfigurations.{{HOST}}.config.system.build.toplevel.drvPath"
 
 # ==========================================
@@ -106,8 +105,8 @@ eval-host HOST:
 # Update flake.lock
 [group: 'git']
 update-flake:
-    @echo "Updating flake.lock in {{NIXOS_CONFIG}}..."
-    cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake update
+    @echo "Updating flake.lock..."
+    @nix --extra-experimental-features "nix-command flakes" flake update
 
 # Auto-commit and push changes
 [group: 'git']
@@ -144,7 +143,7 @@ _require_host HOST:
     fi
     echo "Validating flake host: {{HOST}}..."
     if ! nix --extra-experimental-features "nix-command flakes" eval --raw \
-        "{{NIXOS_CONFIG}}#nixosConfigurations.{{HOST}}.config.system.build.toplevel.drvPath" \
+        ".#nixosConfigurations.{{HOST}}.config.system.build.toplevel.drvPath" \
         >/dev/null 2>&1; then
         echo "ERROR: HOST='{{HOST}}' not found in flake outputs."
         echo "HINT: just hosts"
@@ -156,7 +155,7 @@ _require_host HOST:
 [private]
 _nixos_cmd HOST ACTION DEVOPS="" QEMU="" IMPURE="" FLAGS="":
     #!/usr/bin/env bash
-    CMD="sudo nixos-rebuild {{ACTION}} --flake {{NIXOS_CONFIG}}#{{HOST}}"
+    CMD="sudo nixos-rebuild {{ACTION}} --flake .#{{HOST}}"
     [[ -n "{{IMPURE}}" ]] && CMD="$CMD --impure"
     [[ -n "{{FLAGS}}" ]] && CMD="$CMD {{FLAGS}}"
     [[ -n "{{DEVOPS}}" ]] && export DEVOPS=1
@@ -292,24 +291,24 @@ rollback CONFIRM="":
 [group: 'maintenance']
 fmt:
     @echo "Formatting Nix files..."
-    cd {{NIXOS_CONFIG}} && nix fmt
+    @git ls-files '*.nix' | xargs nixpkgs-fmt
     @echo "✓ Formatação concluída!"
-    git -C {{NIXOS_CONFIG}} status --short
+    @git status --short
 
 # Format specific file or directory
 [group: 'maintenance']
 fmt-path PATH:
     @echo "Formatting: {{PATH}}"
-    cd {{NIXOS_CONFIG}} && nix run nixpkgs#nixpkgs-fmt -- {{PATH}}
+    @nixpkgs-fmt {{PATH}}
     @echo "✓ Formatação de {{PATH}} concluída!"
 
 # Format only tracked Nix files (explicit, safe)
 [group: 'maintenance']
 fmt-tracked:
     @echo "Formatting tracked .nix files..."
-    cd {{NIXOS_CONFIG}} && git ls-files '*.nix' | xargs nixpkgs-fmt
+    @git ls-files '*.nix' | xargs nixpkgs-fmt
     @echo "✓ Formatação concluída!"
-    git -C {{NIXOS_CONFIG}} status --short
+    @git status --short
 
 # Check systemd user jobs
 [group: 'maintenance']
