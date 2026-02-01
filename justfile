@@ -21,47 +21,17 @@ AUTO_GIT_COMMIT := env_var_or_default("AUTO_GIT_COMMIT", "1")
 _git_commit_msg := "wip(justfile): " + `date '+%Y-%m-%d %H:%M'`
 
 # ==========================================
-# Default recipe (shows help)
+# Default recipe (shows grouped commands)
 # ==========================================
 default:
     @just --list
-
-# Show available commands with descriptions
-help:
-    @echo "NixOS Infrastructure Commands (flakes) — NixGuru Edition"
-    @echo ""
-    @echo "Start here:"
-    @echo "  just hosts"
-    @echo "  just doctor"
-    @echo ""
-    @echo "Validation (sem aplicar mudanças):"
-    @echo "  just check                  # Verifica sintaxe do flake"
-    @echo "  just test-build HOST [DEVOPS] [QEMU]  # Test build"
-    @echo ""
-    @echo "Build/Switch (com auto-commit + push automático):"
-    @echo "  just build HOST [DEVOPS] [QEMU] [IMPURE]"
-    @echo "  just switch HOST [DEVOPS] [QEMU] [IMPURE]"
-    @echo "  just switch-prod HOST [DEVOPS] [QEMU] [IMPURE]"
-    @echo ""
-    @echo "Upgrade (atualiza flake.lock):"
-    @echo "  just upgrade HOST"
-    @echo ""
-    @echo "Maintenance:"
-    @echo "  just fmt"
-    @echo "  just list-generations"
-    @echo "  just rollback CONFIRM"
-    @echo "  just gc | just gc-hard CONFIRM"
-    @echo ""
-    @echo "Notes:"
-    @echo "  - AUTO_GIT_COMMIT=1 sempre (auto add/commit/push antes de rebuild)"
-    @echo "  - Mensagem commit: wip(justfile): YYYY-MM-DD HH:MM"
-    @echo "  - AUTO_UPDATE_FLAKE=0 por default (mais seguro)"
 
 # ==========================================
 # Discovery / Diagnostics
 # ==========================================
 
 # List available hosts from flake
+[group: 'discovery']
 hosts:
     #!/usr/bin/env bash
     if [[ ! -e "{{NIXOS_CONFIG}}/flake.nix" ]]; then
@@ -74,10 +44,12 @@ hosts:
         (echo "HINT: install jq for pretty listing, or run: just flake-show"; exit 0)
 
 # Show full flake outputs
+[group: 'discovery']
 flake-show:
     cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake show
 
 # Check system health
+[group: 'discovery']
 doctor:
     #!/usr/bin/env bash
     if [[ ! -e "{{NIXOS_CONFIG}}/flake.nix" ]]; then
@@ -101,17 +73,20 @@ doctor:
 # ==========================================
 
 # Fast syntax validation with flake check
+[group: 'validation']
 flake-check:
     @echo "Running flake check (fast sanity)..."
     cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake check
 
 # Check flake syntax with --impure
+[group: 'validation']
 check:
     @echo "Verificando sintaxe do flake com --impure..."
     cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake check --impure
     @echo "✓ Sintaxe OK!"
 
 # Evaluate host configuration
+[group: 'validation']
 eval-host HOST:
     #!/usr/bin/env bash
     if [[ -z "{{HOST}}" ]]; then
@@ -129,11 +104,14 @@ eval-host HOST:
 # ==========================================
 
 # Update flake.lock
+[group: 'git']
 update-flake:
     @echo "Updating flake.lock in {{NIXOS_CONFIG}}..."
     cd {{NIXOS_CONFIG}} && nix --extra-experimental-features "nix-command flakes" flake update
 
 # Auto-commit and push changes
+[group: 'git']
+[private]
 _check_git_status:
     #!/usr/bin/env bash
     echo "Checking Git status in {{NIXOS_CONFIG}}..."
@@ -154,6 +132,8 @@ _check_git_status:
 # ==========================================
 
 # Internal: validate host parameter
+[group: 'build']
+[private]
 _require_host HOST:
     #!/usr/bin/env bash
     if [[ -z "{{HOST}}" ]]; then
@@ -172,6 +152,8 @@ _require_host HOST:
     fi
 
 # Internal: build nixos-rebuild command
+[group: 'build']
+[private]
 _nixos_cmd HOST ACTION DEVOPS="" QEMU="" IMPURE="" FLAGS="":
     #!/usr/bin/env bash
     CMD="sudo nixos-rebuild {{ACTION}} --flake {{NIXOS_CONFIG}}#{{HOST}}"
@@ -183,16 +165,19 @@ _nixos_cmd HOST ACTION DEVOPS="" QEMU="" IMPURE="" FLAGS="":
     eval $CMD
 
 # Dry run switch
+[group: 'build']
 dry-switch HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @just _nixos_cmd {{HOST}} switch {{DEVOPS}} {{QEMU}} {{IMPURE}} "--dry-run"
 
 # Dry run build
+[group: 'build']
 dry-build HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @just _nixos_cmd {{HOST}} build {{DEVOPS}} {{QEMU}} {{IMPURE}} "--dry-run"
 
 # Test build (não aplica mudanças)
+[group: 'build']
 test-build HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @echo "Test build (não aplica mudanças) para host: {{HOST}}"
@@ -201,6 +186,7 @@ test-build HOST DEVOPS="" QEMU="" IMPURE="":
     @echo "Para aplicar mudanças: just switch {{HOST}}"
 
 # Build system configuration
+[group: 'build']
 build HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
@@ -211,6 +197,7 @@ build HOST DEVOPS="" QEMU="" IMPURE="":
     @echo "After:" && just current-system && just list-generations
 
 # Switch to new configuration
+[group: 'build']
 switch HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
@@ -220,6 +207,7 @@ switch HOST DEVOPS="" QEMU="" IMPURE="":
     @echo "After:" && just current-system && just list-generations
 
 # Production switch (with flake check)
+[group: 'build']
 switch-prod HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
@@ -230,6 +218,7 @@ switch-prod HOST DEVOPS="" QEMU="" IMPURE="":
     @echo "After:" && just current-system && just list-generations
 
 # Switch without GUI (multi-user.target)
+[group: 'build']
 switch-off HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     sudo systemctl isolate multi-user.target
@@ -237,6 +226,7 @@ switch-off HOST DEVOPS="" QEMU="" IMPURE="":
     sudo systemctl isolate graphical.target
 
 # Upgrade system (update flake + switch)
+[group: 'build']
 upgrade HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @just update-flake
@@ -246,6 +236,7 @@ upgrade HOST DEVOPS="" QEMU="" IMPURE="":
     @just list-generations
 
 # Debug build with verbose output
+[group: 'build']
 build-debug HOST DEVOPS="" QEMU="" IMPURE="":
     @just _require_host {{HOST}}
     @[ "{{AUTO_UPDATE_FLAKE}}" = "1" ] && just update-flake || echo "AUTO_UPDATE_FLAKE=0 → skipping flake update."
@@ -259,16 +250,19 @@ build-debug HOST DEVOPS="" QEMU="" IMPURE="":
 # ==========================================
 
 # List recent system generations
+[group: 'maintenance']
 list-generations:
     @echo ""
     @sudo nix-env -p /nix/var/nix/profiles/system --list-generations | tail -n 30
 
 # Show current system profile
+[group: 'maintenance']
 current-system:
     @echo "Current system -> $(readlink -f /run/current-system)"
     @echo "System profile -> $(readlink -f /nix/var/nix/profiles/system)"
 
 # Explain why generations might not advance
+[group: 'maintenance']
 why-no-new-generation:
     @echo "If generations don't advance, one of these is true:"
     @echo " 1) build output is identical (toplevel didn't change)"
@@ -279,6 +273,7 @@ why-no-new-generation:
     @echo "" && echo "Recent generations:" && just list-generations
 
 # Rollback to previous generation
+[group: 'maintenance']
 rollback CONFIRM="":
     #!/usr/bin/env bash
     if [[ "{{CONFIRM}}" != "YES" ]]; then
@@ -294,6 +289,7 @@ rollback CONFIRM="":
 # ==========================================
 
 # Format Nix files (only tracked by git)
+[group: 'maintenance']
 fmt:
     @echo "Formatting Nix files..."
     cd {{NIXOS_CONFIG}} && nix fmt
@@ -301,12 +297,14 @@ fmt:
     git -C {{NIXOS_CONFIG}} status --short
 
 # Format specific file or directory
+[group: 'maintenance']
 fmt-path PATH:
     @echo "Formatting: {{PATH}}"
     cd {{NIXOS_CONFIG}} && nix run nixpkgs#nixpkgs-fmt -- {{PATH}}
     @echo "✓ Formatação de {{PATH}} concluída!"
 
 # Format only tracked Nix files (explicit, safe)
+[group: 'maintenance']
 fmt-tracked:
     @echo "Formatting tracked .nix files..."
     cd {{NIXOS_CONFIG}} && git ls-files '*.nix' | xargs nixpkgs-fmt
@@ -314,14 +312,17 @@ fmt-tracked:
     git -C {{NIXOS_CONFIG}} status --short
 
 # Check systemd user jobs
+[group: 'maintenance']
 status:
     systemctl --user list-jobs
 
 # Garbage collect (safe)
+[group: 'maintenance']
 gc:
     sudo nix-collect-garbage
 
 # Aggressive garbage collection
+[group: 'maintenance']
 gc-hard CONFIRM="":
     #!/usr/bin/env bash
     if [[ "{{CONFIRM}}" != "YES" ]]; then
