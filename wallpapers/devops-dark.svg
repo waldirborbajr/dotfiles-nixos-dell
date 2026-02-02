@@ -1,15 +1,16 @@
 <svg width="1920" height="1080" xmlns="http://www.w3.org/2000/svg">
-  <!-- Catppuccin Mocha Background -->
+  <!-- Lavender Gradient Background -->
   <defs>
     <linearGradient id="bg-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#1e1e2e;stop-opacity:1" />
-      <stop offset="100%" style="stop-color:#181825;stop-opacity:1" />
+      <stop offset="0%" style="stop-color:#9b8fd6;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#b4a7e0;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#c4b5ea;stop-opacity:1" />
     </linearGradient>
     
     <linearGradient id="accent-gradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" style="stop-color:#89b4fa;stop-opacity:0.3" />
-      <stop offset="50%" style="stop-color:#cba6f7;stop-opacity:0.3" />
-      <stop offset="100%" style="stop-color:#f38ba8;stop-opacity:0.3" />
+      <stop offset="0%" style="stop-color:#7b6ec4;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#8f7fd6;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#a68fd6;stop-opacity:0.3" />
     </linearGradient>
     
     <filter id="glow">
@@ -26,135 +27,135 @@
   
   <!-- Grid Pattern -->
   <pattern id="grid" width="40" height="40" patternUnits="userSpaceOnUse">
-    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#313244" stroke-width="0.5" opacity="0.5"/>
+    <path d="M 40 0 L 0 0 0 40" fill="none" stroke="#6b5ba6" stroke-width="0.5" opacity="0.3"/>
   </pattern>
   <rect width="1920" height="1080" fill="url(#grid)"/>
   
   <!-- DevOps Icons Background Pattern -->
-  <g opacity="0.08" fill="#cdd6f4">
+  <g opacity="0.12" fill="#ffffff">
     <!-- Docker Icons -->
-    <text x="150" y="200" font-family="monospace" font-size="80" fill="#89dceb">🐳</text>
-    <text x="1650" y="300" font-family="monospace" font-size="80" fill="#89dceb">🐳</text>
+    <text x="150" y="200" font-family="monospace" font-size="80" fill="#5a4d8a">🐳</text>
+    <text x="1650" y="300" font-family="monospace" font-size="80" fill="#5a4d8a">🐳</text>
     
     <!-- Kubernetes -->
-    <text x="300" y="800" font-family="monospace" font-size="80" fill="#89b4fa">☸</text>
-    <text x="1500" y="900" font-family="monospace" font-size="80" fill="#89b4fa">☸</text>
+    <text x="300" y="800" font-family="monospace" font-size="80" fill="#6b5ba6">☸</text>
+    <text x="1500" y="900" font-family="monospace" font-size="80" fill="#6b5ba6">☸</text>
     
     <!-- Git -->
-    <text x="1700" y="150" font-family="monospace" font-size="60" fill="#f38ba8">⎇</text>
-    <text x="200" y="950" font-family="monospace" font-size="60" fill="#f38ba8">⎇</text>
+    <text x="1700" y="150" font-family="monospace" font-size="60" fill="#8a6da6">⎇</text>
+    <text x="200" y="950" font-family="monospace" font-size="60" fill="#8a6da6">⎇</text>
     
     <!-- Gears -->
-    <text x="1600" y="600" font-family="monospace" font-size="70" fill="#fab387">⚙</text>
-    <text x="250" y="450" font-family="monospace" font-size="70" fill="#fab387">⚙</text>
+    <text x="1600" y="600" font-family="monospace" font-size="70" fill="#7b6eb8">⚙</text>
+    <text x="250" y="450" font-family="monospace" font-size="70" fill="#7b6eb8">⚙</text>
     
     <!-- Rust -->
-    <text x="1750" y="800" font-family="monospace" font-size="65" fill="#f38ba8">🦀</text>
-    <text x="100" y="350" font-family="monospace" font-size="65" fill="#f38ba8">🦀</text>
+    <text x="1750" y="800" font-family="monospace" font-size="65" fill="#8a6da6">🦀</text>
+    <text x="100" y="350" font-family="monospace" font-size="65" fill="#8a6da6">🦀</text>
     
     <!-- Go -->
-    <text x="1650" y="450" font-family="monospace" font-size="60" fill="#89dceb">⚡</text>
-    <text x="180" y="650" font-family="monospace" font-size="60" fill="#89dceb">⚡</text>
+    <text x="1650" y="450" font-family="monospace" font-size="60" fill="#5a4d8a">⚡</text>
+    <text x="180" y="650" font-family="monospace" font-size="60" fill="#5a4d8a">⚡</text>
     
     <!-- Lua -->
-    <text x="1800" y="1000" font-family="monospace" font-size="60" fill="#89b4fa">🌙</text>
-    <text x="80" y="100" font-family="monospace" font-size="60" fill="#89b4fa">🌙</text>
+    <text x="1800" y="1000" font-family="monospace" font-size="60" fill="#6b5ba6">🌙</text>
+    <text x="80" y="100" font-family="monospace" font-size="60" fill="#6b5ba6">🌙</text>
     
     <!-- NixOS -->
-    <text x="1700" y="250" font-family="monospace" font-size="60" fill="#94e2d5">❄️</text>
-    <text x="120" y="850" font-family="monospace" font-size="60" fill="#94e2d5">❄️</text>
+    <text x="1700" y="250" font-family="monospace" font-size="60" fill="#7b6eb8">❄️</text>
+    <text x="120" y="850" font-family="monospace" font-size="60" fill="#7b6eb8">❄️</text>
   </g>
   
   <!-- Central DevOps Flow -->
   <g transform="translate(960, 540)">
     <!-- Pipeline Flow -->
     <g opacity="0.6">
-      <circle cx="-400" cy="0" r="30" fill="#89dceb" filter="url(#glow)"/>
-      <line x1="-370" y1="0" x2="-230" y2="0" stroke="#89dceb" stroke-width="3" stroke-dasharray="5,5"/>
+      <circle cx="-400" cy="0" r="30" fill="#5a4d8a" filter="url(#glow)"/>
+      <line x1="-370" y1="0" x2="-230" y2="0" stroke="#5a4d8a" stroke-width="3" stroke-dasharray="5,5"/>
       
-      <circle cx="-200" cy="0" r="30" fill="#89b4fa" filter="url(#glow)"/>
-      <line x1="-170" y1="0" x2="-30" y2="0" stroke="#89b4fa" stroke-width="3" stroke-dasharray="5,5"/>
+      <circle cx="-200" cy="0" r="30" fill="#6b5ba6" filter="url(#glow)"/>
+      <line x1="-170" y1="0" x2="-30" y2="0" stroke="#6b5ba6" stroke-width="3" stroke-dasharray="5,5"/>
       
-      <circle cx="0" cy="0" r="30" fill="#cba6f7" filter="url(#glow)"/>
-      <line x1="30" y1="0" x2="170" y2="0" stroke="#cba6f7" stroke-width="3" stroke-dasharray="5,5"/>
+      <circle cx="0" cy="0" r="30" fill="#3d2f6b" filter="url(#glow)"/>
+      <line x1="30" y1="0" x2="170" y2="0" stroke="#3d2f6b" stroke-width="3" stroke-dasharray="5,5"/>
       
-      <circle cx="200" cy="0" r="30" fill="#a6e3a1" filter="url(#glow)"/>
-      <line x1="230" y1="0" x2="370" y2="0" stroke="#a6e3a1" stroke-width="3" stroke-dasharray="5,5"/>
+      <circle cx="200" cy="0" r="30" fill="#6b5ba6" filter="url(#glow)"/>
+      <line x1="230" y1="0" x2="370" y2="0" stroke="#6b5ba6" stroke-width="3" stroke-dasharray="5,5"/>
       
-      <circle cx="400" cy="0" r="30" fill="#f38ba8" filter="url(#glow)"/>
+      <circle cx="400" cy="0" r="30" fill="#8a6da6" filter="url(#glow)"/>
     </g>
     
     <!-- Labels -->
-    <text x="-400" y="60" font-family="monospace" font-size="16" fill="#cdd6f4" text-anchor="middle" font-weight="bold">CODE</text>
-    <text x="-200" y="60" font-family="monospace" font-size="16" fill="#cdd6f4" text-anchor="middle" font-weight="bold">BUILD</text>
-    <text x="0" y="60" font-family="monospace" font-size="16" fill="#cdd6f4" text-anchor="middle" font-weight="bold">TEST</text>
-    <text x="200" y="60" font-family="monospace" font-size="16" fill="#cdd6f4" text-anchor="middle" font-weight="bold">DEPLOY</text>
-    <text x="400" y="60" font-family="monospace" font-size="16" fill="#cdd6f4" text-anchor="middle" font-weight="bold">MONITOR</text>
+    <text x="-400" y="60" font-family="monospace" font-size="16" fill="#2d1f4d" text-anchor="middle" font-weight="bold">CODE</text>
+    <text x="-200" y="60" font-family="monospace" font-size="16" fill="#2d1f4d" text-anchor="middle" font-weight="bold">BUILD</text>
+    <text x="0" y="60" font-family="monospace" font-size="16" fill="#2d1f4d" text-anchor="middle" font-weight="bold">TEST</text>
+    <text x="200" y="60" font-family="monospace" font-size="16" fill="#2d1f4d" text-anchor="middle" font-weight="bold">DEPLOY</text>
+    <text x="400" y="60" font-family="monospace" font-size="16" fill="#2d1f4d" text-anchor="middle" font-weight="bold">MONITOR</text>
   </g>
   
   <!-- DevOps Title -->
-  <text x="960" y="180" font-family="monospace" font-size="72" fill="#cba6f7" text-anchor="middle" font-weight="bold" filter="url(#glow)">
+  <text x="960" y="180" font-family="monospace" font-size="72" fill="#3d2f6b" text-anchor="middle" font-weight="bold" filter="url(#glow)">
     DEVOPS
   </text>
   
   <!-- Subtitle -->
-  <text x="960" y="230" font-family="monospace" font-size="24" fill="#89b4fa" text-anchor="middle" opacity="0.8">
+  <text x="960" y="230" font-family="monospace" font-size="24" fill="#4d3d7b" text-anchor="middle" opacity="0.9">
     Rust · Go · Lua · NixOS · Automation
   </text>
   
   <!-- Programming Languages Section -->
   <g transform="translate(960, 350)">
-    <text x="0" y="0" font-family="monospace" font-size="22" fill="#a6adc8" text-anchor="middle" font-weight="bold">POWERED BY</text>
+    <text x="0" y="0" font-family="monospace" font-size="22" fill="#4d3d7b" text-anchor="middle" font-weight="bold">POWERED BY</text>
     
     <!-- Language Icons with Enhanced Styling -->
     <g transform="translate(-280, 50)">
-      <circle cx="0" cy="0" r="45" fill="#f38ba8" opacity="0.15"/>
-      <text x="0" y="15" font-family="monospace" font-size="42" text-anchor="middle" fill="#f38ba8" filter="url(#glow)">🦀</text>
-      <text x="0" y="70" font-family="monospace" font-size="18" fill="#f38ba8" text-anchor="middle" font-weight="bold">Rust</text>
+      <circle cx="0" cy="0" r="45" fill="#8a6da6" opacity="0.2"/>
+      <text x="0" y="15" font-family="monospace" font-size="42" text-anchor="middle" fill="#3d2f6b" filter="url(#glow)">🦀</text>
+      <text x="0" y="70" font-family="monospace" font-size="18" fill="#3d2f6b" text-anchor="middle" font-weight="bold">Rust</text>
     </g>
     
     <g transform="translate(-90, 50)">
-      <circle cx="0" cy="0" r="45" fill="#89dceb" opacity="0.15"/>
-      <text x="0" y="15" font-family="monospace" font-size="42" text-anchor="middle" fill="#89dceb" filter="url(#glow)">⚡</text>
-      <text x="0" y="70" font-family="monospace" font-size="18" fill="#89dceb" text-anchor="middle" font-weight="bold">Go</text>
+      <circle cx="0" cy="0" r="45" fill="#5a4d8a" opacity="0.2"/>
+      <text x="0" y="15" font-family="monospace" font-size="42" text-anchor="middle" fill="#3d2f6b" filter="url(#glow)">⚡</text>
+      <text x="0" y="70" font-family="monospace" font-size="18" fill="#3d2f6b" text-anchor="middle" font-weight="bold">Go</text>
     </g>
     
     <g transform="translate(90, 50)">
-      <circle cx="0" cy="0" r="45" fill="#89b4fa" opacity="0.15"/>
-      <text x="0" y="15" font-family="monospace" font-size="42" text-anchor="middle" fill="#89b4fa" filter="url(#glow)">🌙</text>
-      <text x="0" y="70" font-family="monospace" font-size="18" fill="#89b4fa" text-anchor="middle" font-weight="bold">Lua</text>
+      <circle cx="0" cy="0" r="45" fill="#6b5ba6" opacity="0.2"/>
+      <text x="0" y="15" font-family="monospace" font-size="42" text-anchor="middle" fill="#3d2f6b" filter="url(#glow)">🌙</text>
+      <text x="0" y="70" font-family="monospace" font-size="18" fill="#3d2f6b" text-anchor="middle" font-weight="bold">Lua</text>
     </g>
     
     <g transform="translate(280, 50)">
-      <circle cx="0" cy="0" r="45" fill="#94e2d5" opacity="0.15"/>
-      <text x="0" y="15" font-family="monospace" font-size="42" text-anchor="middle" fill="#94e2d5" filter="url(#glow)">❄️</text>
-      <text x="0" y="70" font-family="monospace" font-size="18" fill="#94e2d5" text-anchor="middle" font-weight="bold">NixOS</text>
+      <circle cx="0" cy="0" r="45" fill="#7b6eb8" opacity="0.2"/>
+      <text x="0" y="15" font-family="monospace" font-size="42" text-anchor="middle" fill="#3d2f6b" filter="url(#glow)">❄️</text>
+      <text x="0" y="70" font-family="monospace" font-size="18" fill="#3d2f6b" text-anchor="middle" font-weight="bold">NixOS</text>
     </g>
   </g>
   
   <!-- Technologies -->
   <g transform="translate(960, 720)">
-    <text x="-350" y="0" font-family="monospace" font-size="20" fill="#89dceb" text-anchor="middle">Docker</text>
-    <text x="-200" y="0" font-family="monospace" font-size="20" fill="#89b4fa" text-anchor="middle">Kubernetes</text>
-    <text x="-50" y="0" font-family="monospace" font-size="20" fill="#cba6f7" text-anchor="middle">Nix</text>
-    <text x="100" y="0" font-family="monospace" font-size="20" fill="#a6e3a1" text-anchor="middle">Terraform</text>
-    <text x="250" y="0" font-family="monospace" font-size="20" fill="#f9e2af" text-anchor="middle">ArgoCD</text>
-    <text x="400" y="0" font-family="monospace" font-size="20" fill="#f38ba8" text-anchor="middle">Ansible</text>
+    <text x="-350" y="0" font-family="monospace" font-size="20" fill="#4d3d7b" text-anchor="middle">Docker</text>
+    <text x="-200" y="0" font-family="monospace" font-size="20" fill="#4d3d7b" text-anchor="middle">Kubernetes</text>
+    <text x="-50" y="0" font-family="monospace" font-size="20" fill="#4d3d7b" text-anchor="middle">Nix</text>
+    <text x="100" y="0" font-family="monospace" font-size="20" fill="#4d3d7b" text-anchor="middle">Terraform</text>
+    <text x="250" y="0" font-family="monospace" font-size="20" fill="#4d3d7b" text-anchor="middle">ArgoCD</text>
+    <text x="400" y="0" font-family="monospace" font-size="20" fill="#4d3d7b" text-anchor="middle">Ansible</text>
     
-    <text x="-300" y="40" font-family="monospace" font-size="20" fill="#fab387" text-anchor="middle">Prometheus</text>
-    <text x="-100" y="40" font-family="monospace" font-size="20" fill="#eba0ac" text-anchor="middle">Grafana</text>
-    <text x="100" y="40" font-family="monospace" font-size="20" fill="#94e2d5" text-anchor="middle">GitLab CI</text>
-    <text x="300" y="40" font-family="monospace" font-size="20" fill="#cba6f7" text-anchor="middle">Jenkins</text>
+    <text x="-300" y="40" font-family="monospace" font-size="20" fill="#5a4d8a" text-anchor="middle">Prometheus</text>
+    <text x="-100" y="40" font-family="monospace" font-size="20" fill="#5a4d8a" text-anchor="middle">Grafana</text>
+    <text x="100" y="40" font-family="monospace" font-size="20" fill="#5a4d8a" text-anchor="middle">GitLab CI</text>
+    <text x="300" y="40" font-family="monospace" font-size="20" fill="#5a4d8a" text-anchor="middle">Jenkins</text>
   </g>
   
   <!-- Bottom Quote -->
-  <text x="960" y="1000" font-family="monospace" font-size="18" fill="#6c7086" text-anchor="middle" font-style="italic">
+  <text x="960" y="1000" font-family="monospace" font-size="18" fill="#6b5ba6" text-anchor="middle" font-style="italic">
     "Built with Rust, Go, and Lua. Powered by NixOS. Deployed everywhere."
   </text>
   
   <!-- Decorative Elements -->
-  <circle cx="100" cy="100" r="5" fill="#89b4fa" opacity="0.5"/>
-  <circle cx="1820" cy="980" r="5" fill="#cba6f7" opacity="0.5"/>
-  <circle cx="150" cy="1000" r="3" fill="#f38ba8" opacity="0.5"/>
-  <circle cx="1850" cy="80" r="3" fill="#a6e3a1" opacity="0.5"/>
+  <circle cx="100" cy="100" r="5" fill="#6b5ba6" opacity="0.6"/>
+  <circle cx="1820" cy="980" r="5" fill="#3d2f6b" opacity="0.6"/>
+  <circle cx="150" cy="1000" r="3" fill="#8a6da6" opacity="0.6"/>
+  <circle cx="1850" cy="80" r="3" fill="#5a4d8a" opacity="0.6"/>
 </svg>
