@@ -9,10 +9,14 @@
       wl-clipboard   # Wayland clipboard
       clipster       # Clipboard manager
       
-      # Wayland screenshot tools (flameshot replacement)
+      # Screenshot tools for GNOME/Wayland
+      gnome-screenshot  # Native GNOME screenshot tool
+      ksnip            # Cross-platform screenshot tool with annotation (flameshot alternative)
+      
+      # Wayland screenshot tools (for niri and other compositors)
       grim           # Screenshot utility for Wayland
       slurp          # Screen area selector for Wayland
-      swappy         # Screenshot editor (like flameshot)
+      swappy         # Screenshot editor
       grimblast      # Convenient wrapper for grim+slurp
     ];
   };

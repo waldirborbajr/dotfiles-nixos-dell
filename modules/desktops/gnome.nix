@@ -90,10 +90,14 @@
   # XDG Portal Configuration
   # ============================================
   # GNOME provides its own portal implementation
-  # xdg-desktop-portal-gnome is automatically enabled with GNOME
-  xdg.portal.extraPortals = with pkgs; [
-    xdg-desktop-portal-gtk # Fallback for non-GNOME apps
-  ];
+  xdg.portal = {
+    enable = true;
+    extraPortals = with pkgs; [
+      xdg-desktop-portal-gnome  # GNOME portal for screenshots, etc.
+      xdg-desktop-portal-gtk    # Fallback for non-GNOME apps
+    ];
+    config.common.default = "gnome";
+  };
 
   # ============================================
   # Essential GNOME Packages
