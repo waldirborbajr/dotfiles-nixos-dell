@@ -23,13 +23,19 @@
     programs.ssh = {
       enable = true;
       
-      # Connection optimization
-      controlMaster = "auto";
-      controlPath = "~/.ssh/sockets/%r@%h:%p";
-      controlPersist = "10m";
+      # Disable default config and set manually
+      enableDefaultConfig = false;
       
-      # Security settings
-      hashKnownHosts = true;
+      # Global settings for all hosts
+      matchBlocks."*" = {
+        # Connection optimization
+        controlMaster = "auto";
+        controlPath = "~/.ssh/sockets/%r@%h:%p";
+        controlPersist = "10m";
+        
+        # Security settings
+        hashKnownHosts = true;
+      };
       
       # Common settings
       extraConfig = ''
