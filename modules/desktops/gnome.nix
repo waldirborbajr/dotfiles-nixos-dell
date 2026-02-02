@@ -69,6 +69,17 @@
   };
 
   # ============================================
+  # GNOME Settings (dconf)
+  # ============================================
+  programs.dconf.profiles.user.databases = [{
+    settings = {
+      "org/gnome/desktop/wm/preferences" = {
+        auto-maximize = false; # Prevent windows from auto-maximizing
+      };
+    };
+  }];
+
+  # ============================================
   # XDG Portal Configuration
   # ============================================
   # GNOME provides its own portal implementation
