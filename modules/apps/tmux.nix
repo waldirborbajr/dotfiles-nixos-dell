@@ -123,7 +123,7 @@
         
         # Window management
         bind r command-prompt -I "#W" "rename-window '%%'"
-        bind R source-file ~/.config/tmux/tmux.conf \; display "Config reloaded!"
+        bind R source-file $HOME/.config/tmux/tmux.conf \; display "Config reloaded!"
         bind c new-window -c "#{pane_current_path}"
         bind C kill-window
         bind '"' choose-window
@@ -226,7 +226,7 @@
             --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
             --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
             --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
-            --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
+            --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . $HOME)' \
             --bind 'ctrl-d:execute(tmux kill-session -t {})+change-prompt(⚡  )+reload(sesh list --icons)' \
             --color "border:magenta,label:blue,prompt:cyan" \
         )\""
@@ -255,7 +255,7 @@
         set -g @fzf-url-history-limit "2000"
         
         # Initialize TPM (keep this at the bottom)
-        run-shell "test -e ~/.config/tmux/plugins/tpm/tpm && ~/.config/tmux/plugins/tpm/tpm || true"
+        run-shell "test -e $HOME/.config/tmux/plugins/tpm/tpm && $HOME/.config/tmux/plugins/tpm/tpm || true"
       '';
     };
 
