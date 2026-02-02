@@ -118,7 +118,7 @@
         
         # Window management
         bind r command-prompt -I "#W" "rename-window '%%'"
-        bind R source-file ''$HOME/.config/tmux/tmux.conf \; display "Config reloaded!"
+        bind R source-file ''$HOME/.config/tmux/tmux.conf \; display "󰑓 Tmux Config Reloaded"
         bind c new-window -c "#{pane_current_path}"
         bind C kill-window
         bind '"' choose-window
