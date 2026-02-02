@@ -72,35 +72,35 @@
         setw -g pane-base-index 1        # start pane indexing at 1
         
         # Colors - optimized for development
-        set-option -g default-terminal 'screen-256color'
-        set-option -g terminal-overrides ',xterm-256color:RGB'
-        set-option -ga terminal-overrides ',*256col*:Tc'
+        set-option -g default-terminal "screen-256color"
+        set-option -g terminal-overrides ",xterm-256color:RGB"
+        set-option -ga terminal-overrides ",*256col*:Tc"
         
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # 🎨 THEME & STATUS BAR
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         
         # Pane borders
-        set -g pane-active-border-style 'fg=magenta,bg=default'
-        set -g pane-border-style 'fg=brightblack,bg=default'
+        set -g pane-active-border-style "fg=magenta,bg=default"
+        set -g pane-border-style "fg=brightblack,bg=default"
         
         # Status bar
         set -g status-interval 3
         set -g status-justify centre
-        set -g status-style 'bg=default,fg=white'
+        set -g status-style "bg=default,fg=white"
         set -g status-left-length 100
         set -g status-right-length 100
         set -g status-left " #[fg=blue,bold]#S #[fg=white,nobold]#(gitmux -cfg $HOME/.config/tmux/gitmux.yml) "
         set -g status-right "#[fg=gray]%H:%M "
         
         # Window status
-        set -g window-status-current-format '#[fg=magenta,bold]#{?window_zoomed_flag,🔍 ,}#I:#W'
-        set -g window-status-format '#[fg=gray]#I:#W'
+        set -g window-status-current-format "#[fg=magenta,bold]#{?window_zoomed_flag,🔍 ,}#I:#W"
+        set -g window-status-format "#[fg=gray]#I:#W"
         
         # Message style
-        set -g message-style 'bg=default,fg=yellow,bold'
-        set -g message-command-style 'bg=default,fg=yellow'
-        set -g mode-style 'bg=yellow,fg=black'
+        set -g message-style "bg=default,fg=yellow,bold"
+        set -g message-command-style "bg=default,fg=yellow"
+        set -g mode-style "bg=yellow,fg=black"
         
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # ⌨️  KEY BINDINGS - DevOps Optimized
@@ -191,25 +191,25 @@
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         
         # Git operations
-        bind g new-window -S -n '🌳 git' 'lazygit'
-        bind G new-window -n '😺 gh' 'gh dash'
+        bind g new-window -S -n "🌳 git" "lazygit"
+        bind G new-window -n "😺 gh" "gh dash"
         
         # Language-specific dev environments
-        bind M-r new-window -c "#{pane_current_path}" -n '🦀 rust' 'echo "Rust Dev Environment" && exec $SHELL'
-        bind M-g new-window -c "#{pane_current_path}" -n '🐹 go' 'echo "Go Dev Environment" && exec $SHELL'
-        bind M-l new-window -c "#{pane_current_path}" -n '🌙 lua' 'echo "Lua Dev Environment" && exec $SHELL'
-        bind M-p new-window -c "#{pane_current_path}" -n '🐍 python' 'echo "Python Dev Environment" && exec $SHELL'
-        bind M-n new-window -c "#{pane_current_path}" -n '📦 node' 'echo "Node.js Dev Environment" && exec $SHELL'
+        bind M-r new-window -c "#{pane_current_path}" -n "🦀 rust" "echo 'Rust Dev Environment' && exec $SHELL"
+        bind M-g new-window -c "#{pane_current_path}" -n "🐹 go" "echo 'Go Dev Environment' && exec $SHELL"
+        bind M-l new-window -c "#{pane_current_path}" -n "🌙 lua" "echo 'Lua Dev Environment' && exec $SHELL"
+        bind M-p new-window -c "#{pane_current_path}" -n "🐍 python" "echo 'Python Dev Environment' && exec $SHELL"
+        bind M-n new-window -c "#{pane_current_path}" -n "📦 node" "echo 'Node.js Dev Environment' && exec $SHELL"
         
         # Container & orchestration
-        bind M-d new-window -n '🐳 docker' 'docker ps && exec $SHELL'
-        bind M-k new-window -n '☸️  k8s' 'kubectl get pods && exec $SHELL'
+        bind M-d new-window -n "🐳 docker" "docker ps && exec $SHELL"
+        bind M-k new-window -n "☸️  k8s" "kubectl get pods && exec $SHELL"
         
         # Editor & tools
-        bind E new-window -S -n '📝 editor' 'nvim +GoToFile'
-        bind M-h new-window -n '✨ helix' 'hx'
-        bind M-t new-window -n '📊 htop' 'htop'
-        bind M-f new-window -n '📁 yazi' 'yazi'
+        bind E new-window -S -n "📝 editor" "nvim +GoToFile"
+        bind M-h new-window -n "✨ helix" "hx"
+        bind M-t new-window -n "📊 htop" "htop"
+        bind M-f new-window -n "📁 yazi" "yazi"
         
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # 🔍 SESSION MANAGEMENT WITH SESH
@@ -228,7 +228,7 @@
             --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
             --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
             --bind 'ctrl-d:execute(tmux kill-session -t {})+change-prompt(⚡  )+reload(sesh list --icons)' \
-            --color 'border:magenta,label:blue,prompt:cyan' \
+            --color "border:magenta,label:blue,prompt:cyan" \
         )\""
         
         # Last session toggle
@@ -238,27 +238,22 @@
         # 🔌 PLUGINS - TPM (Tmux Plugin Manager)
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         
-        set -g @plugin 'tmux-plugins/tpm'
-        set -g @plugin 'tmux-plugins/tmux-sensible'
-        set -g @plugin 'tmux-plugins/tmux-yank'
-        set -g @plugin 'tmux-plugins/tmux-resurrect'
-        set -g @plugin 'tmux-plugins/tmux-continuum'
-        set -g @plugin 'christoomey/vim-tmux-navigator'
-        set -g @plugin 'sainnhe/tmux-fzf'
-        set -g @plugin 'wfxr/tmux-fzf-url'
+        set -g @plugin "tmux-plugins/tpm"
+        set -g @plugin "tmux-plugins/tmux-sensible"
+        set -g @plugin "tmux-plugins/tmux-yank"
+        set -g @plugin "tmux-plugins/tmux-resurrect"
+        set -g @plugin "tmux-plugins/tmux-continuum"
+        set -g @plugin "christoomey/vim-tmux-navigator"
+        set -g @plugin "sainnhe/tmux-fzf"
+        set -g @plugin "wfxr/tmux-fzf-url"
         
         # Plugin settings
-        set -g @continuum-restore 'on'
-        set -g @resurrect-strategy-nvim 'session'
-        set -g @resurrect-capture-pane-contents 'on'
-        set -g @fzf-url-fzf-options '-p 60%,30% --prompt="   " --border-label=" 🔗 Open URL "'
-        set -g @fzf-url-history-limit '2000'
+        set -g @continuum-restore "on"
+        set -g @resurrect-strategy-nvim "session"
+        set -g @resurrect-capture-pane-contents "on"
+        set -g @fzf-url-fzf-options "-p 60%,30% --prompt='   ' --border-label=' 🔗 Open URL '"
+        set -g @fzf-url-history-limit "2000"
         
-        # Initialize TPM (keep this at the bottom)
-        run-shell "test -e ~/.config/tmux/plugins/tpm/tpm && ~/.config/tmux/plugins/tpm/tpm || true"
-      '';
-    };
-
         # Initialize TPM (keep this at the bottom)
         run-shell "test -e ~/.config/tmux/plugins/tpm/tpm && ~/.config/tmux/plugins/tpm/tpm || true"
       '';
