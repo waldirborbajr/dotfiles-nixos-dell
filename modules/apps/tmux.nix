@@ -7,7 +7,8 @@
 #    ██║   ██║ ╚═╝ ██║╚██████╔╝██╔╝ ██╗
 #    ╚═╝   ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝
 #
-# Terminal multiplexer
+# Terminal multiplexer - DevOps optimized configuration
+# Supports: Rust, Go, Lua, Python, Node.js, Docker, K8s
 # https://github.com/tmux/tmux
 
 { config, pkgs, lib, ... }:
@@ -20,11 +21,11 @@
     home.packages = with pkgs; [
       sesh # Smart session manager for tmux
       gitmux # Show git status in tmux status line
-      tmuxifier # Tmux project/session manager
-      fd # Fast find alternative (used by sesh)
-      zoxide # Smart directory jumper (used by sesh)
-      jq # JSON processor (used in tmux bindings)
+      fd # Fast find alternative
+      zoxide # Smart directory jumper
+      jq # JSON processor
       yq-go # YAML processor
+      fzf # Fuzzy finder
     ];
 
     ############################################
@@ -34,7 +35,7 @@
       enable = true;
 
       shell = "${pkgs.zsh}/bin/zsh";
-      terminal = "xterm-256color";
+      terminal = "screen-256color";
       historyLimit = 1000000;
       baseIndex = 1;
 
@@ -42,210 +43,232 @@
       prefix = "C-a";
       keyMode = "vi";
       mouse = true;
-
-      # Plugins
-      plugins = with pkgs.tmuxPlugins; [
-        vim-tmux-navigator
-        # Note: fzf-url, nerd-font-window-name, sessionx, floax, notify need to be added via TPM
-      ];
-
+      escapeTime = 0;
+      
+      # Behavior settings
       extraConfig = ''
-        #
-        # ████████╗███╗   ███╗██╗   ██╗██╗  ██╗
-        # ╚══██╔══╝████╗ ████║██║   ██║╚██╗██╔╝
-        #    ██║   ██╔████╔██║██║   ██║ ╚███╔╝
-        #    ██║   ██║╚██╔╝██║██║   ██║ ██╔██╗
-        #    ██║   ██║ ╚═╝ ██║╚██████╔╝██╔╝ ██╗
-        #    ╚═╝   ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝
-        #
-        # Terminal multiplexer
-        # https://github.com/tmux/tmux
+        # Unbind default prefix
+        unbind C-b
 
-        # global sessions
-        # bind-key "K" display-popup -h 90% -w 50% -E "sesh ui"
-        bind-key "K" run-shell "sesh connect \"$(
-          sesh list --icons --hide-duplicates | fzf-tmux -p 100%,100% --no-border \
-            --list-border \
-            --no-sort --prompt '⚡  ' \
-            --input-border \
-            --header-border \
-            --bind 'tab:down,btab:up' \
-            --bind 'ctrl-b:abort' \
-            --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
-            --bind 'ctrl-t:change-prompt(  )+reload(sesh list -t --icons)' \
-            --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
-            --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
-            --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
-            --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list --icons)' \
-            --preview-window 'right:70%' \
-            --preview 'sesh preview {}' \
-        )\""
-
-        bind-key "N" display-popup -E "sesh ui"
-
-        # root sessions
-        bind-key "R" run-shell "sesh connect \"\$(
-          sesh list --icons | fzf-tmux -p 100%,100% --no-border \
-            --query  \"\$(sesh root)\" \
-            --list-border \
-            --no-sort --prompt '⚡  ' \
-            --input-border \
-            --bind 'tab:down,btab:up' \
-            --bind 'ctrl-b:abort' \
-            --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
-            --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
-            --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
-            --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
-            --bind 'ctrl-d:execute(tmux kill-session -t {2..})+change-prompt(⚡  )+reload(sesh list --icons)' \
-            --preview-window 'right:70%' \
-            --preview 'sesh preview {}' \
-        )\""
-
-        # TODO: learn how this works
-        set-option -g focus-events on
-
-        # TODO: find a way to toggle this?
-        set-option -g display-time 3000
-
-        # colors
-        set -g default-terminal "xterm-256color"
-        set -ga terminal-overrides ",*256col*:Tc"
-
-        set -g base-index 1          # start indexing windows at 1 instead of 0
-        set -g detach-on-destroy off # don't exit from tmux when closing a session
-        set -g escape-time 0         # zero-out escape time delay
-        set -g history-limit 1000000 # increase history size (from 2,000)
-        set -g mouse on              # enable mouse support
-        set -g renumber-windows on   # renumber all windows when any window is closed
-        set -g set-clipboard on      # use system clipboard
-
-        # ascii color definitions
-        # 0  black
-        # 1  red
-        # 2  green
-        # 3  yellow
-        # 4  blue
-        # 5  magenta
-        # 6  cyan
-        # 7  white
-        # 8  bright black
-        # 9  bright red
-        # 10 bright green
-        # 11 bright yellow
-        # 12 bright blue
-        # 13 bright magenta
-        # 14 bright cyan
-        # 15 bright white
-        # -1 default
-
-        # status bar
-        set -g status-interval 3
-        set -g status-justify absolute-centre
-        set -g status-left " #[fg=blue,bold]#S #[fg=white,nobold]#(gitmux -cfg $HOME/.config/tmux/gitmux.yml) "
-        set -g status-left-length 300    # increase length (from 10)
+      # Behavior settings
+      extraConfig = ''
+        # Unbind default prefix
+        unbind C-b
+        
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 🎯 CORE SETTINGS
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        set -g prefix C-a
+        set -g base-index 1              # start indexing windows at 1 instead of 0
+        set -g detach-on-destroy off     # don't exit from tmux when closing a session
+        set -g escape-time 0             # zero-out escape time delay
+        set -g history-limit 1000000     # increase history size (from 2,000)
+        set -g renumber-windows on       # renumber all windows when any window is closed
+        set -g set-clipboard on          # use system clipboard
         set -g status-position top       # macOS / darwin style
-        set -g status-right ""
-        set -g status-style 'bg=default' # transparent
-
-        # windows
-        set -g window-status-current-format '#[fg=magenta]*#W'
-        set -g window-status-format ' #[fg=gray]#W'
-
-        # panes
-        set -g pane-active-border-style 'fg=black,bg=default'
+        set -g focus-events on           # enable focus events
+        setw -g mode-keys vi             # vi mode in copy mode
+        setw -g pane-base-index 1        # start pane indexing at 1
+        
+        # Colors - optimized for development
+        set-option -g default-terminal 'screen-256color'
+        set-option -g terminal-overrides ',xterm-256color:RGB'
+        set-option -ga terminal-overrides ',*256col*:Tc'
+        
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 🎨 THEME & STATUS BAR
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        # Pane borders
+        set -g pane-active-border-style 'fg=magenta,bg=default'
         set -g pane-border-style 'fg=brightblack,bg=default'
-
-        set -g allow-passthrough on
-        set -g message-command-style bg=default,fg=yellow
-        set -g message-style bg=default,fg=yellow
-        set -g mode-style bg=default,fg=yellow
-
-        # bindings
-        bind -N "⌘+9 switch to root session (via sesh) " 9 run-shell "sesh connect --root $(pwd)"
-        bind -N "⌘+^+t join pane" J join-pane -t 1
-        bind -N "⌘+a ai" A new-window -S -n '🤖' 'ai'
-        bind -N "⌘+b builder" b new-window -S -n '🔨' 'build'
-        bind -N "⌘+d dev" D new-window -S -n '🔧' 'dev'
-        bind -N "⌘+e editor" E new-window -S -n '📝' 'nvim +GoToFile'
-        bind -N "⌘+⇧+G gh-dash " G new-window -c "#{pane_current_path}" -n "😺" "ghd 2> /dev/null"
-        bind -N "⌘+g lazygit" g new-window -S -n '🌳' 'lazygit'
-        # bind -N "⌘+G git commit (raycast) " G new-window -c "#{pane_current_path}" -n "🔒" "raycast-git-commit.sh"
-        bind -N "⌘+l last-session (via sesh) " L run-shell "sesh last || tmux display-message -d 1000 'Only one session'"
-        bind -N "⌘+⇧+Q kill current session" Q kill-session
-        bind -N "⌘+⇧+R run a script" Y split-window -v -l 10 "npm run (jq -r '.scripts | keys[]' package.json | fzf --no-border)"
-        bind -N "⌘+⇧+T break pane" B break-pane
-
-        bind '%' split-window -c '#{pane_current_path}' -h
-        bind '"' split-window -c '#{pane_current_path}'
-        bind c new-window -c '#{pane_current_path}'
-
+        
+        # Status bar
+        set -g status-interval 3
+        set -g status-justify centre
+        set -g status-style 'bg=default,fg=white'
+        set -g status-left-length 100
+        set -g status-right-length 100
+        set -g status-left " #[fg=blue,bold]#S #[fg=white,nobold]#(gitmux -cfg $HOME/.config/tmux/gitmux.yml) "
+        set -g status-right "#[fg=gray]%H:%M "
+        
+        # Window status
+        set -g window-status-current-format '#[fg=magenta,bold]#{?window_zoomed_flag,🔍 ,}#I:#W'
+        set -g window-status-format '#[fg=gray]#I:#W'
+        
+        # Message style
+        set -g message-style 'bg=default,fg=yellow,bold'
+        set -g message-command-style 'bg=default,fg=yellow'
+        set -g mode-style 'bg=yellow,fg=black'
+        
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # ⌨️  KEY BINDINGS - DevOps Optimized
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        # Prefix bindings
+        bind C-a send-prefix             # Send prefix to nested tmux
+        bind C-x lock-server
+        bind C-c new-window -c "$HOME"
+        bind C-d detach
+        bind * list-clients
+        
+        # Window navigation
+        bind H previous-window
+        bind L next-window
+        bind C-a last-window
+        bind C-w list-windows
+        bind w list-windows
+        bind Tab last-window
+        
+        # Window management
+        bind r command-prompt -I "#W" "rename-window '%%'"
+        bind R source-file ~/.config/tmux/tmux.conf \; display "Config reloaded!"
+        bind c new-window -c "#{pane_current_path}"
+        bind C kill-window
+        bind '"' choose-window
+        
+        # Pane splitting - intuitive keys
+        bind | split-window -h -c "#{pane_current_path}"
+        bind - split-window -v -c "#{pane_current_path}"
+        bind v split-window -h -c "#{pane_current_path}"
+        bind s split-window -v -c "#{pane_current_path}"
+        bind % split-window -h -c "#{pane_current_path}"
+        bind '"' split-window -v -c "#{pane_current_path}"
+        
+        # Pane navigation - vim style
         bind h select-pane -L
         bind j select-pane -D
         bind k select-pane -U
         bind l select-pane -R
-
-        bind-key -T copy-mode-vi 'C-h' select-pane -L
-        bind-key -T copy-mode-vi 'C-j' select-pane -D
-        bind-key -T copy-mode-vi 'C-k' select-pane -U
-        bind-key -T copy-mode-vi 'C-l' select-pane -R
-        bind-key -T copy-mode-vi 'v' send-keys -X begin-selection
-        bind-key x kill-pane # skip "kill-pane 1? (y/n)" prompt (cmd+w)
-        bind-key e send-keys "tmux capture-pane -p -S - | nvim -c 'set buftype=nofile' +" Enter
-
-        # NOTE: can be used for debugging
-        # )\" 2> /tmp/sesh-$(date +"%Y-%m-%d-%H-%M-%S").txt"
-
-        bind-key "Z" display-popup -E "sesh connect \$(sesh list | zf --height 24)"
-
-        # plugin settings
-        set -g @floax-bind H
-        set -g @fzf-url-fzf-options '-p 60%,30% --prompt="   " --border-label=" Open URL "'
+        
+        # Pane resizing - repeatable
+        bind -r , resize-pane -L 10
+        bind -r . resize-pane -R 10
+        bind -r - resize-pane -D 5
+        bind -r = resize-pane -U 5
+        bind -r < resize-pane -L 20
+        bind -r > resize-pane -R 20
+        bind -r _ resize-pane -D 10
+        bind -r + resize-pane -U 10
+        
+        # Pane management
+        bind z resize-pane -Z            # Toggle zoom
+        bind x kill-pane                 # Kill pane without confirmation
+        bind X swap-pane -D              # Swap with next pane
+        bind B break-pane                # Break pane to new window
+        bind J join-pane -t :1           # Join pane to window 1
+        
+        # Session management
+        bind S choose-session
+        bind Q kill-session
+        bind D detach-client
+        
+        # Utilities
+        bind : command-prompt
+        bind ? list-keys
+        bind P set pane-border-status    # Toggle pane borders
+        bind * setw synchronize-panes    # Sync panes
+        bind K send-keys "clear" C-m     # Clear terminal
+        bind e send-keys "tmux capture-pane -p -S - | nvim -c 'set buftype=nofile' +" Enter
+        
+        # Copy mode - vi bindings
+        bind Escape copy-mode
+        bind p paste-buffer
+        bind -T copy-mode-vi v send-keys -X begin-selection
+        bind -T copy-mode-vi y send-keys -X copy-selection-and-cancel
+        bind -T copy-mode-vi C-v send-keys -X rectangle-toggle
+        bind -T copy-mode-vi Escape send-keys -X cancel
+        
+        # Copy mode navigation
+        bind-key -T copy-mode-vi C-h select-pane -L
+        bind-key -T copy-mode-vi C-j select-pane -D
+        bind-key -T copy-mode-vi C-k select-pane -U
+        bind-key -T copy-mode-vi C-l select-pane -R
+        
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 🚀 DEVOPS SHORTCUTS
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        # Git operations
+        bind g new-window -S -n '🌳 git' 'lazygit'
+        bind G new-window -n '😺 gh' 'gh dash'
+        
+        # Language-specific dev environments
+        bind M-r new-window -c "#{pane_current_path}" -n '🦀 rust' 'echo "Rust Dev Environment" && exec $SHELL'
+        bind M-g new-window -c "#{pane_current_path}" -n '🐹 go' 'echo "Go Dev Environment" && exec $SHELL'
+        bind M-l new-window -c "#{pane_current_path}" -n '🌙 lua' 'echo "Lua Dev Environment" && exec $SHELL'
+        bind M-p new-window -c "#{pane_current_path}" -n '🐍 python' 'echo "Python Dev Environment" && exec $SHELL'
+        bind M-n new-window -c "#{pane_current_path}" -n '📦 node' 'echo "Node.js Dev Environment" && exec $SHELL'
+        
+        # Container & orchestration
+        bind M-d new-window -n '🐳 docker' 'docker ps && exec $SHELL'
+        bind M-k new-window -n '☸️  k8s' 'kubectl get pods && exec $SHELL'
+        
+        # Editor & tools
+        bind E new-window -S -n '📝 editor' 'nvim +GoToFile'
+        bind M-h new-window -n '✨ helix' 'hx'
+        bind M-t new-window -n '📊 htop' 'htop'
+        bind M-f new-window -n '📁 yazi' 'yazi'
+        
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 🔍 SESSION MANAGEMENT WITH SESH
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        # Fuzzy session switcher
+        bind K run-shell "sesh connect \"$(
+          sesh list --icons --hide-duplicates | fzf-tmux -p 80%,80% \
+            --no-sort --border-label ' Sessions ' \
+            --prompt '⚡  ' \
+            --header '  ^a all ^t tmux ^g config ^x zoxide ^f find ^d delete' \
+            --bind 'tab:down,btab:up' \
+            --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
+            --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
+            --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
+            --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
+            --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ~)' \
+            --bind 'ctrl-d:execute(tmux kill-session -t {})+change-prompt(⚡  )+reload(sesh list --icons)' \
+            --color 'border:magenta,label:blue,prompt:cyan' \
+        )\""
+        
+        # Last session toggle
+        bind l run-shell "sesh last"
+        
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 🔌 PLUGINS - TPM (Tmux Plugin Manager)
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        set -g @plugin 'tmux-plugins/tpm'
+        set -g @plugin 'tmux-plugins/tmux-sensible'
+        set -g @plugin 'tmux-plugins/tmux-yank'
+        set -g @plugin 'tmux-plugins/tmux-resurrect'
+        set -g @plugin 'tmux-plugins/tmux-continuum'
+        set -g @plugin 'christoomey/vim-tmux-navigator'
+        set -g @plugin 'sainnhe/tmux-fzf'
+        set -g @plugin 'wfxr/tmux-fzf-url'
+        
+        # Plugin settings
+        set -g @continuum-restore 'on'
+        set -g @resurrect-strategy-nvim 'session'
+        set -g @resurrect-capture-pane-contents 'on'
+        set -g @fzf-url-fzf-options '-p 60%,30% --prompt="   " --border-label=" 🔗 Open URL "'
         set -g @fzf-url-history-limit '2000'
-        set -g @thumbs-command 'echo -n {} | pbcopy' # copy to clipboard
-        set -g @thumbs-key C
-        set -g @tmux-last-color on
-        set -g @tmux-last-pager 'less -r'
-        set -g @tmux-last-pager 'less'
-        set -g @tmux-last-prompt-pattern ' '
-        set -g @tmux-nerd-font-window-name-shell-icon ""
-        set -g @tmux-nerd-font-window-name-show-name false
-        set -g @tnotify-custom-cmd 'bash ~/c/dotfiles/bin/tmux-notify.sh'
-
-        # plugins
-
-        # TODO: revisit using this?
-        # set -g @plugin 'git@github.com:joshmedeski/tmux-overmind'
-        # set -g @plugin 'IdoKendo/tmux-lazy'
-        # set -g @plugin 'git@github.com:joshmedeski/tmux-voice-mode'
-        # set -g @plugin 'fcsonline/tmux-thumbs'          # <cmd|shift>+c
-        # set -g @plugin 'jimeh/tmuxifier'
-        # set -g @plugin 'tmux-plugins/tmux-resurrect'
-
-        set -g @plugin 'git@github.com:joshmedeski/tmux-fzf-url'
-        set -g @plugin 'git@github.com:joshmedeski/tmux-nerd-font-window-name'
-        set -g @plugin 'joshmedeski/vim-tmux-navigator' # <ctrl>+hjkl
-        set -g @plugin 'rickstaa/tmux-notify'
-        set -g @plugin 'omerxx/tmux-sessionx'
-        set -g @plugin 'omerxx/tmux-floax'
-
-        # set-option -g automatic-rename-format '#(~/git_apps/tmux-nerd-font-window-name/bin/tmux-nerd-font-window-name #{pane_current_command} #{window_panes}) #{b:pane_current_path}'
-
-        set -g @plugin 'tmux-plugins/tpm'        # load tpm
-        run "$HOME/.config/tmux/plugins/tpm/tpm" # run tpm (always end of file)
-
-        # TODO: create a fabric workflow (with tmux popop)
-        # bind-key "A" display-popup -E -w 40% "sesh connect \"$(
-        #   fabric -l | gum filter --limit 1 --fuzzy --no-sort --placeholder 'Pick a fabric pattern' --prompt='🧠'
-        # )\""
-
-        # NOTE: hide duplicates flag
-        # sesh list --icons --hide-duplicates | fzf-tmux -p 100%,100% --no-border \
+        
+        # Initialize TPM (keep this at the bottom)
+        run-shell "test -e ~/.config/tmux/plugins/tpm/tpm && ~/.config/tmux/plugins/tpm/tpm || true"
       '';
     };
 
-    # Create gitmux config file
+        # Initialize TPM (keep this at the bottom)
+        run-shell "test -e ~/.config/tmux/plugins/tpm/tpm && ~/.config/tmux/plugins/tpm/tpm || true"
+      '';
+    };
+
+    #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # 📊 GITMUX CONFIGURATION
+    #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
     home.file.".config/tmux/gitmux.yml".text = ''
-      #
       #  ██████╗ ██╗████████╗███╗   ███╗██╗   ██╗██╗  ██╗
       # ██╔════╝ ██║╚══██╔══╝████╗ ████║██║   ██║╚██╗██╔╝
       # ██║  ███╗██║   ██║   ██╔████╔██║██║   ██║ ╚███╔╝
@@ -260,16 +283,16 @@
         symbols:
           ahead: "↑"
           behind: "↓"
-          clean: ""
+          clean: "✓"
           branch: ""
           hashprefix: ":"
-          staged: " "
-          conflict: "󰕚 "
-          untracked: "󱀶 "
-          modified: " "
-          stashed: " "
-          insertions: " "
-          deletions: " "
+          staged: ""
+          conflict: "󰕚"
+          untracked: "󱀶"
+          modified: ""
+          stashed: ""
+          insertions: ""
+          deletions: ""
         styles:
           state: "#[fg=red,nobold]"
           branch: "#[fg=white,italics]"
@@ -277,13 +300,25 @@
           conflict: "#[fg=red,nobold]"
           modified: "#[fg=yellow,nobold]"
           untracked: "#[fg=magenta,nobold]"
-          stashed: "#[fg=gray,nobold]"
+          stashed: "#[fg=cyan,nobold]"
           clean: "#[fg=green,nobold]"
           divergence: "#[fg=cyan,nobold]"
         layout: [branch, divergence, flags, stats]
         options:
-          branch_max_len: 0
+          branch_max_len: 30
           hide_clean: false
+    '';
+
+    #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    # 📦 TPM (Tmux Plugin Manager) SETUP
+    #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+    
+    # Install TPM if not already installed
+    home.activation.installTPM = lib.hm.dag.entryAfter ["writeBoundary"] ''
+      if [ ! -d "$HOME/.config/tmux/plugins/tpm" ]; then
+        $DRY_RUN_CMD ${pkgs.git}/bin/git clone https://github.com/tmux-plugins/tpm "$HOME/.config/tmux/plugins/tpm"
+        echo "✓ TPM installed. Run 'prefix + I' in tmux to install plugins."
+      fi
     '';
   };
 }
