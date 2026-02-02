@@ -1,9 +1,9 @@
-# modules/apps/terminals.nix
-# Alacritty terminal with Catppuccin theme
+# modules/apps/alacritty.nix
+# Alacritty terminal emulator
 { config, pkgs, lib, ... }:
 
 {
-  config = lib.mkIf config.apps.terminals.enable {
+  config = lib.mkIf config.apps.alacritty.enable {
     # ========================================
     # Alacritty (Home Manager)
     # ========================================
@@ -22,11 +22,21 @@
         window = {
           padding = { x = 8; y = 8; };
           decorations = "None";
-          opacity = 1.0;
+          opacity = 0.95;  # 95% opacidade (5% transparência)
           blur = false;
           dynamic_title = true;
           resize_increments = true;
-          startup_mode = "Fullscreen";
+          startup_mode = "Windowed";
+          # Janela com ~80% do tamanho da tela
+          dimensions = {
+            columns = 140;  # ~80% da largura típica
+            lines = 40;     # ~80% da altura típica
+          };
+          # Centralizar a janela (depende do window manager)
+          position = {
+            x = 0;  # 0 = centralizar horizontalmente
+            y = 0;  # 0 = centralizar verticalmente
+          };
         };
 
         terminal.shell = {
@@ -83,4 +93,3 @@
     };
   };
 }
-

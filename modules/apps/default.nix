@@ -6,7 +6,7 @@
   imports = [
     # Core apps
     ./shell.nix
-    ./terminals.nix
+    ./alacritty.nix
     ./fastfetch.nix
     ./dev-tools.nix
     ./ripgrep.nix
@@ -46,11 +46,11 @@
       };
     };
 
-    terminals = {
+    alacritty = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;
-        description = "Enable terminal emulator (alacritty)";
+        description = "Enable Alacritty terminal emulator";
       };
     };
 
