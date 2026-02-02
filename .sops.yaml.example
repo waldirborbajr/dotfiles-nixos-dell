@@ -1,0 +1,26 @@
+# .sops.yaml - SOPS configuration file
+# See SECRETS-MANAGEMENT.md for complete documentation
+
+keys:
+  # Replace with YOUR age public key
+  # Generate with: ssh-to-age < ~/.ssh/id_ed25519.pub
+  - &admin_borba age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+
+creation_rules:
+  # Common secrets - encrypted with admin key
+  - path_regex: secrets/common/[^/]+\.yaml$
+    key_groups:
+    - age:
+      - *admin_borba
+  
+  # MacBook-specific secrets
+  - path_regex: secrets/macbook/[^/]+\.yaml$
+    key_groups:
+    - age:
+      - *admin_borba
+  
+  # Dell-specific secrets
+  - path_regex: secrets/dell/[^/]+\.yaml$
+    key_groups:
+    - age:
+      - *admin_borba

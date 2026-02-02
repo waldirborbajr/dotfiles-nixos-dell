@@ -12,3 +12,18 @@ output.txt
 *.bak
 result
 DUMP.log
+
+# SOPS secrets - DO NOT COMMIT
+.sops.yaml
+keys.txt
+**/keys.txt
+**/.config/sops/age/keys.txt
+
+# Unencrypted secrets - DO NOT COMMIT
+secrets/**/*.key
+secrets/**/*.pem
+secrets/**/id_*
+secrets/**/*_rsa
+!secrets/**/*.yaml
+!secrets/**/*.json
+!secrets/**/README.md
