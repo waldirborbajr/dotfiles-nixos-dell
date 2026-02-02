@@ -10,6 +10,12 @@ let
     // WINDOW RULES
     // ============================================
     
+    // Alacritty - 60% width
+    window-rule {
+      match app-id=r#"^Alacritty$"#
+      default-column-width { proportion 0.6; }
+    }
+
     // Applications that should open maximized
     window-rule {
       match app-id=r#"audacity$"#

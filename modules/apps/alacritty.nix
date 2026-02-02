@@ -45,7 +45,7 @@
         };
 
         font = {
-          size = 13.0;
+          size = 10.0;
           builtin_box_drawing = true;
           normal = { family = "JetBrainsMono Nerd Font"; style = "Regular"; };
           bold = { family = "JetBrainsMono Nerd Font"; style = "Bold"; };
