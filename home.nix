@@ -66,6 +66,8 @@ in
     productivity.enable = true;
 
     remote.enable = false; # Enable if needed
+    ssh-tools.enable = true;
+    termius.enable = true;
     clipboard.enable = true;
     zellij.enable = false; # Tmux alternative (disabled by default)
     latex.enable = false; # Enable for LaTeX documents

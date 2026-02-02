@@ -23,6 +23,8 @@
     ./ides.nix
     ./knowledge.nix
     ./remote.nix
+    ./ssh-tools.nix
+    ./termius.nix
     ./clipboard.nix
     ./zellij.nix
     ./latex.nix
@@ -171,6 +173,22 @@
         type = lib.types.bool;
         default = false;
         description = "Enable remote access tools (AnyDesk)";
+      };
+    };
+
+    ssh-tools = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable SSH utilities and enhanced remote terminal tools (mosh, sshfs, etc.)";
+      };
+    };
+
+    termius = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Termius SSH client with cloud sync";
       };
     };
 
