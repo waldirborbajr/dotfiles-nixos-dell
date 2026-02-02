@@ -233,18 +233,18 @@
         # 🎨 CATPPUCCIN THEME CONFIGURATION
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         
-        set -g @catppuccin_window_left_separator ""
-        set -g @catppuccin_window_right_separator " "
+        set -g @catppuccin_window_left_separator ""
+        set -g @catppuccin_window_right_separator " "
         set -g @catppuccin_window_middle_separator " █"
         set -g @catppuccin_window_number_position "right"
         set -g @catppuccin_window_default_fill "number"
         set -g @catppuccin_window_default_text "#W"
         set -g @catppuccin_window_current_fill "number"
-        set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
-        set -g @catppuccin_status_modules_right "directory"
+        set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
+        set -g @catppuccin_status_modules_right "directory" # date_time"
         set -g @catppuccin_status_modules_left "session"
-        set -g @catppuccin_status_left_separator  " "
-        set -g @catppuccin_status_right_separator " "
+        set -g @catppuccin_status_left_separator  " "
+        set -g @catppuccin_status_right_separator " "
         set -g @catppuccin_status_right_separator_inverse "no"
         set -g @catppuccin_status_fill "icon"
         set -g @catppuccin_status_connect_separator "no"
@@ -270,8 +270,16 @@
         set -g @continuum-restore "on"
         set -g @resurrect-strategy-nvim "session"
         set -g @resurrect-capture-pane-contents "on"
-        set -g @fzf-url-fzf-options '-p 60%,30% --prompt="   " --border-label=" Open URL "'
+        set -g @fzf-url-fzf-options '-p 60%,30% --prompt="   " --border-label=" Open URL "'
         set -g @fzf-url-history-limit '2000'
+        set -g @sessionx-window-height '85%'
+        set -g @sessionx-window-width '75%'
+        set -g @floax-width '80%'
+        set -g @floax-height '80%'
+        set -g @floax-border-color 'magenta'
+        set -g @floax-text-color 'blue'
+        set -g @floax-bind 'p'
+        set -g @floax-change-path 'true'
         
         # Initialize TPM (keep this at the bottom)
         run-shell "test -e ''$HOME/.config/tmux/plugins/tpm/tpm && ''$HOME/.config/tmux/plugins/tpm/tpm || true"
