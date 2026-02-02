@@ -49,11 +49,6 @@
       extraConfig = ''
         # Unbind default prefix
         unbind C-b
-
-      # Behavior settings
-      extraConfig = ''
-        # Unbind default prefix
-        unbind C-b
         
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # 🎯 CORE SETTINGS
