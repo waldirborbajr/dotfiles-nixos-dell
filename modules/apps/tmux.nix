@@ -230,24 +230,48 @@
         bind l run-shell "sesh last"
         
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        # 🎨 CATPPUCCIN THEME CONFIGURATION
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+        
+        set -g @catppuccin_window_left_separator ""
+        set -g @catppuccin_window_right_separator " "
+        set -g @catppuccin_window_middle_separator " █"
+        set -g @catppuccin_window_number_position "right"
+        set -g @catppuccin_window_default_fill "number"
+        set -g @catppuccin_window_default_text "#W"
+        set -g @catppuccin_window_current_fill "number"
+        set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
+        set -g @catppuccin_status_modules_right "directory"
+        set -g @catppuccin_status_modules_left "session"
+        set -g @catppuccin_status_left_separator  " "
+        set -g @catppuccin_status_right_separator " "
+        set -g @catppuccin_status_right_separator_inverse "no"
+        set -g @catppuccin_status_fill "icon"
+        set -g @catppuccin_status_connect_separator "no"
+        set -g @catppuccin_directory_text "#{b:pane_current_path}"
+        
+        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # 🔌 PLUGINS - TPM (Tmux Plugin Manager)
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         
-        set -g @plugin "tmux-plugins/tpm"
-        set -g @plugin "tmux-plugins/tmux-sensible"
-        set -g @plugin "tmux-plugins/tmux-yank"
-        set -g @plugin "tmux-plugins/tmux-resurrect"
-        set -g @plugin "tmux-plugins/tmux-continuum"
-        set -g @plugin "christoomey/vim-tmux-navigator"
-        set -g @plugin "sainnhe/tmux-fzf"
-        set -g @plugin "wfxr/tmux-fzf-url"
+        set -g @plugin 'tmux-plugins/tpm'
+        set -g @plugin 'tmux-plugins/tmux-sensible'
+        set -g @plugin 'tmux-plugins/tmux-yank'
+        set -g @plugin 'tmux-plugins/tmux-resurrect'
+        set -g @plugin 'tmux-plugins/tmux-continuum'
+        set -g @plugin 'fcsonline/tmux-thumbs'
+        set -g @plugin 'sainnhe/tmux-fzf'
+        set -g @plugin 'wfxr/tmux-fzf-url'
+        set -g @plugin 'omerxx/catppuccin-tmux'
+        set -g @plugin 'omerxx/tmux-sessionx'
+        set -g @plugin 'omerxx/tmux-floax'
         
         # Plugin settings
         set -g @continuum-restore "on"
         set -g @resurrect-strategy-nvim "session"
         set -g @resurrect-capture-pane-contents "on"
-        set -g @fzf-url-fzf-options "-p 60%,30% --prompt='   ' --border-label=' 🔗 Open URL '"
-        set -g @fzf-url-history-limit "2000"
+        set -g @fzf-url-fzf-options '-p 60%,30% --prompt="   " --border-label=" Open URL "'
+        set -g @fzf-url-history-limit '2000'
         
         # Initialize TPM (keep this at the bottom)
         run-shell "test -e ''$HOME/.config/tmux/plugins/tpm/tpm && ''$HOME/.config/tmux/plugins/tpm/tpm || true"
