@@ -76,6 +76,13 @@
       "org/gnome/desktop/wm/preferences" = {
         auto-maximize = false; # Prevent windows from auto-maximizing
       };
+
+      # Wallpaper configuration
+      "org/gnome/desktop/background" = {
+        picture-uri = "file:///etc/nixos/wallpapers/devops-dark.svg";
+        picture-uri-dark = "file:///etc/nixos/wallpapers/devops-dark.svg";
+        picture-options = "zoom";
+      };
     };
   }];
 
@@ -106,4 +113,9 @@
     # Terminal (if not using Alacritty/others)
     gnome-console
   ];
+
+  # ============================================
+  # Wallpaper
+  # ============================================
+  environment.etc."nixos/wallpapers/devops-dark.svg".source = ../../wallpapers/devops-dark.svg;
 }

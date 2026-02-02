@@ -10,10 +10,11 @@ let
     // WINDOW RULES
     // ============================================
     
-    // Alacritty - 60% width
+    // Alacritty - 60% width with transparency
     window-rule {
       match app-id=r#"^Alacritty$"#
       default-column-width { proportion 0.6; }
+      opacity 0.90
     }
 
     // Applications that should open maximized
