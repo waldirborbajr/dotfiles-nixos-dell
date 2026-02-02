@@ -22,15 +22,15 @@
         window = {
           padding = { x = 8; y = 8; };
           decorations = "None";
-          opacity = 0.95;  # 95% opacidade (5% transparência)
+          opacity = 0.90;  # 90% opacidade (10% transparência)
           blur = false;
           dynamic_title = true;
           resize_increments = true;
           startup_mode = "Windowed";
-          # Janela com ~80% do tamanho da tela
+          # Janela com ~60% do tamanho da tela
           dimensions = {
-            columns = 140;  # ~80% da largura típica
-            lines = 40;     # ~80% da altura típica
+            columns = 105;  # ~60% da largura típica
+            lines = 30;     # ~60% da altura típica
           };
           # Centralizar a janela (depende do window manager)
           position = {
