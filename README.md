@@ -393,16 +393,16 @@ just switch dell
 
 ## 🛠️ Development Shells
 
-Este flake inclui **devShells** para ambientes de desenvolvimento isolados:
+This flake includes **devShells** for isolated development environments:
 
 ```bash
-# Rust stable + ferramentas completas
+# Rust stable + complete toolchain
 nix develop .#rust
 
 # Rust nightly via fenix
 nix develop .#rust-nightly
 
-# Go + gopls + delve + ferramentas
+# Go + gopls + delve + tools
 nix develop .#go
 
 # Lua + LuaJIT + LSP
@@ -414,24 +414,24 @@ nix develop .#nix-dev
 # Full stack (Rust + Go + Node)
 nix develop .#fullstack
 
-# Default (básico)
+# Default (basic)
 nix develop
 ```
 
-**Vantagens:**
-- ✅ Ambientes isolados por projeto
-- ✅ Versões específicas de ferramentas
-- ✅ Reproduzível entre máquinas
-- ✅ Não polui o sistema global
+**Advantages:**
+- ✅ Isolated environments per project
+- ✅ Specific tool versions
+- ✅ Reproducible across machines
+- ✅ Doesn't pollute global system
 
-**Linguagens disponíveis globalmente:**
+**Languages available globally:**
 - Go (`modules/languages/go.nix`)
 - Rust (`modules/languages/rust.nix`)
 - Lua (`modules/languages/lua.nix` - toggle)
 - Nix (`modules/languages/nix-dev.nix`)
 - Python, Node.js
 
-**Documentação completa:** [DEVSHELLS.md](DEVSHELLS.md)
+**Full documentation:** [DEVSHELLS.md](DEVSHELLS.md)
 
 ---
 
@@ -528,7 +528,7 @@ All commits are automatically validated:
 
 **Documentation:** [.github/workflows/README.md](.github/workflows/README.md)
 
-**Integração com direnv:** Veja [.envrc.example](.envrc.example)
+**direnv integration:** See [.envrc.example](.envrc.example)
 
 ---
 
@@ -551,8 +551,16 @@ Troubleshooting:
 
 ## ➕ Adding a New Host
 
-See:
-NEWHOST.md
+Want to add a new machine to this configuration? Follow the step-by-step guide:
+
+**📖 Full documentation:** [NEWHOST.md](NEWHOST.md)
+
+**Quick summary:**
+1. Copy hardware config from new machine
+2. Create `hardware/<host>.nix` and `hardware/performance/<host>.nix`
+3. Create `hosts/<host>.nix`
+4. Register in `flake.nix`
+5. Build: `just switch <host>`
 
 ---
 

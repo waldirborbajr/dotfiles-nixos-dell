@@ -107,6 +107,8 @@ imports = [
   # ../modules/apps/ripgrep.nix
   # ../modules/apps/fastfetch.nix
   # ../modules/apps/chirp.nix
+  # ../modules/apps/alacritty.nix
+  # ../modules/apps/clipboard.nix
   
   # Development languages (optional)
   # ../modules/languages/nix-dev.nix
@@ -204,16 +206,18 @@ cd nixos-config
 
 ### 5.1. Validate the configuration
 
+This project uses [just](https://github.com/casey/just) command runner.
+
 First, check for syntax errors:
 
 ```bash
-make check
+just check
 ```
 
 Then test build without applying changes:
 
 ```bash
-make test-build HOST=<newhost>
+just test-build <newhost>
 ```
 
 ### 5.2. Apply the configuration
@@ -221,42 +225,48 @@ make test-build HOST=<newhost>
 Build and switch to the new host:
 
 ```bash
-make switch HOST=<newhost>
+just switch <newhost>
 ```
 
 **Feature flags** (optional):
 
 ```bash
 # Enable DevOps tools (Docker, K3s, etc.)
-make switch HOST=<newhost> DEVOPS=1
+DEVOPS=1 just switch <newhost>
 
 # Enable QEMU/KVM virtualization
-make switch HOST=<newhost> QEMU=1
+QEMU=1 just switch <newhost>
 
 # Enable both
-make switch HOST=<newhost> DEVOPS=1 QEMU=1
+DEVOPS=1 QEMU=1 just switch <newhost>
 
 # Force impure evaluation (if using environment variables)
-make switch HOST=<newhost> IMPURE=1
+just switch <newhost> 1 1 1  # DEVOPS QEMU IMPURE
 ```
 
 **Other useful commands:**
 
 ```bash
 # Update flake.lock and rebuild (upgrade all packages)
-make upgrade HOST=<newhost>
+just upgrade <newhost>
 
 # Production build (with full checks)
-make switch-prod HOST=<newhost>
+just switch-prod <newhost>
 
 # Dry run (see what would change)
-make dry-switch HOST=<newhost>
+just dry-switch <newhost>
 
 # List available hosts
-make hosts
+just hosts
 
 # Check system health
-make doctor
+just doctor
+
+# Format Nix files
+just fmt
+
+# List system generations
+just list-generations
 ```
 
 ## Available Modules
@@ -278,8 +288,9 @@ make doctor
 
 ### Applications
 - `modules/apps/dev-tools.nix` - Development tools
-- `modules/apps/terminals.nix` - Terminal emulators
+- `modules/apps/alacritty.nix` - Alacritty terminal emulator
 - `modules/apps/shell.nix` - Shell configurations
+- `modules/apps/clipboard.nix` - Screenshot and clipboard tools
 - `modules/apps/tmux.nix` - Tmux terminal multiplexer
 - `modules/apps/yazi.nix` - Yazi file manager
 - `modules/apps/ripgrep.nix` - Ripgrep search tool
@@ -322,9 +333,9 @@ To add a new host, you need to create these files:
 Then run:
 
 ```bash
-make check                      # Validate syntax
-make test-build HOST=<newhost>  # Test build
-make switch HOST=<newhost>      # Apply configuration
+just check                   # Validate syntax
+just test-build <newhost>    # Test build
+just switch <newhost>        # Apply configuration
 ```
 
 ## Design Philosophy
@@ -410,7 +421,7 @@ nixos-config/
 ## Troubleshooting
 
 ### Build fails with "host not found"
-Run `make hosts` to see available hosts. Ensure your host is registered in `flake.nix`.
+Run `just hosts` to see available hosts. Ensure your host is registered in `flake.nix`.
 
 ### Hardware not detected
 Check that `hardware/<newhost>-hw-config.nix` is correctly copied from `/etc/nixos/hardware-configuration.nix`.
@@ -419,15 +430,16 @@ Check that `hardware/<newhost>-hw-config.nix` is correctly copied from `/etc/nix
 Verify that you imported the correct desktop module in `hosts/<newhost>.nix` and set up the appropriate bootloader.
 
 ### Permission errors
-Ensure you're running `make switch` (not `nixos-rebuild` directly) as it handles sudo correctly.
+Ensure you're running `just switch` (not `nixos-rebuild` directly) as it handles sudo correctly.
 
 ## Notes
 
-- The Makefile automatically commits and pushes changes before rebuild
-- Commit message format: `wip(makefile): YYYY-MM-DD HH:MM`
-- Use `GIT_PUSH=0` to disable automatic push: `make switch HOST=<newhost> GIT_PUSH=0`
+- The justfile automatically commits and pushes changes before rebuild (controlled by `AUTO_GIT_COMMIT`)
+- Commit message format: `wip(justfile): YYYY-MM-DD HH:MM`
+- Use `GIT_PUSH=0` to disable automatic push: `GIT_PUSH=0 just switch <newhost>`
 - DEVOPS and QEMU flags are passed as environment variables to the flake
-- Use `make doctor` to validate your setup before building
+- Use `just doctor` to validate your setup before building
+- Old `Makefile` is still available but deprecated
 
 ---
 
