@@ -90,7 +90,7 @@
         set -g status-style "bg=default,fg=white"
         set -g status-left-length 100
         set -g status-right-length 100
-        set -g status-left " #[fg=blue,bold]#S #[fg=white,nobold]#(gitmux -cfg $HOME/.config/tmux/gitmux.yml) "
+        set -g status-left " #[fg=blue,bold]#S #[fg=white,nobold]#(gitmux -cfg \$HOME/.config/tmux/gitmux.yml) "
         set -g status-right "#[fg=gray]%H:%M "
         
         # Window status
@@ -109,7 +109,7 @@
         # Prefix bindings
         bind C-a send-prefix             # Send prefix to nested tmux
         bind C-x lock-server
-        bind C-c new-window -c "$HOME"
+        bind C-c new-window -c "\$HOME"
         bind C-d detach
         bind * list-clients
         
@@ -123,7 +123,7 @@
         
         # Window management
         bind r command-prompt -I "#W" "rename-window '%%'"
-        bind R source-file $HOME/.config/tmux/tmux.conf \; display "Config reloaded!"
+        bind R source-file \$HOME/.config/tmux/tmux.conf \; display "Config reloaded!"
         bind c new-window -c "#{pane_current_path}"
         bind C kill-window
         bind '"' choose-window
@@ -226,7 +226,7 @@
             --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
             --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
             --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
-            --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . $HOME)' \
+            --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . \$HOME)' \
             --bind 'ctrl-d:execute(tmux kill-session -t {})+change-prompt(⚡  )+reload(sesh list --icons)' \
             --color "border:magenta,label:blue,prompt:cyan" \
         )\""
@@ -255,7 +255,7 @@
         set -g @fzf-url-history-limit "2000"
         
         # Initialize TPM (keep this at the bottom)
-        run-shell "test -e $HOME/.config/tmux/plugins/tpm/tpm && $HOME/.config/tmux/plugins/tpm/tpm || true"
+        run-shell "test -e \$HOME/.config/tmux/plugins/tpm/tpm && \$HOME/.config/tmux/plugins/tpm/tpm || true"
       '';
     };
 
