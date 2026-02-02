@@ -13,6 +13,10 @@
       latexrun # LaTeX build wrapper
       tectonic # Modern LaTeX compiler (alternative)
 
+      # Typst - Modern typesetting system
+      typst # Typst compiler
+      typst-lsp # Typst Language Server
+
       # PDF viewers
       zathura # Lightweight PDF viewer
       evince # GNOME PDF viewer
@@ -38,6 +42,10 @@
 
       # Modern compiler
       tec = "tectonic";
+
+      # Typst aliases
+      typ = "typst compile";
+      typw = "typst watch"; # Watch and recompile
 
       # PDF viewer
       pdf = "zathura";
