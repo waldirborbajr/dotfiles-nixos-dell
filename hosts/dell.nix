@@ -23,6 +23,11 @@
   virtualisation.podman.enable = lib.mkForce false;
 
   ############################################
+  # Enable Tailscale VPN
+  ############################################
+  features.tailscale.enable = true;
+
+  ############################################
   # Host identity
   ############################################
   networking.hostName = "dell-nixos";

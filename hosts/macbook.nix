@@ -26,6 +26,11 @@
   system-config.serialDevices.enable = true;
 
   ############################################
+  # Enable Tailscale VPN
+  ############################################
+  features.tailscale.enable = true;
+
+  ############################################
   # Host identity
   ############################################
   networking.hostName = "macbook-nixos";
