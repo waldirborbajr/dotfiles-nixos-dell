@@ -81,7 +81,7 @@
       "org/gnome/desktop/background" = {
         picture-uri = "file:///etc/nixos/wallpapers/devops-dark.svg";
         picture-uri-dark = "file:///etc/nixos/wallpapers/devops-dark.svg";
-        picture-options = "zoom";
+        picture-options = "zoom";  # Opções: "none", "wallpaper", "centered", "scaled", "stretched", "zoom", "spanned"
       };
     };
   }];
