@@ -28,7 +28,7 @@ in
   apps = {
     # Core apps
     shell.enable = true;
-    terminals.enable = true;
+    alacritty.enable = true;
     fastfetch.enable = true;
     dev-tools.enable = true;
     ripgrep.enable = true;
