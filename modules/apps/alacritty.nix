@@ -21,7 +21,7 @@
 
         window = {
           padding = { x = 8; y = 8; };
-          opacity = 0.75;  # 75% opacidade (25% transparência) - ver wallpaper
+          opacity = 0.90;  # 75% opacidade (25% transparência) - ver wallpaper
           blur = false;  # Desabilitar blur para ver wallpaper
           dynamic_title = true;
           decorations = "none";  # Critical for Wayland transparency
