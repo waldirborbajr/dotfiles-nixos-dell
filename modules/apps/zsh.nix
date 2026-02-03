@@ -36,7 +36,7 @@
         fzf-history = "history | fzf";
       };
 
-      initExtra = ''
+      initContent = ''
         # Vi mode
         bindkey -v
 
