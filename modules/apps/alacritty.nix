@@ -21,7 +21,6 @@
 
         window = {
           padding = { x = 8; y = 8; };
-          decorations = "None";
           opacity = 0.90;  # 90% opacidade (10% transparência)
           blur = true;
           dynamic_title = true;
