@@ -187,7 +187,7 @@
         
         # Git operations
         bind g new-window -S -n "🌳 git" "lazygit"
-        bind G new-window -n "😺 gh" "gh dash"
+        bind G new-window -n "😺 gh" "gh-dash"
         
         # Language-specific dev environments
         bind M-r new-window -c "#{pane_current_path}" -n "🦀 rust" "echo 'Rust Dev Environment' && exec $SHELL"
