@@ -42,12 +42,37 @@
         bindkey -v
         bindkey "^[[A" history-beginning-search-backward
         bindkey "^[[B" history-beginning-search-forward
+        
+        # Tab completion navigation
+        bindkey '^i' expand-or-complete
+        bindkey '^[[Z' reverse-menu-complete  # Shift-Tab
 
-        # Completion
+        # Completion system
         autoload -Uz compinit && compinit -C
+        
+        # Completion options
+        setopt COMPLETE_IN_WORD    # Complete from both ends of a word
+        setopt ALWAYS_TO_END       # Move cursor to end if word had one match
+        setopt AUTO_MENU           # Show completion menu on successive tab press
+        setopt AUTO_LIST           # Automatically list choices on ambiguous completion
+        setopt COMPLETE_ALIASES    # Complete aliases
+        
+        # Completion styling
         zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
         zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
-        zstyle ':completion:*' menu no
+        zstyle ':completion:*' menu select
+        zstyle ':completion:*' group-name ''
+        zstyle ':completion:*' verbose yes
+        zstyle ':completion:*:descriptions' format '%B%d%b'
+        zstyle ':completion:*:messages' format '%d'
+        zstyle ':completion:*:warnings' format 'No matches for: %d'
+        zstyle ':completion:*' completer _complete _match _approximate
+        zstyle ':completion:*:match:*' original only
+        zstyle ':completion:*:approximate:*' max-errors 1 numeric
+        
+        # Cache completions
+        zstyle ':completion:*' use-cache on
+        zstyle ':completion:*' cache-path "$HOME/.zsh/cache"
 
         # bat como pager/manpager
         if command -v bat >/dev/null 2>&1; then
