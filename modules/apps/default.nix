@@ -7,6 +7,7 @@
     # Core apps
     ./shell.nix
     ./alacritty.nix
+    ./wezterm.nix
     ./fastfetch.nix
     ./dev-tools.nix
     ./ripgrep.nix
@@ -53,6 +54,14 @@
         type = lib.types.bool;
         default = true;
         description = "Enable Alacritty terminal emulator";
+      };
+    };
+
+    wezterm = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Enable WezTerm terminal emulator (backup/reserve option)";
       };
     };
 

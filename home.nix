@@ -29,6 +29,7 @@ in
     # Core apps
     shell.enable = true;
     alacritty.enable = true;
+    wezterm.enable = false; # Backup/reserve terminal (disabled by default)
     fastfetch.enable = true;
     dev-tools.enable = true;
     ripgrep.enable = true;
