@@ -132,10 +132,26 @@ fi
 echo ""
 
 # Step 6: Rebuild system
-echo -e "${YELLOW}Step 6/6: Rebuilding NixOS system...${NC}"
+echo -e "${YELLOW}Step 6/6: Committing changes and rebuilding NixOS system...${NC}"
+
+# Add and commit changes
+echo -e "${BLUE}Adding changes to git...${NC}"
+git add .sops.yaml secrets/common/secrets.yaml hosts/macbook.nix
+
+echo -e "${BLUE}Committing changes...${NC}"
+git commit -m "feat: add encrypted SSH keys with SOPS
+
+- Configure SOPS with Age encryption
+- Add encrypted SSH private and public keys
+- Enable secrets module in macbook.nix
+- Auto-restore SSH keys on rebuild"
+
+echo -e "${GREEN}✓ Changes committed${NC}"
+echo ""
+
+echo -e "${BLUE}Rebuilding NixOS system...${NC}"
 echo -e "${BLUE}This will apply all changes and deploy your secrets.${NC}"
 echo ""
-read -p "Press Enter to run 'sudo nixos-rebuild switch --flake .#macbook'..."
 
 sudo nixos-rebuild switch --flake .#macbook
 
