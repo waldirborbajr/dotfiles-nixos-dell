@@ -21,9 +21,10 @@
 
         window = {
           padding = { x = 8; y = 8; };
-          opacity = 0.90;  # 90% opacidade (10% transparência)
+          opacity = 0.85;  # 85% opacidade (15% transparência) - mais visível
           blur = true;
           dynamic_title = true;
+          decorations = "full";
           resize_increments = true;
           startup_mode = "Windowed";
           # Janela com ~60% do tamanho da tela

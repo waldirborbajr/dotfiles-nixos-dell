@@ -10,11 +10,17 @@ let
     // WINDOW RULES
     // ============================================
     
+    // Enable rounded corners and transparency for all windows
+    window-rule {
+      geometry-corner-radius 6
+      clip-to-geometry true
+    }
+    
     // Alacritty - 60% width with transparency
     window-rule {
       match app-id=r#"^Alacritty$"#
       default-column-width { proportion 0.6; }
-      opacity 0.90
+      opacity 0.85
     }
 
     // Applications that should open maximized
@@ -75,12 +81,6 @@ let
       match title=r#"^Picture-in-Picture$"#
       open-floating true
       open-on-output "eDP-1"
-    }
-
-    // Enable rounded corners for all windows
-    window-rule {
-      geometry-corner-radius 6
-      clip-to-geometry true
     }
   '';
 in
