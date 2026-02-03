@@ -45,7 +45,7 @@
     # Git aliases for commitizen
     programs.git = {
       enable = true;
-      aliases = {
+      settings.alias = {
         cz = "!cz commit";
         czc = "!cz commit";
       };
