@@ -8,24 +8,28 @@
 | Key | Action |
 |-----|--------|
 | `c` | New window (in current path) |
-| `C` | Kill current window |
+| `Ctrl-c` | New window (in $HOME) |
+| `C` | Kill window |
 | `H` | Previous window |
 | `L` | Next window |
-| `Tab` / `Ctrl-a` | Last window |
+| `Tab` | Last window |
+| `Ctrl-a` | Send prefix (for nested tmux) |
 | `r` | Rename window |
-| `w` | List windows |
-| `"` | Choose window from list |
+| `w` / `Ctrl-w` | List windows |
 
 ### 📐 Pane Management
 | Key | Action |
 |-----|--------|
-| `v` / `\|` | Split vertically |
-| `s` / `-` | Split horizontally |
+| `v` / `\|` | Split vertically (in current path) |
+| `s` / `-` | Split horizontally (in current path) |
+| `%` | Split vertically (alternative) |
 | `h/j/k/l` | Navigate panes (vim-style) |
+| **No prefix:** `Ctrl-h/j/k/l` | Navigate panes (turbo mode) |
 | `,` `.` | Resize pane left/right (10px, repeatable) |
-| `-` `=` | Resize pane down/up (5px, repeatable) |
+| `=` | Resize pane up (5px, repeatable) |
+| `_` | Resize pane down (10px, repeatable) |
+| `+` | Resize pane up (10px, repeatable) |
 | `<` `>` | Resize pane left/right (20px, repeatable) |
-| `_` `+` | Resize pane down/up (10px, repeatable) |
 | `z` | Toggle zoom pane |
 | `x` | Kill pane (no confirmation) |
 | `X` | Swap pane with next |
@@ -35,11 +39,11 @@
 ### 🎮 Session Management
 | Key | Action |
 |-----|--------|
-| `K` | Fuzzy session switcher (sesh + fzf) |
-| `l` | Last session |
 | `S` | Choose session |
 | `Q` | Kill current session |
 | `d` / `Ctrl-d` | Detach from session |
+| `D` | Detach client |
+| `*` | List clients |
 
 ### 🚀 DevOps Quick Launch
 | Key | Action | Icon |
@@ -73,31 +77,18 @@
 |-----|--------|
 | `R` | Reload config |
 | `K` | Clear terminal |
-| `*` | Synchronize panes (toggle) |
 | `P` | Toggle pane borders |
 | `e` | Open pane history in Neovim |
 | `:` | Command prompt |
 | `?` | List all keybindings |
+| `Ctrl-x` | Lock server |
 
-## 🔍 Sesh Session Switcher
+## 🎨 Theme - Tokyo Night
 
-When you press `prefix + K`, you get a fuzzy finder with these keybindings:
-
-| Key | Filter |
-|-----|--------|
-| `Ctrl-a` | All sessions |
-| `Ctrl-t` | Tmux windows only |
-| `Ctrl-g` | Config directories |
-| `Ctrl-x` | Zoxide (frecent directories) |
-| `Ctrl-f` | Find directories |
-| `Ctrl-d` | Delete session |
-
-## 🎨 Color Scheme
-
-- **Active pane**: Magenta border
-- **Inactive pane**: Bright black border
-- **Current window**: Magenta, bold
-- **Status bar**: Transparent background, top position
+- **Theme**: Tokyo Night
+- **Status bar**: Bottom position
+- **Features**: Path display (relative), window ID style (dsquare)
+- **Updates**: Every 5 seconds
 
 ## 📦 Plugins (TPM)
 
@@ -109,19 +100,20 @@ After first setup, install plugins:
 ### Installed Plugins:
 - **tmux-sensible**: Basic tmux settings
 - **tmux-yank**: Clipboard integration
-- **tmux-resurrect**: Session persistence
-- **tmux-continuum**: Auto-save sessions
+- **tmux-resurrect**: Session persistence (captures pane contents)
+- **tmux-continuum**: Auto-save sessions (every 10 minutes)
 - **vim-tmux-navigator**: Seamless vim/tmux navigation
-- **tmux-fzf**: Fuzzy finder integration
-- **tmux-fzf-url**: Open URLs from terminal
+- **tokyo-night-tmux**: Tokyo Night color theme
 
 ## 💡 Pro Tips
 
-1. **Nested tmux**: Press `Ctrl-a` twice to send prefix to nested session
+1. **Nested tmux**: Press `prefix + Ctrl-a` to send prefix to nested session
 2. **Mouse support**: Enabled - click to select panes, drag borders to resize
-3. **Copy to system clipboard**: Selections are automatically copied
-4. **Session persistence**: Sessions auto-save every 15 minutes
-5. **Vim integration**: Use same navigation keys between vim and tmux
+3. **Copy to system clipboard**: Vi-mode selections are automatically copied with tmux-yank
+4. **Session persistence**: Sessions auto-save every 10 minutes (tmux-continuum)
+5. **Vim integration**: Use `Ctrl-h/j/k/l` to navigate seamlessly between vim splits and tmux panes
+6. **No prefix navigation**: Use `Ctrl-h/j/k/l` without prefix for faster pane navigation
+7. **Path awareness**: New windows and splits inherit current directory
 
 ## 🔗 Language-Specific Workflows
 
@@ -154,12 +146,14 @@ k9s  # Launch K9s TUI
 ## 🆘 Troubleshooting
 
 - **Colors look wrong**: Check `$TERM` is set to `screen-256color`
-- **Copy not working**: Ensure `xclip` or `wl-clipboard` is installed
+- **Copy not working**: Ensure clipboard integration is working (xclip/wl-clipboard)
 - **Plugins not loading**: Run `prefix + I` to install TPM plugins
-- **Can't find sesh**: Check if `sesh` is in PATH with `which sesh`
+- **Navigation not working**: Ensure vim-tmux-navigator is installed in both tmux and vim/neovim
+- **Sessions not restoring**: Check if tmux-resurrect and tmux-continuum are installed
 
 ## 📚 Further Reading
 
 - [Tmux Manual](https://man.openbsd.org/tmux)
-- [Sesh Documentation](https://github.com/joshmedeski/sesh)
 - [TPM Plugins](https://github.com/tmux-plugins)
+- [Tokyo Night Theme](https://github.com/janoamaral/tokyo-night-tmux)
+- [Vim-Tmux Navigator](https://github.com/joshmedeski/vim-tmux-navigator)
