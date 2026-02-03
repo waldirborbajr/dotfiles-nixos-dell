@@ -32,6 +32,7 @@ in
     wezterm.enable = false; # Backup/reserve terminal (disabled by default)
     fastfetch.enable = true;
     dev-tools.enable = true;
+    commitizen.enable = true;
     ripgrep.enable = true;
     yazi.enable = true;
     tmux.enable = true;

@@ -10,6 +10,7 @@
     ./wezterm.nix
     ./fastfetch.nix
     ./dev-tools.nix
+    ./commitizen.nix
     ./ripgrep.nix
     ./yazi.nix
     ./tmux.nix
@@ -78,6 +79,14 @@
         type = lib.types.bool;
         default = true;
         description = "Enable development tools (git, gh)";
+      };
+    };
+
+    commitizen = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = true;
+        description = "Enable Commitizen for standardized git commits";
       };
     };
 
