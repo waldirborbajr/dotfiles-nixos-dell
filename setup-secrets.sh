@@ -75,32 +75,44 @@ EOF
 echo -e "${GREEN}✓ .sops.yaml created with your Age public key${NC}"
 echo ""
 
-# Step 4: Guide user to create secrets file
-echo -e "${YELLOW}Step 4/6: Creating encrypted secrets file...${NC}"
-echo -e "${BLUE}The SOPS editor will open now.${NC}"
-echo -e "${BLUE}Please add your SSH keys in the following format:${NC}"
-echo ""
-echo -e "${GREEN}ssh_private_key: |${NC}"
-echo -e "${GREEN}  -----BEGIN OPENSSH PRIVATE KEY-----${NC}"
-echo -e "${GREEN}  [paste content of ~/.ssh/id_ed25519]${NC}"
-echo -e "${GREEN}  -----END OPENSSH PRIVATE KEY-----${NC}"
-echo ""
-echo -e "${GREEN}ssh_public_key: ssh-ed25519 AAAAC3... borba@host${NC}"
-echo ""
-echo -e "${YELLOW}Tip: You can copy your keys with:${NC}"
-echo -e "  ${BLUE}cat ~/.ssh/id_ed25519${NC}      (private key)"
-echo -e "  ${BLUE}cat ~/.ssh/id_ed25519.pub${NC}  (public key)"
-echo ""
-read -p "Press Enter to open SOPS editor..."
+# Step 4: Create secrets file with SSH keys
+echo -e "${YELLOW}Step 4/6: Creating encrypted secrets file with your SSH keys...${NC}"
 
 # Create secrets directory if it doesn't exist
 mkdir -p secrets/common
 
-# Open SOPS editor
-sops secrets/common/secrets.yaml
+# Read SSH keys
+echo -e "${BLUE}Reading your SSH keys from ~/.ssh/${NC}"
+SSH_PRIVATE_KEY=$(cat ~/.ssh/id_ed25519)
+SSH_PUBLIC_KEY=$(cat ~/.ssh/id_ed25519.pub)
 
+# Create temporary unencrypted file with proper YAML format
+cat > secrets/common/secrets.yaml << 'EOF'
+ssh_private_key: |
+EOF
+
+# Append private key with proper indentation
+awk '{print "  " $0}' ~/.ssh/id_ed25519 >> secrets/common/secrets.yaml
+
+# Append public key
+echo "" >> secrets/common/secrets.yaml
+echo -n "ssh_public_key: " >> secrets/common/secrets.yaml
+cat ~/.ssh/id_ed25519.pub >> secrets/common/secrets.yaml
+
+echo -e "${GREEN}✓ SSH keys added to secrets file${NC}"
 echo ""
-echo -e "${GREEN}✓ Secrets file created and encrypted${NC}"
+
+# Encrypt the file with SOPS
+echo -e "${BLUE}Encrypting secrets file with SOPS...${NC}"
+sops --encrypt --in-place secrets/common/secrets.yaml
+
+echo -e "${GREEN}✓ Secrets file encrypted successfully${NC}"
+echo ""
+
+# Optional: Show encrypted content to verify
+echo -e "${BLUE}Verifying encryption (showing encrypted content):${NC}"
+head -5 secrets/common/secrets.yaml
+echo "..."
 echo ""
 
 # Step 5: Enable secrets module in macbook.nix
