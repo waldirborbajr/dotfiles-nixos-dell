@@ -19,8 +19,7 @@
     # Tmux Dependencies
     ############################################
     home.packages = with pkgs; [
-      sesh # Smart session manager for tmux
-      gitmux # Show git status in tmux status line
+
       fd # Fast find alternative
       zoxide # Smart directory jumper
       jq # JSON processor
@@ -47,63 +46,92 @@
       
       # Behavior settings
       extraConfig = ''
-        # Unbind default prefix
-        unbind C-b
-        
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 🎯 CORE SETTINGS
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        
-        set -g prefix C-a
-        set -g base-index 1              # start indexing windows at 1 instead of 0
-        set -g detach-on-destroy off     # don't exit from tmux when closing a session
-        set -g escape-time 0             # zero-out escape time delay
-        set -g history-limit 1000000     # increase history size (from 2,000)
-        set -g renumber-windows on       # renumber all windows when any window is closed
-        set -g set-clipboard on          # use system clipboard
-        set -g status-position top       # macOS / darwin style
-        set -g focus-events on           # enable focus events
-        setw -g mode-keys vi             # vi mode in copy mode
-        setw -g pane-base-index 1        # start pane indexing at 1
-        
+#####################################################
+# CORE / TERMINAL
+#####################################################
+#set -g default-terminal "tmux-256color"
+#set -as terminal-features ",xterm-256color:RGB"
         # Colors - optimized for development
         set-option -g default-terminal "screen-256color"
         set-option -g terminal-overrides ",xterm-256color:RGB"
         set-option -ga terminal-overrides ",*256col*:Tc"
-        
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 🎨 THEME & STATUS BAR
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        
-        # Pane borders
-        set -g pane-active-border-style "fg=magenta,bg=default"
-        set -g pane-border-style "fg=brightblack,bg=default"
-        
-        # Status bar
-        set -g status-interval 3
-        set -g status-justify centre
-        set -g status-style "bg=default,fg=white"
-        set -g status-left-length 100
-        set -g status-right-length 100
-        set -g status-left " #[fg=blue,bold]#S #[fg=white,nobold]#(gitmux -cfg ''$HOME/.config/tmux/gitmux.yml) "
-        set -g status-right "#[fg=gray]%H:%M "
-        
-        # Window status
-        set -g window-status-current-format "#[fg=magenta,bold]#{?window_zoomed_flag,🔍 ,}#I:#W"
-        set -g window-status-format "#[fg=gray]#I:#W"
-        
-        # Message style
-        set -g message-style "bg=default,fg=yellow,bold"
-        set -g message-command-style "bg=default,fg=yellow"
-        set -g mode-style "bg=yellow,fg=black"
-        
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+set -g focus-events on
+
+#####################################################
+# PREFIX / RELOAD
+#####################################################
+unbind C-b
+set -g prefix C-a
+bind C-a send-prefix
+
+bind r source-file ~/.config/tmux/tmux.conf \; display-message "󰑓 Tmux Config Reloaded"
+
+#####################################################
+# INDEXES / WINDOWS
+#####################################################
+set -g base-index 1
+set -g pane-base-index 1
+set -g renumber-windows on
+
+#####################################################
+# GENERAL BEHAVIOR
+#####################################################
+set -g mouse on
+set -g default-shell /bin/zsh
+set -g repeat-time 600
+set -g history-limit 15000
+set -g status-position bottom
+set -g status-interval 5
+set -g display-time 800
+
+#####################################################
+# SMART WINDOW NAMES (DEVOPS FRIENDLY)
+#####################################################
+setw -g automatic-rename on
+set -g automatic-rename-format '#{pane_current_command}'
+
+#####################################################
+# PANE NAVIGATION (VIM STYLE)
+#####################################################
+bind h select-pane -L
+bind j select-pane -D
+bind k select-pane -U
+bind l select-pane -R
+
+# No-prefix navigation (turbo mode)
+bind -n C-h select-pane -L
+bind -n C-j select-pane -D
+bind -n C-k select-pane -U
+bind -n C-l select-pane -R
+
+#####################################################
+# RESIZE PANES
+#####################################################
+bind -r Left  resize-pane -L 5
+bind -r Right resize-pane -R 5
+bind -r Up    resize-pane -U 3
+bind -r Down  resize-pane -D 3
+
+# Vim-style resize
+bind -r H resize-pane -L 5
+bind -r J resize-pane -D 3
+bind -r K resize-pane -U 3
+bind -r L resize-pane -R 5
+
+#####################################################
+# SPLITS / WINDOWS (PATH AWARE)
+#####################################################
+unbind %
+unbind '"'
+
+    #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # ⌨️  KEY BINDINGS - DevOps Optimized
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         
         # Prefix bindings
         bind C-a send-prefix             # Send prefix to nested tmux
         bind C-x lock-server
+        #bind c new-window -c "#{pane_current_path}"
         bind C-c new-window -c "''$HOME"
         bind C-d detach
         bind * list-clients
@@ -180,8 +208,42 @@
         bind-key -T copy-mode-vi C-j select-pane -D
         bind-key -T copy-mode-vi C-k select-pane -U
         bind-key -T copy-mode-vi C-l select-pane -R
-        
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+#####################################################
+# COPY MODE (VI)
+#####################################################
+setw -g mode-keys vi
+
+bind -T copy-mode-vi v     send -X begin-selection
+bind -T copy-mode-vi C-v   send -X rectangle-toggle
+bind -T copy-mode-vi y     send -X copy-selection-and-cancel
+bind -T copy-mode-vi Enter send -X copy-selection-and-cancel
+
+#####################################################
+# THEME — TOKYO NIGHT
+#####################################################
+set -g @tokyo-night-tmux_show_datetime 0
+set -g @tokyo-night-tmux_show_path 1
+set -g @tokyo-night-tmux_path_format relative
+set -g @tokyo-night-tmux_window_id_style dsquare
+set -g @tokyo-night-tmux_show_git 0
+
+#####################################################
+# PLUGINS
+#####################################################
+set -g @plugin 'tmux-plugins/tpm'
+set -g @plugin 'tmux-plugins/tmux-sensible'
+
+# Vim <-> tmux navigation
+set -g @plugin 'joshmedeski/vim-tmux-navigator'
+
+# Clipboard
+set -g @plugin 'tmux-plugins/tmux-yank'
+
+# Theme
+set -g @plugin 'janoamaral/tokyo-night-tmux'
+
+  #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         # 🚀 DEVOPS SHORTCUTS
         #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
         
@@ -206,130 +268,33 @@
         bind M-t new-window -n "📊 htop" "htop"
         bind M-f new-window -n "📁 yazi" "yazi"
         
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 🔍 SESSION MANAGEMENT WITH SESH
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        
-        # Fuzzy session switcher
-        bind K run-shell "sesh connect \"$(
-          sesh list --icons --hide-duplicates | fzf-tmux -p 80%,80% \
-            --no-sort --border-label ' Sessions ' \
-            --prompt '⚡  ' \
-            --header '  ^a all ^t tmux ^g config ^x zoxide ^f find ^d delete' \
-            --bind 'tab:down,btab:up' \
-            --bind 'ctrl-a:change-prompt(⚡  )+reload(sesh list --icons)' \
-            --bind 'ctrl-t:change-prompt(🪟  )+reload(sesh list -t --icons)' \
-            --bind 'ctrl-g:change-prompt(⚙️  )+reload(sesh list -c --icons)' \
-            --bind 'ctrl-x:change-prompt(📁  )+reload(sesh list -z --icons)' \
-            --bind 'ctrl-f:change-prompt(🔎  )+reload(fd -H -d 2 -t d -E .Trash . ''$HOME)' \
-            --bind 'ctrl-d:execute(tmux kill-session -t {})+change-prompt(⚡  )+reload(sesh list --icons)' \
-            --color "border:magenta,label:blue,prompt:cyan" \
-        )\""
-        
-        # Last session toggle
-        bind l run-shell "sesh last"
-        
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 🎨 CATPPUCCIN THEME CONFIGURATION
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        
-        set -g @catppuccin_window_left_separator ""
-        set -g @catppuccin_window_right_separator " "
-        set -g @catppuccin_window_middle_separator " █"
-        set -g @catppuccin_window_number_position "right"
-        set -g @catppuccin_window_default_fill "number"
-        set -g @catppuccin_window_default_text "#W"
-        set -g @catppuccin_window_current_fill "number"
-        set -g @catppuccin_window_current_text "#W#{?window_zoomed_flag,(),}"
-        set -g @catppuccin_status_modules_right "directory" # date_time"
-        set -g @catppuccin_status_modules_left "session"
-        set -g @catppuccin_status_left_separator  " "
-        set -g @catppuccin_status_right_separator " "
-        set -g @catppuccin_status_right_separator_inverse "no"
-        set -g @catppuccin_status_fill "icon"
-        set -g @catppuccin_status_connect_separator "no"
-        set -g @catppuccin_directory_text "#{b:pane_current_path}"
-        
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        # 🔌 PLUGINS - TPM (Tmux Plugin Manager)
-        #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-        
-        set -g @plugin 'tmux-plugins/tpm'
-        set -g @plugin 'tmux-plugins/tmux-sensible'
-        set -g @plugin 'tmux-plugins/tmux-yank'
-        set -g @plugin 'tmux-plugins/tmux-resurrect'
-        set -g @plugin 'tmux-plugins/tmux-continuum'
-        set -g @plugin 'fcsonline/tmux-thumbs'
-        set -g @plugin 'sainnhe/tmux-fzf'
-        set -g @plugin 'wfxr/tmux-fzf-url'
-        set -g @plugin 'omerxx/catppuccin-tmux'
-        set -g @plugin 'omerxx/tmux-sessionx'
-        set -g @plugin 'omerxx/tmux-floax'
-        
-        # Plugin settings
-        set -g @continuum-restore "on"
-        set -g @resurrect-strategy-nvim "session"
-        set -g @resurrect-capture-pane-contents "on"
-        set -g @fzf-url-fzf-options '-p 60%,30% --prompt="   " --border-label=" Open URL "'
-        set -g @fzf-url-history-limit '2000'
-        set -g @sessionx-window-height '85%'
-        set -g @sessionx-window-width '75%'
-        set -g @floax-width '80%'
-        set -g @floax-height '80%'
-        set -g @floax-border-color 'magenta'
-        set -g @floax-text-color 'blue'
-        set -g @floax-bind 'p'
-        set -g @floax-change-path 'true'
-        
-        # Initialize TPM (keep this at the bottom)
-        run-shell "test -e ''$HOME/.config/tmux/plugins/tpm/tpm && ''$HOME/.config/tmux/plugins/tpm/tpm || true"
+
+#####################################################
+# SESSION PERSISTENCE (DEVOPS GOLD)
+#####################################################
+set -g @plugin 'tmux-plugins/tmux-resurrect'
+set -g @plugin 'tmux-plugins/tmux-continuum'
+
+set -g @resurrect-capture-pane-contents 'on'
+set -g @resurrect-strategy-nvim 'session'
+set -g @resurrect-strategy-vim 'session'
+set -g @resurrect-processes 'ssh kubectl helm terraform nvim vim'
+
+set -g @continuum-restore 'on'
+set -g @continuum-save-interval '10'
+
+#####################################################
+# TPM BOOTSTRAP (SEMPRE NO FINAL)
+#####################################################
+if "test ! -d ~/.config/tmux/plugins/tpm" \
+  "run 'git clone https://github.com/tmux-plugins/tpm ~/.config/tmux/plugins/tpm && ~/.config/tmux/plugins/tpm/bin/install_plugins'"
+
+run "$HOME/.config/tmux/plugins/tpm/tpm"
+
+
       '';
     };
 
-    #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-    # 📊 GITMUX CONFIGURATION
-    #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
-
-    home.file.".config/tmux/gitmux.yml".text = ''
-      #  ██████╗ ██╗████████╗███╗   ███╗██╗   ██╗██╗  ██╗
-      # ██╔════╝ ██║╚══██╔══╝████╗ ████║██║   ██║╚██╗██╔╝
-      # ██║  ███╗██║   ██║   ██╔████╔██║██║   ██║ ╚███╔╝
-      # ██║   ██║██║   ██║   ██║╚██╔╝██║██║   ██║ ██╔██╗
-      # ╚██████╔╝██║   ██║   ██║ ╚═╝ ██║╚██████╔╝██╔╝ ██╗
-      #  ╚═════╝ ╚═╝   ╚═╝   ╚═╝     ╚═╝ ╚═════╝ ╚═╝  ╚═╝
-      #
-      # Git in your tmux status bar
-      # https://github.com/arl/gitmux
-
-      tmux:
-        symbols:
-          ahead: "↑"
-          behind: "↓"
-          clean: "✓"
-          branch: ""
-          hashprefix: ":"
-          staged: ""
-          conflict: "󰕚"
-          untracked: "󱀶"
-          modified: ""
-          stashed: ""
-          insertions: ""
-          deletions: ""
-        styles:
-          state: "#[fg=red,nobold]"
-          branch: "#[fg=white,italics]"
-          staged: "#[fg=green,nobold]"
-          conflict: "#[fg=red,nobold]"
-          modified: "#[fg=yellow,nobold]"
-          untracked: "#[fg=magenta,nobold]"
-          stashed: "#[fg=cyan,nobold]"
-          clean: "#[fg=green,nobold]"
-          divergence: "#[fg=cyan,nobold]"
-        layout: [branch, divergence, flags, stats]
-        options:
-          branch_max_len: 30
-          hide_clean: false
-    '';
 
     #━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
     # 📦 TPM (Tmux Plugin Manager) SETUP
