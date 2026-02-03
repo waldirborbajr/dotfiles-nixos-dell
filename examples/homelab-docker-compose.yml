@@ -1,0 +1,136 @@
+version: "3.8"
+
+# HomeLab Docker Stack - Dell NixOS
+# Services: Portainer, Heimdall, Caddy, Plex, Netdata
+# Managed via docker-compose
+
+services:
+  # =============================================================================
+  # 🎯 Portainer - Docker Management UI
+  # =============================================================================
+  
+  portainer:
+    image: portainer/portainer-ce:latest
+    container_name: portainer
+    restart: unless-stopped
+    ports:
+      - "9000:9000"
+      - "9443:9443"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - portainer_data:/data
+    networks:
+      - homelab
+    environment:
+      - TZ=America/Sao_Paulo
+
+  # =============================================================================
+  # 📊 Netdata - System Monitoring (Optional)
+  # =============================================================================
+  
+  netdata:
+    image: netdata/netdata:latest
+    container_name: netdata
+    restart: unless-stopped
+    hostname: dell-homelab
+    ports:
+      - "19999:19999"
+    cap_add:
+      - SYS_PTRACE
+    security_opt:
+      - apparmor:unconfined
+    volumes:
+      - netdataconfig:/etc/netdata
+      - netdatalib:/var/lib/netdata
+      - netdatacache:/var/cache/netdata
+      - /etc/passwd:/host/etc/passwd:ro
+      - /etc/group:/host/etc/group:ro
+      - /proc:/host/proc:ro
+      - /sys:/host/sys:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - homelab
+    environment:
+      - TZ=America/Sao_Paulo
+
+  # =============================================================================
+  # 🏠 Heimdall - Application Dashboard
+  # =============================================================================
+  
+  heimdall:
+    image: lscr.io/linuxserver/heimdall:latest
+    container_name: heimdall
+    restart: unless-stopped
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+    volumes:
+      - heimdall_config:/config
+    ports:
+      - "8080:80"
+      - "8443:443"
+    networks:
+      - homelab
+
+  # =============================================================================
+  # 🔀 Caddy - Reverse Proxy & Automatic HTTPS
+  # =============================================================================
+  
+  caddy:
+    image: caddy:latest
+    container_name: caddy
+    restart: unless-stopped
+    ports:
+      - "80:80"      # HTTP
+      - "443:443"    # HTTPS
+      - "443:443/udp" # HTTP/3
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    networks:
+      - homelab
+    environment:
+      - TZ=America/Sao_Paulo
+    depends_on:
+      - heimdall
+      - portainer
+
+  # =============================================================================
+  # 🎬 Plex Media Server
+  # =============================================================================
+  
+  plex:
+    image: lscr.io/linuxserver/plex:latest
+    container_name: plex
+    restart: unless-stopped
+    network_mode: host
+    environment:
+      - PUID=1000
+      - PGID=1000
+      - TZ=America/Sao_Paulo
+      - VERSION=docker
+      # Optional: Get claim token from https://www.plex.tv/claim/
+      # - PLEX_CLAIM=claim-xxxxxxxxxxxxxxxxxxxx
+    volumes:
+      - plex_config:/config
+      - /mnt/media/movies:/movies
+      - /mnt/media/tvshows:/tvshows
+      - /mnt/media/music:/music
+    # Note: Using network_mode: host for better performance
+    # Plex will be available on port 32400
+
+networks:
+  homelab:
+    driver: bridge
+
+volumes:
+  portainer_data:
+  netdataconfig:
+  netdatalib:
+  netdatacache:
+  heimdall_config:
+  caddy_data:
+  caddy_config:
+  plex_config:

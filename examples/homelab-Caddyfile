@@ -1,0 +1,57 @@
+# Caddyfile
+# Reverse proxy configuration for HomeLab services
+# Caddy automatically manages HTTPS certificates
+
+# =============================================================================
+# Local domains (no HTTPS, use Tailscale hostnames instead)
+# =============================================================================
+
+# Heimdall Dashboard
+# homelab.local {
+#     reverse_proxy heimdall:80
+# }
+
+# Portainer
+# portainer.local {
+#     reverse_proxy portainer:9000
+# }
+
+# Netdata Monitoring
+# monitor.local {
+#     reverse_proxy netdata:19999
+# }
+
+# =============================================================================
+# Tailscale Magic DNS (Optional - requires Tailscale MagicDNS + HTTPS cert)
+# =============================================================================
+
+# If you have a custom domain via Tailscale Funnel or public domain:
+#
+# homelab.yourdomain.ts.net {
+#     reverse_proxy heimdall:80
+# }
+#
+# portainer.yourdomain.ts.net {
+#     reverse_proxy portainer:9000
+# }
+#
+# plex.yourdomain.ts.net {
+#     reverse_proxy localhost:32400
+# }
+
+# =============================================================================
+# Default catch-all (Optional)
+# =============================================================================
+
+# Redirect HTTP to HTTPS (if using custom domains)
+# :80 {
+#     redir https://{host}{uri} permanent
+# }
+
+# =============================================================================
+# Health check endpoint
+# =============================================================================
+
+:80 {
+    respond /health 200
+}

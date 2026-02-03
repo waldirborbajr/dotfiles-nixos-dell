@@ -116,6 +116,7 @@
       nixosConfigurations = {
         macbook = mkHost { hostname = "macbook"; system = "x86_64-linux"; };
         dell = mkHost { hostname = "dell"; system = "x86_64-linux"; };
+        dell-homelab = mkHost { hostname = "dell-homelab"; system = "x86_64-linux"; };
       };
     } // (import ./devshells.nix { inherit nixpkgs-stable fenix flake-utils; });
 }
