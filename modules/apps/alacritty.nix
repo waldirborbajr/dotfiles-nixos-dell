@@ -23,7 +23,7 @@
           padding = { x = 8; y = 8; };
           decorations = "None";
           opacity = 0.90;  # 90% opacidade (10% transparência)
-          blur = false;
+          blur = true;
           dynamic_title = true;
           resize_increments = true;
           startup_mode = "Windowed";
