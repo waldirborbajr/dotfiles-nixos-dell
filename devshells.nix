@@ -271,6 +271,39 @@ in
   };
 
   # ==========================================
+  # DevShell: Secrets Management (SOPS)
+  # ==========================================
+  devShells.secrets = pkgs.mkShell {
+    name = "secrets-management";
+
+    buildInputs = with pkgs; [
+      sops
+      age
+      ssh-to-age
+    ];
+
+    shellHook = ''
+      echo "🔐 Secrets Management Environment"
+      echo ""
+      echo "SOPS + Age tools available:"
+      echo "  - sops: Edit encrypted secrets"
+      echo "  - age: Generate age keys"
+      echo "  - ssh-to-age: Convert SSH keys to age format"
+      echo ""
+      echo "Quick commands:"
+      echo "  sops secrets/common/secrets.yaml    → Edit encrypted file"
+      echo "  sops -d secrets/common/secrets.yaml → View decrypted"
+      echo ""
+      echo "Generate age key from SSH:"
+      echo "  mkdir -p ~/.config/sops/age"
+      echo "  ssh-to-age -private-key -i ~/.ssh/id_ed25519 > ~/.config/sops/age/keys.txt"
+      echo "  chmod 600 ~/.config/sops/age/keys.txt"
+      echo ""
+      echo "See SECRETS-QUICKSTART.md for complete guide"
+    '';
+  };
+
+  # ==========================================
   # DevShell: PostgreSQL
   # ==========================================
   devShells.postgresql = pkgs.mkShell {
@@ -468,6 +501,7 @@ in
       echo "  nix develop .#go           → Go with extras"
       echo "  nix develop .#lua          → Lua + LuaJIT"
       echo "  nix develop .#nix-dev      → Nix development tools"
+      echo "  nix develop .#secrets      → SOPS/Age secrets management"
       echo "  nix develop .#fullstack    → Rust + Go + Node"
       echo "  nix develop .#devops       → K8s, Terraform, Ansible"
       echo ""

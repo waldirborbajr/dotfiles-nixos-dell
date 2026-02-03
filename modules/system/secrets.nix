@@ -21,20 +21,26 @@
       # Age key location for decryption
       age.keyFile = "/home/borba/.config/sops/age/keys.txt";
       
-      # Define secrets here
-      # Example structure:
-      # secrets = {
-      #   ssh_private_key = {
-      #     owner = "borba";
-      #     path = "/home/borba/.ssh/id_ed25519";
-      #     mode = "0600";
-      #   };
-      #   
-      #   github_token = {
-      #     owner = "borba";
-      #     mode = "0600";
-      #   };
-      # };
+      # SSH keys - restored on every rebuild
+      secrets = {
+        ssh_private_key = {
+          owner = "borba";
+          path = "/home/borba/.ssh/id_ed25519";
+          mode = "0600";
+        };
+        
+        ssh_public_key = {
+          owner = "borba";
+          path = "/home/borba/.ssh/id_ed25519.pub";
+          mode = "0644";
+        };
+        
+        # Add more secrets as needed:
+        # github_token = {
+        #   owner = "borba";
+        #   mode = "0600";
+        # };
+      };
     };
     
     # Ensure required directories exist

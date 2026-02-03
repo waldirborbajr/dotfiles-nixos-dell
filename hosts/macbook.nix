@@ -18,12 +18,20 @@
     ../modules/desktops/gnome.nix
     ../modules/desktops/niri/system.nix # Niri as alternative session
     ../modules/autologin.nix
+    
+    # Secrets management
+    ../modules/system/secrets.nix
   ];
 
   ############################################
   # Enable specialized serial devices support
   ############################################
   system-config.serialDevices.enable = true;
+
+  ############################################
+  # Enable secrets management
+  ############################################
+  system-config.secrets.enable = true;
 
   ############################################
   # Enable Tailscale VPN
