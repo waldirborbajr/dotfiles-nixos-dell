@@ -72,7 +72,7 @@
         
         # Cache completions
         zstyle ':completion:*' use-cache on
-        zstyle ':completion:*' cache-path "$HOME/.zsh/cache"
+        zstyle ':completion:*' cache-path "''$HOME/.zsh/cache"
 
         # bat como pager/manpager
         if command -v bat >/dev/null 2>&1; then
