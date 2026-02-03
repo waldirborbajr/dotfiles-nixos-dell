@@ -15,6 +15,12 @@
     # Theme: Catppuccin (centralizado)
     catppuccin.url = "github:catppuccin/nix";
 
+    # Secrets management with SOPS
+    sops-nix = {
+      url = "github:Mic92/sops-nix";
+      inputs.nixpkgs.follows = "nixpkgs-stable";
+    };
+
     # DevShells: Rust toolchains via fenix
     fenix = {
       url = "github:nix-community/fenix";
@@ -24,7 +30,7 @@
     # DevShells: Helper para múltiplos sistemas
     flake-utils.url = "github:numtide/flake-utils";
   };
-  outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager, catppuccin, fenix, flake-utils, ... }:
+  outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager, catppuccin, sops-nix, fenix, flake-utils, ... }:
     let
       lib = nixpkgs-stable.lib;
       # ==========================================
@@ -67,6 +73,9 @@
 
             # Theme: Catppuccin NixOS module
             catppuccin.nixosModules.catppuccin
+
+            # Secrets: SOPS-nix module
+            sops-nix.nixosModules.sops
 
             # Novo: importa o home-manager como módulo NixOS
             home-manager.nixosModules.home-manager
