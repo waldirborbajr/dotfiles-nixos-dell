@@ -20,7 +20,7 @@ let
     window-rule {
       match app-id=r#"^Alacritty$"#
       default-column-width { proportion 0.6; }
-      opacity 0.85
+      opacity 0.75
     }
 
     // Applications that should open maximized

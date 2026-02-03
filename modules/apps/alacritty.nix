@@ -21,10 +21,10 @@
 
         window = {
           padding = { x = 8; y = 8; };
-          opacity = 0.85;  # 85% opacidade (15% transparência) - mais visível
-          blur = true;
+          opacity = 0.75;  # 75% opacidade (25% transparência) - ver wallpaper
+          blur = false;  # Desabilitar blur para ver wallpaper
           dynamic_title = true;
-          decorations = "full";
+          decorations = "none";  # Critical for Wayland transparency
           resize_increments = true;
           startup_mode = "Windowed";
           # Janela com ~60% do tamanho da tela
