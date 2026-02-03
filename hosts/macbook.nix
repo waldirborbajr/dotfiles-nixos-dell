@@ -30,8 +30,9 @@
 
   ############################################
   # Enable secrets management
+  # TODO: Enable after creating secrets file
   ############################################
-  system-config.secrets.enable = true;
+  # system-config.secrets.enable = true;
 
   ############################################
   # Enable Tailscale VPN
