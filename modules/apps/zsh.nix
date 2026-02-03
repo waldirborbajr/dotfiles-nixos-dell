@@ -1,9 +1,9 @@
-# modules/apps/shell.nix
-# Consolidado: zsh + fzf + bat
+# modules/apps/zsh.nix
+# ZSH configuration with fzf + bat integration
 { config, pkgs, lib, ... }:
 
 {
-  config = lib.mkIf config.apps.shell.enable {
+  config = lib.mkIf config.apps.zsh.enable {
     programs.zsh = {
       enable = true;
 

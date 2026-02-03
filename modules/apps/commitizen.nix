@@ -52,7 +52,7 @@
     };
 
     # Shell aliases
-    programs.zsh.shellAliases = lib.mkIf config.apps.shell.enable {
+    programs.zsh.shellAliases = lib.mkIf config.apps.zsh.enable {
       gcz = "cz commit";
       gczc = "cz commit";
     };

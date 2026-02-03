@@ -5,7 +5,7 @@
 {
   imports = [
     # Core apps
-    ./shell.nix
+    ./zsh.nix
     ./alacritty.nix
     ./wezterm.nix
     ./fastfetch.nix
@@ -42,7 +42,7 @@
   ];
 
   options.apps = {
-    shell = {
+    zsh = {
       enable = lib.mkOption {
         type = lib.types.bool;
         default = true;

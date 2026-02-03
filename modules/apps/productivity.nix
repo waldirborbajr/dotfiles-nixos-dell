@@ -70,7 +70,7 @@
 
     # Shell aliases for productivity tools
     programs.zsh.shellAliases = lib.mkIf config.programs.zsh.enable {
-      # Eza (already in shell.nix, but ensure consistency)
+      # Eza (already in zsh.nix, but ensure consistency)
       ls = "eza";
       ll = "eza -lg --icons --group-directories-first";
       la = "eza -lag --icons --group-directories-first";
