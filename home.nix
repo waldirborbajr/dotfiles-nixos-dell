@@ -27,7 +27,7 @@ in
   # ==========================================
   apps = {
     # Core apps
-    shell.enable = true;
+    zsh.enable = true;
     alacritty.enable = true;
     wezterm.enable = false; # Backup/reserve terminal (disabled by default)
     fastfetch.enable = true;

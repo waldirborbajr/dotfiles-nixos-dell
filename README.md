@@ -99,7 +99,7 @@ This repository is the **single source of truth** for my personal Linux infrastr
 │   │
 │   ├── apps/             # Home-manager apps
 │   │   ├── default.nix   # 🎛️  Aggregator with options
-│   │   ├── shell.nix     # config.apps.shell.enable
+│   │   ├── zsh.nix       # config.apps.zsh.enable
 │   │   ├── alacritty.nix # config.apps.alacritty.enable
 │   │   ├── dev-tools.nix # config.apps.dev-tools.enable
 │   │   ├── browsers.nix
@@ -225,7 +225,7 @@ Flags are **independent** and can be combined freely.
 - Base system configuration, networking, audio, fonts, SSH
 
 **Applications** (`modules/apps/`)
-- `shell.nix` - ZSH + FZF + bat configuration
+- `zsh.nix` - ZSH + FZF + bat configuration
 - `alacritty.nix` - Alacritty terminal emulator (90% transparency, Catppuccin)
 - `fastfetch.nix` - System info tool (auto-runs in Alacritty)
 - `dev-tools.nix` - Git, GitHub CLI, development toolchains
@@ -270,7 +270,7 @@ Flags are **independent** and can be combined freely.
    
    # Options control activation
    system-config.base.enable = true;
-   apps.shell.enable = true;
+   apps.zsh.enable = true;
    ```
 
 2. **🎛️ Granular Control**
@@ -294,7 +294,7 @@ Flags are **independent** and can be combined freely.
 ```nix
 imports = [
   ./modules/system/base.nix
-  ./modules/apps/shell.nix
+  ./modules/apps/zsh.nix
   # Always active, no control
 ];
 ```
@@ -305,7 +305,7 @@ imports = [ ./profiles/minimal.nix ];
 
 # Explicit activation
 system-config.base.enable = true;
-apps.shell.enable = true;
+apps.zsh.enable = true;
 ```
 
 ---

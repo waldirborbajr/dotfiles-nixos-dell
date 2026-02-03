@@ -322,7 +322,7 @@ home.nix → apps.newtool.enable = true
 
 ✅ **Use options for all modules**
 ```nix
-config = lib.mkIf config.apps.shell.enable { ... };
+config = lib.mkIf config.apps.zsh.enable { ... };
 ```
 
 ✅ **Create aggregators for categories**
@@ -386,7 +386,7 @@ profiles/desktop.nix → imports = [ ./minimal.nix ];
 ❌ **Skip aggregators**
 ```nix
 # Bad: Options scattered everywhere
-modules/apps/shell.nix → options.apps.shell.enable
+modules/apps/zsh.nix → options.apps.zsh.enable
 modules/apps/tmux.nix → options.apps.tmux.enable
 
 # Good: Centralized in aggregator
@@ -412,14 +412,14 @@ modules/apps/default.nix → options.apps = { shell, tmux, ... }
 
 # After: Dendritic
 imports = [ ./profiles/desktop.nix ];
-apps.shell.enable = true;
+apps.zsh.enable = true;
 ```
 
 **From Modular:**
 ```nix
 # Before: Direct imports
 imports = [
-  ./modules/shell.nix
+  ./modules/zsh.nix
   ./modules/terminal.nix
 ];
 

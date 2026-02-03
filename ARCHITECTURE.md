@@ -273,7 +273,7 @@ Each major category has a `default.nix` that defines options and imports all sub
 
 **Home Manager-level applications.**
 
-- `shell.nix` - ZSH + FZF + bat
+- `zsh.nix` - ZSH + FZF + bat
 - `terminals.nix` - Alacritty
 - `dev-tools.nix` - Git + GitHub CLI
 - `fastfetch.nix` - System info
