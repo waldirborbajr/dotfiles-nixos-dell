@@ -31,11 +31,10 @@ let
       Mod+W hotkey-overlay-title="Open browser: brave" { spawn "brave"; }
       Mod+Alt+Minus hotkey-overlay-title="Lock screen: swaylock" { spawn "swaylock"; }
       
-      // DankMaterialShell shortcuts
-      Mod+Space { spawn "dms-toggle-launcher"; }
-      Mod+N { spawn "dms-toggle-notifications"; }
-      Mod+Comma { spawn "dms-toggle-control-center"; }
-      Mod+V { spawn "dms-toggle-clipboard"; }
+      // Launcher and utilities (Fuzzel + Mako replacements for DMS)
+      Mod+Space hotkey-overlay-title="App launcher: fuzzel" { spawn "fuzzel"; }
+      Mod+N hotkey-overlay-title="Clear notifications" { spawn "makoctl" "dismiss" "-a"; }
+      Mod+V hotkey-overlay-title="Clipboard manager" { spawn "sh" "-c" "cliphist list | fuzzel -d | cliphist decode | wl-copy"; }
       
       // ========================================
       // SESSION / COMPOSITOR

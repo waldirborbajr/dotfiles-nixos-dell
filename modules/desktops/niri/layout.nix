@@ -102,7 +102,7 @@ let
     spawn-at-startup "swayidle" "-w" "timeout" "600" "niri msg action power-off-monitors"
     spawn-at-startup "waypaper" "--backend" "swaybg" "--restore"
     spawn-sh-at-startup "sleep 2 && swaybg -i ~/.config/niri/wallpaper.svg -m fill || true"
-    spawn-sh-at-startup "dms run"
+    // spawn-sh-at-startup "dms run"  // DMS disabled
     spawn-at-startup "/usr/bin/emacs" "--daemon"
     spawn-at-startup "mako"
     spawn-at-startup "waybar"
