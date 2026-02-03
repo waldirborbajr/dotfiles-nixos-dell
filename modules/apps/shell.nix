@@ -61,7 +61,7 @@
         zstyle ':completion:*' matcher-list 'm:{a-z}={A-Za-z}'
         zstyle ':completion:*' list-colors "''${(s.:.)LS_COLORS}"
         zstyle ':completion:*' menu select
-        zstyle ':completion:*' group-name ''
+        zstyle ':completion:*' group-name "''"
         zstyle ':completion:*' verbose yes
         zstyle ':completion:*:descriptions' format '%B%d%b'
         zstyle ':completion:*:messages' format '%d'
