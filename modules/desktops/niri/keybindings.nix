@@ -62,10 +62,10 @@ let
       Mod+Shift+Print { spawn "sh" "-c" "grim - | swappy -f -"; }
       
       // Alternative shortcuts for compact keyboards (no Print key)
-      Mod+S hotkey-overlay-title="Screenshot area with swappy" { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
-      Mod+Shift+S hotkey-overlay-title="Screenshot full screen with swappy" { spawn "sh" "-c" "grim - | swappy -f -"; }
+      Mod+S hotkey-overlay-title="Screenshot area (native)" { screenshot; }
+      Mod+Shift+S hotkey-overlay-title="Screenshot full screen (native)" { screenshot-screen; }
       Mod+Alt+S hotkey-overlay-title="Screenshot window" { screenshot-window; }
-      Mod+Ctrl+S hotkey-overlay-title="Screenshot area (save directly)" { screenshot; }
+      Mod+Ctrl+S hotkey-overlay-title="Screenshot area with swappy" { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
 
       // ========================================
       // OVERVIEW
