@@ -16,8 +16,8 @@ let
     // KEYBINDINGS
     // ============================================
     binds {
-      // Keyboard layout switching (US ⟷ US-intl)
-      Mod+Slash { switch-layout "next"; }
+      // Keyboard layout switching (US ⟷ BR)
+      Mod+Slash hotkey-overlay-title="Switch keyboard layout" { switch-layout "next"; }
       // Mod = Super (Windows key)
 
       // ========================================

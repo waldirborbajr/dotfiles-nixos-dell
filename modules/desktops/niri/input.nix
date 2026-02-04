@@ -12,10 +12,10 @@ let
     input {
       keyboard {
         xkb {
-          // Multiple layouts: US (programming) and US-intl (Portuguese with accents)
-          // Use Super+Space to switch between layouts
-          layout "us,us"
-          variant ",intl"
+          // Multiple layouts: US-intl (English with dead keys) and BR (Portuguese)
+          // Use Super+/ to switch between layouts
+          layout "us,br"
+          variant "intl,"
         }
         repeat-delay 250
         repeat-rate 35
