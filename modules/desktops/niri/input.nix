@@ -12,10 +12,13 @@ let
     input {
       keyboard {
         xkb {
-          // Multiple layouts: US-intl (English with dead keys) and BR (Portuguese)
+          // Multiple layouts for MacBook keyboard:
+          // Layout 1: US (MacBook standard)
+          // Layout 2: US International (with dead keys for accents)
           // Use Super+/ to switch between layouts
-          layout "us,br"
-          variant "intl,"
+          layout "us,us"
+          variant ",intl"
+          model "apple"
         }
         repeat-delay 250
         repeat-rate 35

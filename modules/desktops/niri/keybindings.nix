@@ -16,7 +16,7 @@ let
     // KEYBINDINGS
     // ============================================
     binds {
-      // Keyboard layout switching (US ⟷ BR)
+      // Keyboard layout switching (US ⟷ US-intl for MacBook)
       Mod+Slash hotkey-overlay-title="Switch keyboard layout" { switch-layout "next"; }
       // Mod = Super (Windows key)
 
