@@ -49,6 +49,7 @@ let
       // ========================================
       // SCREENSHOTS
       // ========================================
+      // Native Print key (if available)
       Print { screenshot; }
       Ctrl+Print { screenshot-screen; }
       Alt+Print { screenshot-window; }
@@ -56,9 +57,15 @@ let
       Mod+Alt+apostrophe { screenshot-window; }
       Mod+Shift+apostrophe { screenshot; }
       
-      // Screenshot with tools
+      // Screenshot with tools (Print key)
       Mod+Print { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
       Mod+Shift+Print { spawn "sh" "-c" "grim - | swappy -f -"; }
+      
+      // Alternative shortcuts for compact keyboards (no Print key)
+      Mod+S hotkey-overlay-title="Screenshot area with swappy" { spawn "sh" "-c" "grim -g \"$(slurp)\" - | swappy -f -"; }
+      Mod+Shift+S hotkey-overlay-title="Screenshot full screen with swappy" { spawn "sh" "-c" "grim - | swappy -f -"; }
+      Mod+Alt+S hotkey-overlay-title="Screenshot window" { screenshot-window; }
+      Mod+Ctrl+S hotkey-overlay-title="Screenshot area (save directly)" { screenshot; }
 
       // ========================================
       // OVERVIEW
