@@ -17,7 +17,6 @@ in
     # New modular configurations
     ./audio.nix
     ./clipboard.nix
-    ./noctalia.nix
     ./notifications.nix
     ./polkit.nix
     ./screenshot.nix

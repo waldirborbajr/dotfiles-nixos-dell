@@ -29,12 +29,8 @@
 
     # DevShells: Helper para múltiplos sistemas
     flake-utils.url = "github:numtide/flake-utils";
-
-    # Noctalia shell (Wayland desktop shell + launcher)
-    noctalia.url = "github:noctalia-dev/noctalia-shell";
-    noctalia.inputs.nixpkgs.follows = "nixpkgs-unstable";
   };
-  outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager, catppuccin, sops-nix, fenix, flake-utils, noctalia, ... }:
+  outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager, catppuccin, sops-nix, fenix, flake-utils, ... }:
     let
       lib = nixpkgs-stable.lib;
       # ==========================================
