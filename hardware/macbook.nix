@@ -36,6 +36,22 @@
   ];
 
   ############################################
+  # Bluetooth
+  ############################################
+  hardware.bluetooth = {
+    enable = true;
+    powerOnBoot = true;
+    settings = {
+      General = {
+        Enable = "Source,Sink,Media,Socket";
+        Experimental = true;
+      };
+    };
+  };
+
+  services.blueman.enable = true;
+
+  ############################################
   # Pacotes úteis para debug e configuração wireless
   ############################################
   #environment.systemPackages = with pkgs; [

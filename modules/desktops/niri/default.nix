@@ -14,6 +14,12 @@ in
     ./keybindings.nix
     ./window-rules.nix
     ./animations.nix
+    # New modular configurations
+    ./audio.nix
+    ./clipboard.nix
+    ./notifications.nix
+    ./polkit.nix
+    ./screenshot.nix
     # DankMaterialShell - Disabled (not available in nixpkgs)
     # ./dank-material-shell.nix
     # ./dms-autostart.nix
@@ -25,19 +31,12 @@ in
   ];
 
   config = lib.mkIf isMacbook {
-    # Core packages
+    # Core packages (specific packages moved to their respective modules)
     home.packages = with pkgs; [
       niri
-      wl-clipboard
-      cliphist
-      grim
-      slurp
-      swappy
-      playerctl
       brightnessctl
-      pamixer
-      pavucontrol
       networkmanagerapplet
+      blueman  # Bluetooth manager with system tray applet
       swaybg
       waypaper
       swayidle

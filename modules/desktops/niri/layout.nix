@@ -107,6 +107,8 @@ let
     spawn-at-startup "/usr/bin/emacs" "--daemon"
     spawn-at-startup "mako"
     spawn-at-startup "waybar"
+    spawn-at-startup "nm-applet" "--indicator"  // Network Manager system tray icon
+    spawn-at-startup "blueman-applet"  // Bluetooth system tray icon
     spawn-at-startup "wl-paste" "--watch" "cliphist" "store"
   '';
 in
