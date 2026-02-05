@@ -6,7 +6,7 @@ let
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
 in
 {
-  imports = lib.mkIf isMacbook [
+  imports = [
     inputs.noctalia.homeModules.default
   ];
 
