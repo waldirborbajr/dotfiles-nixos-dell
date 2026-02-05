@@ -114,10 +114,39 @@
       # (nix fmt needs formatter.${system})
       # ==========================================
       formatter = lib.genAttrs supportedSystems (system:
-        (import nixpkgs-stable {
-          inherit system;
-          config.allowUnfree = true;
-        }).nixpkgs-fmt
+        let
+          pkgs = import nixpkgs-stable {
+            inherit system;
+            config.allowUnfree = true;
+          };
+        in
+        pkgs.treefmt.withConfig {
+          runtimeInputs = with pkgs; [
+            nixfmt
+            prettier
+            shfmt
+          ];
+          settings.formatter = {
+            nixfmt = {
+              command = "nixfmt";
+              includes = [ "*.nix" ];
+              options = [ "--indent=4" ];
+            };
+            prettier = {
+              command = "prettier";
+              includes = [ "*.md" "*.yaml" "*.yml" "*.json" ];
+              options = [
+                "--tab-width"
+                "4"
+              ];
+            };
+            shfmt = {
+              command = "shfmt";
+              includes = [ "*.sh" ];
+              options = [ "-i" "4" "-ci" ];
+            };
+          };
+        }
       );
       # ==========================================
       # Hosts
