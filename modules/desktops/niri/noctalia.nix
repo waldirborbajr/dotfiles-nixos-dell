@@ -5,13 +5,15 @@
 let
   isMacbook = hostname == "macbook-nixos" || hostname == "macbook";
 in
-lib.mkIf isMacbook {
-  imports = [
+{
+  imports = lib.mkIf isMacbook [
     inputs.noctalia.homeModules.default
   ];
 
-  programs.noctalia-shell = {
-    enable = true;
-    systemd.enable = true;
+  config = lib.mkIf isMacbook {
+    programs.noctalia-shell = {
+      enable = true;
+      systemd.enable = true;
+    };
   };
 }
