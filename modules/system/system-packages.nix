@@ -116,6 +116,21 @@ in
         # Certificates
         ##########################################
         cacert
+
+        ##########################################
+        # Desktop Applications
+        ##########################################
+        bottles              # Windows application runner
+        chromium            # Web browser
+        gimp-with-plugins   # Image editor
+        # libreoffice       # Office suite
+        qownnotes           # Note-taking application
+        vlc                 # Media player
+
+        ##########################################
+        # Media Tools
+        ##########################################
+        ffmpeg              # Video/audio converter and processor
       ])
 
       # ----------------------------
