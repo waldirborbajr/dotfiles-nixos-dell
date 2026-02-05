@@ -8,15 +8,12 @@ in
 {
   imports = [
     ./config.nix
-    # NOTE: Modules below are commented because config.nix now uses an all-inline config.kdl
-    # Uncomment these and modify config.nix to use modular includes if you need to rollback
-    # ./input.nix
-    # ./output.nix
-    # ./layout.nix
-    # ./keybindings.nix
-    # ./window-rules.nix
-    # ./animations.nix
-    # New modular configurations
+    ./input.nix
+    ./output.nix
+    ./layout.nix
+    ./keybindings.nix
+    ./window-rules.nix
+    ./animations.nix
     ./audio.nix
     ./clipboard.nix
     ./notifications.nix
