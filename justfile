@@ -290,9 +290,18 @@ rollback CONFIRM="":
 [group: 'maintenance']
 fmt:
     @echo "Formatting Nix files..."
-    @git ls-files '*.nix' | xargs nixpkgs-fmt
+    #@git ls-files '*.nix' | xargs nixpkgs-fmt
+    nixfmt $(fd '^[^.]*\\.nix$' .)
     @echo "✓ Formatting complete!"
-    @git status --short
+    #@git status --short
+
+[group: 'maintenance']
+ref:
+    nix eval --raw --file fetch-refs.nix > refs.nix
+
+[group: 'maintenance']
+watch:
+    fd .nix . | entr just doc    
 
 # Format specific file or directory
 [group: 'maintenance']

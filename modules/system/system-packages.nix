@@ -124,6 +124,7 @@ in
         chromium            # Web browser
         gimp-with-plugins   # Image editor
         # libreoffice       # Office suite
+        nom                 # nom is a parser combinators library written in Rust
         qownnotes           # Note-taking application
         vlc                 # Media player
 
