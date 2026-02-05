@@ -76,6 +76,12 @@ in
 
       # Qt theming
       QT_QPA_PLATFORMTHEME = "qt5ct";
+
+      # Disable IBus (not needed for niri)
+      # This prevents the "IBus should be called from desktop session" notification
+      GTK_IM_MODULE = "xim";
+      QT_IM_MODULE = "xim";
+      XMODIFIERS = "@im=none";
     };
   };
 }
