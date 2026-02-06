@@ -1,8 +1,8 @@
-# 🔒 Correção: Pacote Inseguro Broadcom-STA no Host Dell
+# 🔒 Fix: Insecure Broadcom-STA Package on Dell Host
 
-## ❌ Problema Original
+## ❌ Original Problem
 
-Durante a compilação, o host Dell apresentava erro:
+During the build, the Dell host showed an error:
 
 ```
 error: Package 'broadcom-sta-6.30.223.271-59-6.12.66' is marked as insecure
@@ -13,22 +13,22 @@ Known issues:
  - Driver not maintained and incompatible with kernel security mitigations
 ```
 
-## 🔍 Causa Raiz
+## 🔍 Root Cause
 
-O arquivo `hardware/dell.nix` estava habilitando o firmware Broadcom B43:
+The `hardware/dell.nix` file was enabling Broadcom B43 firmware:
 
 ```nix
 networking.enableB43Firmware = true;
 ```
 
-Este firmware depende do driver `broadcom-sta` que:
-- ❌ Tem vulnerabilidades conhecidas (2 CVEs críticas)
-- ❌ Não é mais mantido
-- ❌ Incompatível com mitigações de segurança do kernel Linux moderno
+This firmware depends on the `broadcom-sta` driver, which:
+- ❌ Has known vulnerabilities (2 critical CVEs)
+- ❌ Is no longer maintained
+- ❌ Incompatible with modern Linux kernel security mitigations
 
-## ✅ Solução Implementada
+## ✅ Implemented Solution
 
-Adicionado permissão explícita para o pacote inseguro em `hardware/dell.nix`:
+Added explicit permission for the insecure package in `hardware/dell.nix`:
 
 ```nix
 # Allow insecure broadcom-sta package
@@ -37,195 +37,195 @@ nixpkgs.config.permittedInsecurePackages = [
 ];
 ```
 
-### 📝 Documentação Adicionada
+### 📝 Added Documentation
 
-Foram adicionados comentários extensos alertando sobre:
-- As vulnerabilidades específicas (CVEs)
-- Recomendações de alternativas mais seguras
-- Instruções para desabilitar WiFi se necessário
+Added extensive comments warning about:
+- The specific vulnerabilities (CVEs)
+- Recommendations for safer alternatives
+- Instructions to disable WiFi if needed
 
-## ⚠️ AVISOS DE SEGURANÇA
+## ⚠️ SECURITY WARNINGS
 
-### Riscos ao Usar broadcom-sta:
+### Risks When Using broadcom-sta:
 
-1. **Remote Code Execution**: Vulnerabilidades de heap buffer overflow podem permitir execução remota de código
-2. **Driver Unmaintained**: Sem patches de segurança desde 2019
-3. **Kernel Incompatibility**: Não funciona com mitigações modernas do kernel
+1. **Remote Code Execution**: Heap buffer overflow vulnerabilities can allow remote code execution
+2. **Driver Unmaintained**: No security patches since 2019
+3. **Kernel Incompatibility**: Does not work with modern kernel mitigations
 
-### 🎯 Recomendações (ordem de preferência):
+### 🎯 Recommendations (order of preference):
 
-#### 1. **MELHOR OPÇÃO: Trocar Hardware** 
+#### 1. **BEST OPTION: Replace Hardware**
 ```bash
-# Placa WiFi Intel moderna (exemplo)
+# Modern Intel WiFi card (example)
 - Intel AX200/AX210
 - Intel 9260/9560  
-- Qualquer Intel WiFi 6/6E
+- Any Intel WiFi 6/6E
 ```
-**Benefícios:**
-- ✅ Drivers in-tree no kernel Linux
-- ✅ Segurança moderna
-- ✅ Melhor performance
+**Benefits:**
+- ✅ In-tree drivers in the Linux kernel
+- ✅ Modern security
+- ✅ Better performance
 - ✅ WiFi 6/6E support
 
-#### 2. **OPÇÃO ALTERNATIVA: Adaptador USB WiFi**
+#### 2. **ALTERNATIVE OPTION: USB WiFi Adapter**
 ```bash
-# Adaptadores com bons drivers Linux
+# Adapters with good Linux drivers
 - TP-Link Archer T2U/T3U (Realtek)
 - Panda PAU09 (Ralink)
 - ALFA AWUS036ACH
 ```
-**Benefícios:**
+**Benefits:**
 - ✅ Plug & play
-- ✅ Drivers atualizados
-- ✅ Fácil de trocar
-- ✅ Baixo custo (~$20-40)
+- ✅ Updated drivers
+- ✅ Easy to replace
+- ✅ Low cost (~$20-40)
 
-#### 3. **OPÇÃO SIMPLES: Ethernet**
+#### 3. **SIMPLE OPTION: Ethernet**
 ```bash
-# Use cabo de rede
+# Use an ethernet cable
 sudo systemctl disable NetworkManager-wifi
 ```
-**Benefícios:**
-- ✅ Mais seguro
-- ✅ Mais rápido
-- ✅ Mais estável
-- ✅ Sem vulnerabilidades WiFi
+**Benefits:**
+- ✅ More secure
+- ✅ Faster
+- ✅ More stable
+- ✅ No WiFi vulnerabilities
 
-#### 4. **ÚLTIMA OPÇÃO: Manter broadcom-sta** (configuração atual)
+#### 4. **LAST RESORT: Keep broadcom-sta** (current configuration)
 ```nix
-# Apenas se absolutamente necessário
+# Only if absolutely necessary
 networking.enableB43Firmware = true;
 nixpkgs.config.permittedInsecurePackages = [
   "broadcom-sta-6.30.223.271-59-6.12.66"
 ];
 ```
-**Precauções:**
-- ⚠️ Use apenas em redes confiáveis
-- ⚠️ Evite redes públicas
-- ⚠️ Configure firewall restritivo
-- ⚠️ Atualize assim que possível
+**Precautions:**
+- ⚠️ Use only on trusted networks
+- ⚠️ Avoid public networks
+- ⚠️ Configure a restrictive firewall
+- ⚠️ Update as soon as possible
 
-## 🔧 Como Desabilitar WiFi Completamente
+## 🔧 How to Disable WiFi Completely
 
-Se você quiser remover o risco de segurança:
+If you want to remove the security risk:
 
-### Opção 1: Comentar no arquivo
+### Option 1: Comment it out in the file
 ```bash
-# Editar hardware/dell.nix
+# Edit hardware/dell.nix
 vim /etc/nixos/hardware/dell.nix
 
-# Comentar esta linha:
+# Comment this line:
 # networking.enableB43Firmware = true;
 ```
 
-### Opção 2: Desabilitar WiFi no sistema
+### Option 2: Disable WiFi in the system
 ```nix
-# Adicionar em hardware/dell.nix
+# Add in hardware/dell.nix
 networking.wireless.enable = false;
 networking.networkmanager.wifi.enable = false;
 
-# Remover pacotes relacionados
+# Remove related packages
 environment.systemPackages = with pkgs; [
-  # b43FirmwareCutter  # COMENTAR
+  # b43FirmwareCutter  # COMMENT OUT
 ];
 ```
 
-### Opção 3: Blacklist do módulo
+### Option 3: Module blacklist
 ```nix
-# Adicionar em hardware/dell.nix
+# Add in hardware/dell.nix
 boot.blacklistedKernelModules = [
   "dell_laptop"
-  "b43"        # Adicionar
-  "bcma"       # Adicionar
-  "ssb"        # Adicionar
+  "b43"        # Add
+  "bcma"       # Add
+  "ssb"        # Add
 ];
 ```
 
-## 📊 Resultado dos Testes
+## 📊 Test Results
 
-### ✅ Compilação Bem-Sucedida
+### ✅ Successful Build
 
 ```bash
-# Teste realizado
+# Test performed
 nix build .#nixosConfigurations.dell.config.system.build.toplevel --dry-run
 
-# Resultado
-✓ Build passou sem erros
-✓ Pacote broadcom-sta permitido
-✓ Sistema compila corretamente
+# Result
+✓ Build passed without errors
+✓ broadcom-sta package permitted
+✓ System builds correctly
 ```
 
-### ✅ Flake Check Completo
+### ✅ Full Flake Check
 
 ```bash
 make check
 
-# Resultado
+# Result
 all checks passed!
-✓ Sintaxe OK!
+✓ Syntax OK!
 ```
 
-## 🔄 Para Aplicar no Sistema Dell
+## 🔄 Apply on the Dell System
 
 ```bash
-# 1. Commit as mudanças
+# 1. Commit the changes
 git add hardware/dell.nix
 git commit -m "fix(dell): allow insecure broadcom-sta with security warnings"
 
-# 2. Rebuild no sistema Dell
+# 2. Rebuild on the Dell system
 sudo nixos-rebuild switch --flake .#dell
 
-# 3. Considere as alternativas mais seguras!
+# 3. Consider the safer alternatives!
 ```
 
-## 📚 Referências
+## 📚 References
 
-### CVEs Relacionadas:
+### Related CVEs:
 - [CVE-2019-9501](https://nvd.nist.gov/vuln/detail/CVE-2019-9501) - Heap buffer overflow in Broadcom WiFi
 - [CVE-2019-9502](https://nvd.nist.gov/vuln/detail/CVE-2019-9502) - Heap buffer overflow in Broadcom WiFi
 
-### Documentação NixOS:
+### NixOS Documentation:
 - [Permitting Insecure Packages](https://nixos.wiki/wiki/FAQ#How_can_I_install_a_package_that_is_marked_as_insecure.3F)
 - [Broadcom WiFi Drivers](https://nixos.wiki/wiki/Broadcom_WiFi)
 
-### Driver Alternativo:
+### Alternative Driver:
 - [b43-fwcutter](https://wireless.wiki.kernel.org/en/users/drivers/b43)
 - [Intel WiFi](https://wireless.wiki.kernel.org/en/users/drivers/iwlwifi)
 
 ## ⚡ Action Items
 
-### Imediato:
-- ✅ Correção aplicada - sistema compila
-- ⚠️ WiFi funciona mas com riscos de segurança
+### Immediate:
+- ✅ Fix applied - system builds
+- ⚠️ WiFi works but with security risks
 
-### Curto Prazo (recomendado):
-- [ ] Avaliar custo de trocar placa WiFi
-- [ ] Ou comprar adaptador USB WiFi
-- [ ] Testar com Ethernet como solução temporária
+### Short Term (recommended):
+- [ ] Evaluate cost of replacing the WiFi card
+- [ ] Or buy a USB WiFi adapter
+- [ ] Test with Ethernet as a temporary solution
 
-### Médio Prazo:
-- [ ] Substituir hardware WiFi Broadcom
-- [ ] Remover `permittedInsecurePackages`
-- [ ] Atualizar documentação
+### Medium Term:
+- [ ] Replace Broadcom WiFi hardware
+- [ ] Remove `permittedInsecurePackages`
+- [ ] Update documentation
 
-## 💡 Dica Extra
+## 💡 Extra Tip
 
-Se você tem acesso físico ao Dell:
+If you have physical access to the Dell:
 
 ```bash
-# Verificar modelo exato da placa WiFi
+# Check the exact WiFi card model
 lspci | grep -i network
 lspci | grep -i wireless
 
-# Ver driver em uso
+# Check the driver in use
 lsmod | grep b43
 ```
 
-Isso ajuda a escolher a placa WiFi de substituição correta.
+This helps you choose the correct replacement WiFi card.
 
 ---
 
-**Status:** ✅ Compilação corrigida (com avisos de segurança)  
-**Recomendação:** 🔴 Substituir hardware WiFi assim que possível  
-**Risco Atual:** 🔴 ALTO - Use apenas em redes confiáveis
+**Status:** ✅ Build fixed (with security warnings)  
+**Recommendation:** 🔴 Replace WiFi hardware as soon as possible  
+**Current Risk:** 🔴 HIGH - Use only on trusted networks
 

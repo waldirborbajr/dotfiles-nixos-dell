@@ -73,7 +73,7 @@
         zstyle ':completion:*' use-cache on
         zstyle ':completion:*' cache-path "''$HOME/.zsh/cache"
 
-        # bat como pager/manpager
+        # bat as pager/manpager
         if command -v bat >/dev/null 2>&1; then
           export MANPAGER="sh -c 'col -bx | bat -l man -p'"
           export PAGER=bat
@@ -84,7 +84,7 @@
           eval "$(zoxide init --cmd cd zsh)"
         fi
 
-        # Prompt customizado com git status melhorado
+        # Custom prompt with improved git status
         git_seg() {
           local s branch dirty staged untracked ahead behind color
 
@@ -135,13 +135,13 @@
           PROMPT="%F{cyan}%~%f$(git_seg)$sym "
         }
 
-        # Integração fzf
+        # fzf integration
         if command -v fzf >/dev/null 2>&1; then
           source ${pkgs.fzf}/share/fzf/key-bindings.zsh
           source ${pkgs.fzf}/share/fzf/completion.zsh
         fi
 
-        # Fastfetch automático sempre que o zsh iniciar
+        # Run fastfetch automatically when zsh starts
         if command -v fastfetch >/dev/null 2>&1; then
           fastfetch
         fi

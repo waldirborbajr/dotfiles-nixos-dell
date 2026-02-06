@@ -1,25 +1,25 @@
 #!/usr/bin/env bash
 # =============================================================================
-# ... (cabeçalho e variáveis iguais ao anterior) ...
+# ... (header and variables same as previous) ...
 # =============================================================================
 
 set -euo pipefail
 
-# Extensões...
+# Extensions...
 EXTENSOES=( "*.nix" "*.json" "*.css" "*.conf" )
 DUMP_FILE="DUMP.log"
 
-# Cores...
+# Colors...
 RED='\033[0;31m'
 GREEN='\033[0;32m'
 YELLOW='\033[1;33m'
 NC='\033[0m'
 
 # =============================================================================
-# Geração do dump (igual ao anterior)
+# Dump generation (same as previous)
 # =============================================================================
 
-echo "Gerando ${DUMP_FILE}..."
+echo "Generating ${DUMP_FILE}..."
 
 : > "$DUMP_FILE"
 
@@ -42,5 +42,5 @@ find . -type f \
         } >> "$DUMP_FILE"
     done
 
-echo -e "${GREEN}Dump gerado em:${NC} $DUMP_FILE"
-echo "Arquivos incluídos: $(find . -type f \( -name "*.nix" -o -name "*.json" -o -name "*.css" -o -name "*.conf" \) -not -path "*/.git/*" -not -path "*/.github/*" -not -name "*.bak" | wc -l)"
+echo -e "${GREEN}Dump generated at:${NC} $DUMP_FILE"
+echo "Files included: $(find . -type f \( -name "*.nix" -o -name "*.json" -o -name "*.css" -o -name "*.conf" \) -not -path "*/.git/*" -not -path "*/.github/*" -not -name "*.bak" | wc -l)"

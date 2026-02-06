@@ -3,12 +3,12 @@
 # Container Runtime Management
 # ============================================
 # 
-# ATENÇÃO: Escolha APENAS UM container runtime por vez!
-# Docker e Podman NÃO devem estar habilitados simultaneamente.
+# WARNING: Choose ONLY ONE container runtime at a time!
+# Docker and Podman must NOT be enabled simultaneously.
 #
-# Para trocar entre Docker e Podman:
-#   1. Comente a importação atual (adicione #)
-#   2. Descomente a importação desejada (remova #)
+# To switch between Docker and Podman:
+#   1. Comment the current import (add #)
+#   2. Uncomment the desired import (remove #)
 #   3. sudo nixos-rebuild switch --flake .#hostname
 #
 # ============================================
@@ -18,39 +18,39 @@
 {
   imports = [
     # ============================================
-    # CONTAINER RUNTIME (escolha apenas 1)
+    # CONTAINER RUNTIME (choose only 1)
     # ============================================
 
-    # Docker (padrão atual - migração em andamento)
+    # Docker (current default - migration in progress)
     ./docker.nix
 
-    # Podman (próximo padrão - descomentar quando migração concluir)
+    # Podman (next default - uncomment when migration completes)
     # ./podman.nix
 
     # ============================================
-    # OUTROS SERVIÇOS (independentes)
+    # OTHER SERVICES (independent)
     # ============================================
 
-    # K3s - Kubernetes leve (se necessário)
+    # K3s - Lightweight Kubernetes (if needed)
     # ./k3s.nix
 
-    # Libvirt - VMs com QEMU/KVM (se necessário)
+    # Libvirt - VMs with QEMU/KVM (if needed)
     # ./libvirt.nix
   ];
 
   # ============================================
-  # Verificação de segurança (assertions)
+  # Safety checks (assertions)
   # ============================================
   config = {
     assertions = [
       {
         assertion = !(config.virtualisation.docker.enable && config.virtualisation.podman.enable);
         message = ''
-          ❌ ERRO: Docker e Podman não podem estar habilitados simultaneamente!
+          ❌ ERROR: Docker and Podman cannot be enabled simultaneously!
           
-          Edite modules/virtualization/default.nix e:
-            - Comente uma das importações (docker.nix ou podman.nix)
-            - Mantenha apenas um container runtime ativo
+          Edit modules/virtualization/default.nix and:
+            - Comment one of the imports (docker.nix or podman.nix)
+            - Keep only one container runtime active
         '';
       }
     ];

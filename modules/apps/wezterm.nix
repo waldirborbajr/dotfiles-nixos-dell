@@ -33,7 +33,7 @@
         -- Constants
         -- =============================================================================
 
-        local window_background_opacity = 0.90  -- Mesma opacidade do Alacritty
+        local window_background_opacity = 0.90  -- Same opacity as Alacritty
 
         -- =============================================================================
         -- Utility functions
@@ -69,41 +69,41 @@
         config.skip_close_confirmation_for_processes_named = { "tmux", "zsh", "bash" }
 
         -- =============================================================================
-        -- Appearance - Otimizado para leveza
+        -- Appearance - Optimized for lightweight use
         -- =============================================================================
 
-        -- Fonte: mesma do Alacritty
+        -- Font: same as Alacritty
         config.font = wezterm.font_with_fallback({
           "JetBrainsMono Nerd Font",
           "DepartureMono Nerd Font",
         })
-        config.font_size = 10.0  -- Mesmo tamanho do Alacritty
+        config.font_size = 10.0  -- Same size as Alacritty
 
-        -- Tema Catppuccin Mocha (tema escuro padrão)
+        -- Catppuccin Mocha theme (default dark theme)
         config.color_scheme = "Catppuccin Mocha"
 
-        -- Transparência e blur (mesmos valores do Alacritty)
+        -- Transparency and blur (same values as Alacritty)
         config.window_background_opacity = window_background_opacity
-        config.enable_wayland = true  -- Melhor performance no Wayland
+        config.enable_wayland = true  -- Better performance on Wayland
         
-        -- Decorações minimalistas
+        -- Minimal decorations
         config.window_decorations = "RESIZE"
         config.hide_tab_bar_if_only_one_tab = true
         config.use_fancy_tab_bar = false
 
         -- =============================================================================
-        -- Performance - Otimizado para velocidade e leveza
+        -- Performance - Optimized for speed and lightweight use
         -- =============================================================================
 
-        -- FPS otimizado para balanço performance/bateria
-        config.max_fps = 60  -- Reduzido de 120 para economia
-        config.animation_fps = 30  -- Reduzido para menor uso de GPU
+        -- FPS optimized for performance/battery balance
+        config.max_fps = 60  -- Reduced from 120 to save resources
+        config.animation_fps = 30  -- Reduced for lower GPU usage
         
-        -- Scrollback reduzido para menor uso de memória
-        config.scrollback_lines = 5000  -- Mesmo do Alacritty
+        -- Reduced scrollback for lower memory usage
+        config.scrollback_lines = 5000  -- Same as Alacritty
         
-        -- Desabilitar animações desnecessárias
-        config.cursor_blink_rate = 0  -- Cursor sem piscar (menos processamento)
+        -- Disable unnecessary animations
+        config.cursor_blink_rate = 0  -- Cursor without blinking (less processing)
         
         -- Cache de shaped glyphs para melhor performance
         config.allow_square_glyphs_to_overflow_width = "Never"
@@ -129,12 +129,12 @@
           brightness = 0.7,
         }
 
-        -- Dimensões iniciais (similar ao Alacritty)
+        -- Initial dimensions (similar to Alacritty)
         config.initial_cols = 105
         config.initial_rows = 30
 
         -- =============================================================================
-        -- Keybindings - Compatíveis com Alacritty
+        -- Keybindings - Compatible with Alacritty
         -- =============================================================================
 
         config.keys = {
@@ -150,7 +150,7 @@
             action = wezterm.action.EmitEvent("toggle-ligatures") 
           },
 
-          -- Copy/Paste (compatível com Alacritty)
+          -- Copy/Paste (compatible with Alacritty)
           { 
             key = "C", 
             mods = "CTRL|SHIFT", 

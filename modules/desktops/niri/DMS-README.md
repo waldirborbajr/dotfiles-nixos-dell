@@ -1,24 +1,24 @@
 # DankMaterialShell Configuration for Niri
 
-Este módulo configura o **DankMaterialShell (DMS)** para o compositor Wayland **Niri** com o tema **Catppuccin Mocha**.
+This module configures **DankMaterialShell (DMS)** for the Wayland compositor **Niri** with the **Catppuccin Mocha** theme.
 
-## 🎨 O que é o DankMaterialShell?
+## 🎨 What is DankMaterialShell?
 
-DankMaterialShell é uma shell moderna e altamente personalizável para ambientes Wayland, oferecendo:
+DankMaterialShell is a modern and highly customizable shell for Wayland environments, providing:
 
-- 🎯 Barra superior com widgets modulares
-- 🖥️ Gerenciamento avançado de workspaces
-- 🎵 Player de mídia integrado com visualizador de áudio
-- 🌡️ Monitoramento de sistema (CPU, RAM, temperatura)
-- 🔔 Central de notificações
-- ⚙️ Centro de controle para configurações rápidas
-- 🎨 Suporte a temas (usando Catppuccin)
+- 🎯 Top bar with modular widgets
+- 🖥️ Advanced workspace management
+- 🎵 Integrated media player with audio visualizer
+- 🌡️ System monitoring (CPU, RAM, temperature)
+- 🔔 Notification center
+- ⚙️ Control center for quick settings
+- 🎨 Theme support (using Catppuccin)
 
-## 📦 Instalação
+## 📦 Installation
 
-### Opção 1: Usando Nix Flake (Recomendado)
+### Option 1: Using Nix Flake (Recommended)
 
-Se o DankMaterialShell estiver disponível como um pacote Nix:
+If DankMaterialShell is available as a Nix package:
 
 ```nix
 {
@@ -29,98 +29,98 @@ Se o DankMaterialShell estiver disponível como um pacote Nix:
 }
 ```
 
-### Opção 2: Compilação Manual
+### Option 2: Manual Build
 
-1. Clone o repositório do DankMaterialShell:
+1. Clone the DankMaterialShell repository:
 ```bash
 git clone https://github.com/dank-os/dank-material-shell.git
 cd dank-material-shell
 ```
 
-2. Siga as instruções de compilação do projeto
+2. Follow the project's build instructions
 
-3. Instale o binário em `~/.local/bin/` ou `/usr/local/bin/`
+3. Install the binary in `~/.local/bin/` or `/usr/local/bin/`
 
-## ⚙️ Configuração Atual
+## ⚙️ Current Configuration
 
-A configuração está localizada em:
-- **Módulo Principal**: `modules/desktops/niri/dank-material-shell.nix`
+The configuration is located at:
+- **Main Module**: `modules/desktops/niri/dank-material-shell.nix`
 - **Autostart**: `modules/desktops/niri/dms-autostart.nix`
-- **Arquivo de config**: `~/.config/DankMaterialShell/config.json`
+- **Config file**: `~/.config/DankMaterialShell/config.json`
 
-### Características Configuradas
+### Configured Features
 
-#### 🎨 Tema
-- **Tema**: Catppuccin Mocha
+#### 🎨 Theme
+- **Theme**: Catppuccin Mocha
 - **Corner Radius**: 12px
-- **Transparência**: 95%
+- **Transparency**: 95%
 - **Gaps**: 8px
-- **Bordas**: 2px com cor primária
+- **Borders**: 2px with primary color
 
-#### 📊 Widgets da Barra Superior
+#### 📊 Top Bar Widgets
 
-**Esquerda:**
-- 🚀 Botão de lançador de aplicativos
-- 🗂️ Seletor de workspaces
-- 🪟 Janela em foco
+**Left:**
+- 🚀 App launcher button
+- 🗂️ Workspace selector
+- 🪟 Focused window
 
-**Centro:**
-- 🕐 Relógio (formato 24h com segundos)
-- ☀️ Clima
+**Center:**
+- 🕐 Clock (24h format with seconds)
+- ☀️ Weather
 
-**Direita:**
-- 🎵 Player de música com visualizador
-- 📋 Área de transferência
-- 💾 Uso de disco
-- 🔥 Uso de CPU
-- 🧠 Uso de memória
-- 🔔 Notificações
-- ⚙️ Centro de controle
+**Right:**
+- 🎵 Music player with visualizer
+- 📋 Clipboard
+- 💾 Disk usage
+- 🔥 CPU usage
+- 🧠 Memory usage
+- 🔔 Notifications
+- ⚙️ Control center
 
-#### 🎛️ Centro de Controle
+#### 🎛️ Control Center
 
-Widgets disponíveis:
-- 🔊 Controle de volume
-- ☀️ Controle de brilho
+Available widgets:
+- 🔊 Volume control
+- ☀️ Brightness control
 - 📶 Wi-Fi
 - 📞 Bluetooth
-- 🔈 Saída de áudio
-- 🎤 Entrada de áudio
-- 🌙 Modo noturno
-- 🌓 Modo escuro/claro
+- 🔈 Audio output
+- 🎤 Audio input
+- 🌙 Night mode
+- 🌓 Dark/light mode
 
-#### ⚡ Gerenciamento de Energia
+#### ⚡ Power Management
 
-**No AC (Plugado):**
-- Desligar monitor: 15 min
-- Bloquear tela: 30 min
-- Perfil: Performance
+**On AC (Plugged in):**
+- Turn off monitor: 15 min
+- Lock screen: 30 min
+- Profile: Performance
 
-**Na Bateria:**
-- Desligar monitor: 5 min
-- Bloquear tela: 10 min
-- Suspender: 30 min
-- Perfil: Power Saver
-- Limite de carga: 80%
+**On Battery:**
+- Turn off monitor: 5 min
+- Lock screen: 10 min
+- Suspend: 30 min
+- Profile: Power Saver
+- Charge limit: 80%
 
-#### 🔔 Notificações
+#### 🔔 Notifications
 
-- Timeout baixa prioridade: 3s
-- Timeout normal: 5s
-- Timeout crítico: Sem timeout
-- Histórico: Até 100 notificações (7 dias)
-- Posição: Topo direito
+- Low priority timeout: 3s
+- Normal timeout: 5s
+- Critical timeout: No timeout
+- History: Up to 100 notifications (7 days)
+- Position: Top-right
 
-#### 🎨 Fontes
+#### 🎨 Fonts
 
-- **Principal**: JetBrainsMono Nerd Font (peso 600, escala 1.15)
-- **Monoespaçada**: JetBrainsMono Nerd Font Mono
+- **Primary**: JetBrainsMono Nerd Font (weight 600, scale 1.15)
+- **Monospace**: JetBrainsMono Nerd Font Mono
 
-## 🔧 Personalização
+## 🔧 Customization
 
-### Alterar Tema
+### Change Theme
 
-Edite o arquivo de configuração em `~/.config/DankMaterialShell/config.json`:
+Edit the configuration file at `~/.config/DankMaterialShell/config.json`:
 
 ```json
 {
@@ -129,15 +129,15 @@ Edite o arquivo de configuração em `~/.config/DankMaterialShell/config.json`:
 }
 ```
 
-Temas disponíveis:
-- `catppuccin-mocha` (padrão)
+Available themes:
+- `catppuccin-mocha` (default)
 - `catppuccin-macchiato`
 - `catppuccin-frappe`
 - `catppuccin-latte`
 
-### Adicionar/Remover Widgets
+### Add/Remove Widgets
 
-No arquivo de configuração, modifique as seções `leftWidgets`, `centerWidgets` e `rightWidgets`:
+In the configuration file, modify the `leftWidgets`, `centerWidgets`, and `rightWidgets` sections:
 
 ```json
 {
@@ -150,7 +150,7 @@ No arquivo de configuração, modifique as seções `leftWidgets`, `centerWidget
 }
 ```
 
-### Ajustar Transparência
+### Adjust Transparency
 
 ```json
 {
@@ -160,9 +160,9 @@ No arquivo de configuração, modifique as seções `leftWidgets`, `centerWidget
 }
 ```
 
-### Configurar Monitoramento de Sistema
+### Configure System Monitoring
 
-Para habilitar o System Monitor widget:
+To enable the System Monitor widget:
 
 ```json
 {
@@ -174,54 +174,54 @@ Para habilitar o System Monitor widget:
 }
 ```
 
-## 🔄 Integração com Niri
+## 🔄 Integration with Niri
 
-O DMS está configurado para trabalhar com o Niri através de:
+DMS is configured to work with Niri through:
 
-1. **Variáveis de ambiente**:
+1. **Environment variables**:
    - `DMS_COMPOSITOR=niri`
    - `DMS_THEME=catppuccin-mocha`
 
-2. **Configurações de layout**:
+2. **Layout settings**:
    - Gaps: 8px
    - Border radius: 12px
    - Border size: 2px
 
-3. **Matugen templates**: Habilitados para sincronizar cores com:
+3. **Matugen templates**: Enabled to sync colors with:
    - GTK
    - Qt5/Qt6
    - Alacritty
    - Firefox
    - VSCode
 
-## 🚀 Uso
+## 🚀 Usage
 
-### Atalhos Rápidos
+### Quick Shortcuts
 
-Os atalhos do Niri continuam funcionando normalmente. Veja [keybindings.nix](keybindings.nix).
+Niri shortcuts continue to work normally. See [keybindings.nix](keybindings.nix).
 
-### Comandos do DMS
+### DMS Commands
 
-- **Abrir App Launcher**: `Mod+D` ou clique no botão launcher
-- **Abrir Centro de Controle**: Clique no ícone de engrenagem
-- **Abrir Notificações**: Clique no ícone de sino
-- **Clipboard History**: Clique no ícone da área de transferência
+- **Open App Launcher**: `Mod+D` or click the launcher button
+- **Open Control Center**: Click the gear icon
+- **Open Notifications**: Click the bell icon
+- **Clipboard History**: Click the clipboard icon
 
-### Gerenciamento de Workspaces
+### Workspace Management
 
-- **Scroll na barra**: Navegar entre workspaces
-- **Clique no workspace**: Alternar para esse workspace
-- **Arrastar janela**: Mover janela entre workspaces
+- **Scroll on the bar**: Navigate between workspaces
+- **Click a workspace**: Switch to that workspace
+- **Drag a window**: Move window between workspaces
 
-## 🎨 Temas Customizados
+## 🎨 Custom Themes
 
-Para criar um tema customizado:
+To create a custom theme:
 
-1. Crie um arquivo em `~/.config/DankMaterialShell/themes/meu-tema/theme.json`:
+1. Create a file at `~/.config/DankMaterialShell/themes/my-theme/theme.json`:
 
 ```json
 {
-  "name": "Meu Tema",
+  "name": "My Theme",
   "colors": {
     "primary": "#cba6f7",
     "secondary": "#f5c2e7",
@@ -232,87 +232,87 @@ Para criar um tema customizado:
 }
 ```
 
-2. Altere a configuração:
+2. Update the configuration:
 
 ```json
 {
   "currentThemeName": "custom",
-  "customThemeFile": "/home/seu-usuario/.config/DankMaterialShell/themes/meu-tema/theme.json"
+  "customThemeFile": "/home/your-user/.config/DankMaterialShell/themes/my-theme/theme.json"
 }
 ```
 
 ## 🐛 Troubleshooting
 
-### DMS não inicia
+### DMS does not start
 
-1. Verifique se o DMS está instalado:
+1. Check if DMS is installed:
 ```bash
 which dank-material-shell
 ```
 
-2. Verifique os logs:
+2. Check logs:
 ```bash
 journalctl --user -u dank-material-shell
 ```
 
-3. Inicie manualmente para debug:
+3. Start manually for debugging:
 ```bash
 dank-material-shell --debug
 ```
 
-### Widgets não aparecem
+### Widgets do not appear
 
-1. Verifique a configuração JSON
-2. Certifique-se de que os serviços necessários estão rodando:
+1. Check the JSON configuration
+2. Make sure the required services are running:
 ```bash
 systemctl --user status pipewire wireplumber
 ```
 
-### Tema não aplica
+### Theme does not apply
 
-1. Limpe o cache:
+1. Clear the cache:
 ```bash
 rm -rf ~/.cache/DankMaterialShell
 ```
 
-2. Reinicie o DMS:
+2. Restart DMS:
 ```bash
 pkill dank-material-shell
 dms-start
 ```
 
-## 📚 Recursos
+## 📚 Resources
 
-- [Documentação Oficial do DMS](https://github.com/dank-os/dank-material-shell)
+- [DMS Official Documentation](https://github.com/dank-os/dank-material-shell)
 - [Niri Documentation](https://github.com/YaLTeR/niri)
 - [Catppuccin Theme](https://github.com/catppuccin/catppuccin)
 
-## 🤝 Contribuindo
+## 🤝 Contributing
 
-Se você fizer melhorias nesta configuração, considere:
-1. Testar completamente
-2. Documentar as mudanças
-3. Compartilhar com a comunidade
+If you make improvements to this configuration, consider:
+1. Testing thoroughly
+2. Documenting the changes
+3. Sharing with the community
 
-## 📝 Notas
+## 📝 Notes
 
-- Esta configuração mantém o Waybar como fallback
-- O DMS e Waybar podem coexistir, mas apenas um deve estar ativo por vez
-- Para desabilitar o DMS, edite `dank-material-shell.nix` e defina `isMacbook = false`
-- Para voltar ao Waybar, desabilite o autostart do DMS
+- This configuration keeps Waybar as a fallback
+- DMS and Waybar can coexist, but only one should be active at a time
+- To disable DMS, edit `dank-material-shell.nix` and set `isMacbook = false`
+- To go back to Waybar, disable DMS autostart
 
-## 🔄 Atualizações
+## 🔄 Updates
 
-Para atualizar esta configuração:
+To update this configuration:
 
 ```bash
-# Rebuild do sistema
+# System rebuild
 sudo nixos-rebuild switch --flake .#macbook
 
-# Ou apenas home-manager
+# Or home-manager only
 home-manager switch --flake .#borba@macbook-nixos
 ```
 
 ---
 
-**Configuração criada com ❤️ usando NixOS e Catppuccin**
+**Configuration created with ❤️ using NixOS and Catppuccin**

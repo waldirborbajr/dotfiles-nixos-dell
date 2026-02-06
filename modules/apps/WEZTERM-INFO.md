@@ -1,44 +1,44 @@
-# WezTerm - Terminal Emulator (Reserva)
+# WezTerm - Terminal Emulator (Backup)
 
 ## Status
-**Desabilitado por padrão** - Disponível como opção de backup/reserva
+**Disabled by default** - Available as a backup/alternate option
 
-## Características
+## Features
 
-### Performance Otimizada
-O WezTerm foi configurado para ser **leve e rápido**:
-- FPS reduzido para 60 (balanço performance/bateria)
-- Animações otimizadas (30 fps)
-- Scrollback limitado a 5000 linhas (economia de memória)
-- Cursor sem piscar (menos processamento CPU/GPU)
-- Cache de glyphs otimizado
+### Optimized Performance
+WezTerm is configured to be **light and fast**:
+- FPS reduced to 60 (performance/battery balance)
+- Optimized animations (30 fps)
+- Scrollback limited to 5000 lines (memory savings)
+- Cursor without blinking (less CPU/GPU work)
+- Optimized glyph cache
 
-### Compatibilidade com Alacritty
-Mantém as mesmas configurações visuais do Alacritty:
-- **Fonte**: JetBrainsMono Nerd Font, tamanho 10.0
-- **Transparência**: 90% opacidade (0.90)
-- **Padding**: 8px em todos os lados
-- **Dimensões**: 105 colunas x 30 linhas
-- **Keybindings**: Compatíveis com Alacritty
+### Alacritty Compatibility
+Keeps the same visual settings as Alacritty:
+- **Font**: JetBrainsMono Nerd Font, size 10.0
+- **Transparency**: 90% opacity (0.90)
+- **Padding**: 8px on all sides
+- **Dimensions**: 105 columns x 30 lines
+- **Keybindings**: Compatible with Alacritty
 
-### Recursos Adicionais
-- **Tema**: Catppuccin Mocha (escuro)
-- **Toggles**: 
-  - `Ctrl+Shift+O`: Alternar transparência
-  - `Ctrl+Shift+E`: Alternar ligatures
-- **GPU Acelerado**: Melhor performance gráfica
-- **Wayland Nativo**: Suporte otimizado para Wayland
+### Additional Features
+- **Theme**: Catppuccin Mocha (dark)
+- **Toggles**:
+  - `Ctrl+Shift+O`: Toggle transparency
+  - `Ctrl+Shift+E`: Toggle ligatures
+- **GPU Accelerated**: Better graphics performance
+- **Native Wayland**: Optimized Wayland support
 
-## Como Habilitar
+## How to Enable
 
-### Opção 1: Via home.nix
+### Option 1: Via home.nix
 ```nix
 {
   apps.wezterm.enable = true;
 }
 ```
 
-### Opção 2: Via hosts/{hostname}.nix
+### Option 2: Via hosts/{hostname}.nix
 ```nix
 {
   home-manager.users.borba = {
@@ -47,123 +47,123 @@ Mantém as mesmas configurações visuais do Alacritty:
 }
 ```
 
-### Opção 3: Substituir Alacritty
+### Option 3: Replace Alacritty
 ```nix
 {
   apps = {
-    alacritty.enable = false;  # Desabilitar Alacritty
-    wezterm.enable = true;      # Habilitar WezTerm
+    alacritty.enable = false;  # Disable Alacritty
+    wezterm.enable = true;      # Enable WezTerm
   };
 }
 ```
 
-## Comparação: WezTerm vs Alacritty
+## Comparison: WezTerm vs Alacritty
 
-| Característica | WezTerm | Alacritty |
+| Feature | WezTerm | Alacritty |
 |---------------|---------|-----------|
-| **Performance** | Rápido (GPU) | Muito Rápido (GPU) |
-| **Uso de Memória** | Moderado | Baixo |
-| **Funcionalidades** | Rico (tabs, splits, lua) | Minimalista |
-| **Configuração** | Lua (programável) | TOML (declarativo) |
-| **Splits/Tabs** | Nativo | Via tmux/zellij |
+| **Performance** | Fast (GPU) | Very Fast (GPU) |
+| **Memory Usage** | Moderate | Low |
+| **Features** | Rich (tabs, splits, lua) | Minimalist |
+| **Configuration** | Lua (programmable) | TOML (declarative) |
+| **Splits/Tabs** | Native | Via tmux/zellij |
 | **Startup** | ~50-100ms | ~20-50ms |
-| **Maturidade** | Novo (ativo) | Maduro (estável) |
+| **Maturity** | New (active) | Mature (stable) |
 
-## Recomendações de Uso
+## Usage Recommendations
 
-### Use WezTerm se você:
-- ✅ Quer tabs e splits nativos (sem tmux)
-- ✅ Precisa de configuração programável (Lua)
-- ✅ Gosta de recursos avançados integrados
-- ✅ Valoriza funcionalidades sobre minimalismo
+### Use WezTerm if you:
+- ✅ Want native tabs and splits (no tmux)
+- ✅ Need programmable configuration (Lua)
+- ✅ Like advanced built-in features
+- ✅ Value features over minimalism
 
-### Use Alacritty se você:
-- ✅ Prioriza máxima velocidade e leveza
-- ✅ Prefere simplicidade e minimalismo
-- ✅ Já usa tmux/zellij para multiplexação
-- ✅ Quer menor consumo de bateria
+### Use Alacritty if you:
+- ✅ Prioritize maximum speed and lightness
+- ✅ Prefer simplicity and minimalism
+- ✅ Already use tmux/zellij for multiplexing
+- ✅ Want lower battery consumption
 
-## Configuração Original
-Baseada na configuração do PopOS com otimizações:
-- [Configuração Original](https://github.com/waldirborbajr/dotfiles/blob/main/wezterm/.config/wezterm/wezterm.lua)
+## Original Configuration
+Based on the PopOS configuration with optimizations:
+- [Original Configuration](https://github.com/waldirborbajr/dotfiles/blob/main/wezterm/.config/wezterm/wezterm.lua)
 
-## Customização
+## Customization
 
-O arquivo de configuração está em:
+The configuration file is at:
 ```
 modules/apps/wezterm.nix
 ```
 
-Para editar via WezTerm (se habilitado):
+To edit via WezTerm (if enabled):
 ```bash
-Ctrl+, (abre o editor na configuração)
+Ctrl+, (opens the editor in the configuration)
 ```
 
-## Keybindings Principais
+## Main Keybindings
 
-| Atalho | Ação |
+| Shortcut | Action |
 |--------|------|
-| `Ctrl+Shift+C` | Copiar |
-| `Ctrl+Shift+V` | Colar |
-| `Ctrl+0` | Resetar tamanho da fonte |
-| `Ctrl+=` | Aumentar fonte |
-| `Ctrl+-` | Diminuir fonte |
+| `Ctrl+Shift+C` | Copy |
+| `Ctrl+Shift+V` | Paste |
+| `Ctrl+0` | Reset font size |
+| `Ctrl+=` | Increase font size |
+| `Ctrl+-` | Decrease font size |
 | `F11` | Fullscreen |
-| `Ctrl+Shift+N` | Nova janela |
-| `Ctrl+Shift+O` | Toggle transparência |
+| `Ctrl+Shift+N` | New window |
+| `Ctrl+Shift+O` | Toggle transparency |
 | `Ctrl+Shift+E` | Toggle ligatures |
-| `Ctrl+,` | Editar config |
+| `Ctrl+,` | Edit config |
 
 ## Troubleshooting
 
-### WezTerm não inicia
+### WezTerm does not start
 ```bash
-# Verificar se está instalado
+# Check if it is installed
 which wezterm
 
-# Testar configuração
+# Test configuration
 wezterm --config-file ~/.config/wezterm/wezterm.lua
 
-# Ver logs
+# View logs
 journalctl --user -u wezterm
 ```
 
-### Fonte não aparece corretamente
+### Font does not appear correctly
 ```bash
-# Listar fontes disponíveis
+# List available fonts
 fc-list | grep -i "jetbrains"
 
-# Verificar fontes Nerd instaladas
+# Check installed Nerd fonts
 nix-shell -p nerdfonts --run "fc-list | grep Nerd"
 ```
 
-### Performance ruim
-Ajuste no `modules/apps/wezterm.nix`:
+### Poor performance
+Adjust in `modules/apps/wezterm.nix`:
 ```lua
-config.max_fps = 30  -- Reduzir se necessário
-config.animation_fps = 15  -- Reduzir animações
+config.max_fps = 30  -- Reduce if needed
+config.animation_fps = 15  -- Reduce animations
 ```
 
-## Migração do Alacritty
+## Alacritty Migration
 
-Se decidir migrar completamente:
-1. Teste o WezTerm por alguns dias com ambos habilitados
-2. Ajuste keybindings se necessário
-3. Desabilite o Alacritty quando estiver confortável
-4. Mantenha o módulo Alacritty para rollback fácil
+If you decide to migrate completely:
+1. Test WezTerm for a few days with both enabled
+2. Adjust keybindings if needed
+3. Disable Alacritty when you are comfortable
+4. Keep the Alacritty module for an easy rollback
 
 ```nix
-# Fase de teste (ambos habilitados)
+# Testing phase (both enabled)
 apps.alacritty.enable = true;
 apps.wezterm.enable = true;
 
-# Após decidir migrar
+# After deciding to migrate
 apps.alacritty.enable = false;
 apps.wezterm.enable = true;
 ```
 
-## Notas
-- WezTerm usa mais memória que Alacritty (~50-100MB vs ~20-40MB)
-- Startup é ligeiramente mais lento (~2-3x)
-- GPU aceleração pode consumir mais bateria
-- Configuração está otimizada para 60 FPS (balanço bateria/performance)
+## Notes
+- WezTerm uses more memory than Alacritty (~50-100MB vs ~20-40MB)
+- Startup is slightly slower (~2-3x)
+- GPU acceleration can consume more battery
+- Configuration is optimized for 60 FPS (performance/battery balance)

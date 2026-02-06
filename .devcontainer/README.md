@@ -1,29 +1,29 @@
 # DevContainer Configuration
 
-Esta configuração permite desenvolver e testar a configuração NixOS em um GitHub Codespace ou outro ambiente DevContainer.
+This configuration allows you to develop and test the NixOS configuration in a GitHub Codespace or another DevContainer environment.
 
-## 🎯 O que inclui
+## 🎯 What it includes
 
-- **Nix com Flakes** habilitado
-- **Git** e **GitHub CLI**
-- **direnv** para auto-ativação de devshells
-- **Extensões VS Code** para desenvolvimento Nix
+- **Nix with Flakes** enabled
+- **Git** and **GitHub CLI**
+- **direnv** for auto-activation of devshells
+- **VS Code extensions** for Nix development
 
-## 🚀 Usando no GitHub Codespaces
+## 🚀 Using on GitHub Codespaces
 
-1. Abra o repositório no GitHub
-2. Clique em **Code** → **Codespaces** → **Create codespace on REFACTORv2**
-3. Aguarde o container ser criado (primeira vez pode demorar ~5min)
-4. O Nix será instalado automaticamente via setup script
+1. Open the repository on GitHub
+2. Click **Code** → **Codespaces** → **Create codespace on REFACTORv2**
+3. Wait for the container to be created (first run may take ~5 min)
+4. Nix will be installed automatically via the setup script
 
-## 💻 Comandos disponíveis
+## 💻 Available commands
 
-### Listar devshells disponíveis
+### List available devshells
 ```bash
 nix flake show
 ```
 
-### Ativar um devshell
+### Activate a devshell
 ```bash
 # Rust
 nix develop .#rust
@@ -34,72 +34,72 @@ nix develop .#go
 # PostgreSQL
 nix develop .#postgresql
 
-# Todos os bancos
+# All databases
 nix develop .#databases
 ```
 
-### Usar direnv (auto-ativação)
+### Use direnv (auto-activation)
 ```bash
-# No diretório do projeto
+# In the project directory
 echo "use flake .#rust" > .envrc
 direnv allow
 
-# Agora o shell é ativado automaticamente ao entrar no diretório!
+# Now the shell is activated automatically when you enter the directory!
 ```
 
-## 🛠️ Testando configurações
+## 🛠️ Testing configurations
 
 ```bash
-# Verificar sintaxe do flake
+# Check flake syntax
 nix flake check
 
-# Ver metadados
+# Show metadata
 nix flake metadata
 
-# Avaluar uma configuração
+# Evaluate a configuration
 nix eval .#nixosConfigurations.dell.config.system.stateVersion
 ```
 
-## 🔄 Atualizando o DevContainer
+## 🔄 Updating the DevContainer
 
-Se você modificar `.devcontainer/devcontainer.json`:
+If you modify `.devcontainer/devcontainer.json`:
 
-1. **No VS Code**: Command Palette → "Rebuild Container"
-2. **No Codespace**: Recrie o Codespace
+1. **In VS Code**: Command Palette → "Rebuild Container"
+2. **In Codespace**: Recreate the Codespace
 
-## 📝 Notas
+## 📝 Notes
 
-- O Nix é instalado em modo **single-user** (não requer root)
-- Flakes estão habilitados por padrão
-- O cache de builds é local ao container (não persiste entre rebuilds)
-- Para persistência, use volumes ou GitHub Codespaces prebuilds
+- Nix is installed in **single-user** mode (no root required)
+- Flakes are enabled by default
+- Build cache is local to the container (does not persist between rebuilds)
+- For persistence, use volumes or GitHub Codespaces prebuilds
 
 ## 🐛 Troubleshooting
 
-### Comando `nix` não encontrado após setup
+### `nix` command not found after setup
 
 ```bash
-# Recarregue o shell
+# Reload the shell
 source ~/.bashrc
 
-# Ou verifique se o Nix está no PATH
+# Or check if Nix is on PATH
 echo $PATH | grep nix
 ```
 
-### Erro de experimental features
+### Experimental features error
 
 ```bash
-# Adicione às suas configurações
+# Add to your configuration
 mkdir -p ~/.config/nix
 echo "experimental-features = nix-command flakes" >> ~/.config/nix/nix.conf
 ```
 
-### DevShell não encontrado
+### DevShell not found
 
 ```bash
-# Atualize os inputs do flake
+# Update flake inputs
 nix flake update
 
-# Limpe o cache
+# Clear the cache
 nix flake lock --update-input nixpkgs-stable
 ```

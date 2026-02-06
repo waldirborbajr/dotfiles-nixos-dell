@@ -19,10 +19,10 @@
     #];
   };
 
-  # Novo: define o grupo primário (resolve o erro atual)
+  # New: define the primary group (fixes the current error)
   users.groups.borba = { };
 
-  # Opcional: associa explicitamente o grupo ao usuário (boa prática)
+  # Optional: explicitly associate the group to the user (best practice)
   users.users.borba.group = "borba";
 
   ############################################

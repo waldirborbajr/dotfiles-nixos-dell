@@ -7,7 +7,7 @@ let
 in
 {
   config = lib.mkMerge [
-    # Default OFF (serviço não sobe)
+    # Default OFF (service does not start)
     {
       virtualisation.libvirtd.enable = lib.mkDefault false;
     }
@@ -17,7 +17,7 @@ in
       virtualisation.libvirtd = {
         enable = true;
 
-        # Opcional: útil para TPM em VMs (Windows 11 etc.)
+        # Optional: useful for TPM in VMs (Windows 11, etc.)
         qemu.swtpm.enable = true;
 
         allowedBridges = [

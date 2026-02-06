@@ -19,7 +19,7 @@
   ############################################
   hardware.enableRedistributableFirmware = true;
 
-  # Blacklist drivers que conflitam com Broadcom proprietário
+  # Blacklist drivers that conflict with proprietary Broadcom
   boot.blacklistedKernelModules = [
     "b43"
     "brcmsmac"
@@ -27,10 +27,10 @@
     "ssb"
   ];
 
-  # Driver proprietário Broadcom
+  # Proprietary Broadcom driver
   boot.kernelModules = [ "wl" ];
 
-  # Pacote do driver para o kernel ativo
+  # Driver package for the active kernel
   boot.extraModulePackages = with config.boot.kernelPackages; [
     broadcom_sta
   ];
@@ -52,7 +52,7 @@
   services.blueman.enable = true;
 
   ############################################
-  # Pacotes úteis para debug e configuração wireless
+  # Useful packages for wireless debug and configuration
   ############################################
   #environment.systemPackages = with pkgs; [
   #iw

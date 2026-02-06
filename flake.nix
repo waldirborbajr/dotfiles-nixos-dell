@@ -6,13 +6,13 @@
     nixpkgs-stable.url = "github:NixOS/nixpkgs/nixos-25.11";
     nixpkgs-unstable.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    # Home Manager (seguindo nixpkgs-stable para compatibilidade)
+    # Home Manager (following nixpkgs-stable for compatibility)
     home-manager = {
       url = "github:nix-community/home-manager/release-25.11";
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    # Theme: Catppuccin (centralizado)
+    # Theme: Catppuccin (centralized)
     catppuccin.url = "github:catppuccin/nix";
 
     # Secrets management with SOPS
@@ -27,7 +27,7 @@
       inputs.nixpkgs.follows = "nixpkgs-stable";
     };
 
-    # DevShells: Helper para múltiplos sistemas
+    # DevShells: Helper for multiple systems
     flake-utils.url = "github:numtide/flake-utils";
   };
   outputs = inputs@{ self, nixpkgs-stable, nixpkgs-unstable, home-manager, catppuccin, sops-nix, fenix, flake-utils, ... }:
@@ -59,12 +59,12 @@
       mkHost = { hostname, system }:
         lib.nixosSystem {
           specialArgs = {
-            inherit inputs devopsEnabled qemuEnabled hostname; # ← adicionado hostname aqui
+            inherit inputs devopsEnabled qemuEnabled hostname; # ← added hostname here
           };
           modules = [
-            # Aplique o system via módulo (recomendado em 25.11+)
+            # Apply the system via module (recommended in 25.11+)
             ({ config, pkgs, lib, ... }: {
-              nixpkgs.hostPlatform = system; # <-- Isso define o hostPlatform corretamente
+              nixpkgs.hostPlatform = system; # <-- This defines hostPlatform correctly
               nixpkgs.config.allowUnfree = true;
               nixpkgs.overlays = [ unstableOverlay ];
             })
@@ -77,25 +77,25 @@
             # Secrets: SOPS-nix module
             sops-nix.nixosModules.sops
 
-            # Novo: importa o home-manager como módulo NixOS
+            # New: import home-manager as a NixOS module
             home-manager.nixosModules.home-manager
 
-            # Configuração básica do home-manager
+            # Basic home-manager configuration
             {
               home-manager.useGlobalPkgs = true;
               home-manager.useUserPackages = true;
               home-manager.extraSpecialArgs = {
-                inherit inputs devopsEnabled qemuEnabled hostname; # ← adicionado hostname aqui também
+                inherit inputs devopsEnabled qemuEnabled hostname; # ← added hostname here too
               };
 
-              # Correção: usuário correto é "borba"
+              # Fix: correct user is "borba"
               home-manager.users.borba = { config, pkgs, lib, hostname, ... }: {
-                # ← recebe hostname
+                # ← receives hostname
                 imports = [
                   ./home.nix
                   # Theme: Catppuccin Home Manager module
                   catppuccin.homeModules.catppuccin
-                  # Outros módulos podem usar hostname se necessário
+                  # Other modules can use hostname if needed
                 ];
               };
             }
