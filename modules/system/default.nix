@@ -12,6 +12,7 @@
     ./ssh.nix
     ./system-packages.nix
     ./serial-devices.nix
+    ./no-sleep.nix
   ];
 
   options.system-config = {
@@ -68,6 +69,14 @@
         type = lib.types.bool;
         default = false;
         description = "Enable serial device support (for ham radio, etc)";
+      };
+    };
+
+    noSleep = {
+      enable = lib.mkOption {
+        type = lib.types.bool;
+        default = false;
+        description = "Disable sleep, suspend, and hibernate";
       };
     };
   };

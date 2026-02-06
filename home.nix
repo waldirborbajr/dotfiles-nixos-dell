@@ -22,6 +22,9 @@ in
     ./modules/desktops/niri
   ];
 
+  # no-sleep is a system module; enable via host/profile:
+  # system-config.noSleep.enable = true;
+
   # ==========================================
   # Enable apps via options
   # ==========================================
