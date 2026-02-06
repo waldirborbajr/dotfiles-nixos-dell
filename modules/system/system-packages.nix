@@ -86,6 +86,7 @@ in
         psmisc
         tree
         stow
+        broot
 
         ##########################################
         # Hardware diagnostics
