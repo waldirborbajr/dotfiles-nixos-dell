@@ -73,7 +73,7 @@ Edit your host file (e.g., `hosts/macbook.nix`):
 
 ```bash
 # Create encrypted secrets file
-sops secrets/common/secrets.yaml
+sops secrets.yaml
 ```
 
 Add your SSH key:
@@ -96,8 +96,8 @@ Edit `modules/system/secrets.nix`:
 ```nix
 config = lib.mkIf config.system-config.secrets.enable {
   sops = {
-    defaultSopsFile = ../../secrets/common/secrets.yaml;
-    age.keyFile = "/home/borba/.config/sops/age/keys.txt";
+    defaultSopsFile = ../../secrets.yaml;
+    age.keyFile = "/etc/nixos/keys/age.key";
     
     secrets = {
       ssh_private_key = {
@@ -135,20 +135,20 @@ ssh -T git@github.com
 ### Edit secrets
 
 ```bash
-sops secrets/common/secrets.yaml
+sops secrets.yaml
 ```
 
 ### View secrets (decrypted)
 
 ```bash
-sops -d secrets/common/secrets.yaml
+sops -d secrets.yaml
 ```
 
 ### Add new secret
 
 ```bash
 # 1. Edit secrets file
-sops secrets/common/secrets.yaml
+sops secrets.yaml
 
 # 2. Add new key-value pair
 new_secret: my_secret_value
@@ -170,26 +170,39 @@ cat /run/secrets/new_secret
 
 ```bash
 # Check file is encrypted
-cat secrets/common/secrets.yaml
+cat secrets.yaml
 # Should show encrypted binary data with "sops" markers
 
 # If you see plaintext, DON'T COMMIT!
+```
+
+### Manual SOPS encryption (by hand)
+
+```bash
+# Ensure the age key exists on disk
+sudo ls /etc/nixos/keys/age.key
+
+# Encrypt the file in place
+sops --encrypt --in-place secrets.yaml
+
+# Or open the editor and let SOPS handle encryption
+sops secrets.yaml
 ```
 
 ## Common Commands
 
 ```bash
 # Edit secret
-sops secrets/common/secrets.yaml
+sops secrets.yaml
 
 # View decrypted
-sops -d secrets/common/secrets.yaml
+sops -d secrets.yaml
 
 # Re-encrypt with new key
-sops updatekeys secrets/common/secrets.yaml
+sops updatekeys secrets.yaml
 
 # Check which key was used
-sops -d --extract '["sops"]["age"]' secrets/common/secrets.yaml
+sops -d --extract '["sops"]["age"]' secrets.yaml
 ```
 
 ## Safety Checklist
@@ -197,7 +210,7 @@ sops -d --extract '["sops"]["age"]' secrets/common/secrets.yaml
 Before every commit:
 
 - [ ] `.sops.yaml` not in Git (use `.sops.yaml.example`)
-- [ ] `keys.txt` not in Git
+- [ ] `age.key` not in Git
 - [ ] Secrets files are encrypted (binary, not plaintext)
 - [ ] No hardcoded secrets in `.nix` files
 
@@ -207,14 +220,14 @@ Before every commit:
 
 ```bash
 # Verify key exists
-ls ~/.config/sops/age/keys.txt
+sudo ls /etc/nixos/keys/age.key
 
 # Verify public key matches
-age-keygen -y ~/.config/sops/age/keys.txt
+sudo age-keygen -y /etc/nixos/keys/age.key
 # Compare with .sops.yaml
 
 # Re-encrypt
-sops updatekeys secrets/common/secrets.yaml
+sops updatekeys secrets.yaml
 ```
 
 ### "Permission denied"
