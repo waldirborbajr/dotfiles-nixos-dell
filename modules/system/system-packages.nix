@@ -87,6 +87,8 @@ in
         tree
         stow
         broot
+        jq
+        yq
 
         ##########################################
         # Hardware diagnostics
