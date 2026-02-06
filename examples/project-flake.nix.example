@@ -1,19 +1,19 @@
 # project-flake.nix.example
 #
-# Exemplo de flake.nix para usar em PROJETOS INDIVIDUAIS
+# Example flake.nix to use in INDIVIDUAL PROJECTS
 # 
-# Para usar:
-# 1. Copie para o diretório do projeto: cp project-flake.nix.example /path/to/project/flake.nix
-# 2. Customize buildInputs com as deps do seu projeto
-# 3. Entre no ambiente: nix develop
+# How to use:
+# 1. Copy to the project directory: cp project-flake.nix.example /path/to/project/flake.nix
+# 2. Customize buildInputs with your project dependencies
+# 3. Enter the environment: nix develop
 #
 # ==========================================
 
 # ==========================================
-# Exemplo 1: Projeto Rust puro
+# Example 1: Pure Rust Project
 # ==========================================
 {
-  description = "Meu projeto Rust";
+  description = "My Rust project";
   
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
@@ -37,12 +37,12 @@
         buildInputs = with pkgs; [
           rustToolchain
           
-          # Deps específicas do projeto
-          postgresql  # Para sqlx/diesel
+          # Project-specific deps
+          postgresql  # For sqlx/diesel
           openssl
           pkg-config
           
-          # Tools extras
+          # Extra tools
           cargo-watch
           cargo-edit
         ];
@@ -56,10 +56,10 @@
 }
 
 # ==========================================
-# Exemplo 2: Projeto Go com Postgres
+# Example 2: Go Project with Postgres
 # ==========================================
 # {
-#   description = "Meu projeto Go";
+#   description = "My Go project";
 #   
 #   inputs.nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 #   
@@ -75,7 +75,7 @@
 #           delve
 #           golangci-lint
 #           
-#           # Deps do projeto
+#           # Project deps
 #           postgresql
 #           redis
 #         ];
@@ -91,7 +91,7 @@
 # }
 
 # ==========================================
-# Exemplo 3: Full Stack (Backend Rust + Frontend Node)
+# Example 3: Full Stack (Rust Backend + Node Frontend)
 # ==========================================
 # {
 #   description = "Full Stack Project";
@@ -138,12 +138,12 @@
 # }
 
 # ==========================================
-# Exemplo 4: Usar flake do nixos-config
+# Example 4: Use flake from nixos-config
 # ==========================================
-# Se você quer apenas referenciar os shells do seu nixos-config:
+# If you just want to reference shells from your nixos-config:
 # 
 # {
-#   description = "Projeto usando nixos-config shells";
+#   description = "Project using nixos-config shells";
 #   
 #   inputs = {
 #     nixos-config.url = "path:/home/borba/nixos-config";
@@ -153,7 +153,7 @@
 #     let
 #       system = "x86_64-linux";
 #     in {
-#       # Reutiliza o shell do nixos-config
+#       # Reuses the shell from nixos-config
 #       devShells.${system}.default = nixos-config.devShells.${system}.rust;
 #     };
 # }
