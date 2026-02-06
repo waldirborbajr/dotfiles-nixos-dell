@@ -1,9 +1,13 @@
 # modules/system/secrets.nix
 # SOPS secrets management
 # See SECRETS-MANAGEMENT.md for complete documentation
-{ config, lib, ... }:
+{ config, lib, pkgs, inputs, ... }:
 
 {
+  imports = [
+    inputs.sops-nix.nixosModules.sops
+  ];
+
   options.system-config.secrets = {
     enable = lib.mkOption {
       type = lib.types.bool;
@@ -13,46 +17,47 @@
   };
 
   config = lib.mkIf config.system-config.secrets.enable {
-    # Configure sops
-    sops = {
-      # Default secrets file (can be overridden per-host)
-      defaultSopsFile = ../../secrets/common/secrets.yaml;
-      
-      # Age key location for decryption
-      age.keyFile = "/home/borba/.config/sops/age/keys.txt";
-      
-      # SSH keys - restored on every rebuild
-      secrets = {
-        ssh_private_key = {
-          owner = "borba";
-          path = "/home/borba/.ssh/id_ed25519";
-          mode = "0600";
-        };
-        
-        ssh_public_key = {
-          owner = "borba";
-          path = "/home/borba/.ssh/id_ed25519.pub";
-          mode = "0644";
-        };
-        
-        # Add more secrets as needed:
-        # github_token = {
-        #   owner = "borba";
-        #   mode = "0600";
-        # };
+    environment.systemPackages = [ pkgs.sops ];
+
+    # SOPS age key configuration
+    # Deploy by copying: sudo cp keys/age.key /etc/nixos/keys/age.key
+    sops.age.keyFile = "/etc/nixos/keys/age.key";
+    sops.defaultSopsFile = ../../secrets.yaml;
+
+    # Define secrets
+    sops.secrets = {
+      # Root secrets
+      "github-token" = {
+        mode = "0400";
+      };
+
+      # User secrets available at /run/secrets/borba/<secret name>
+      "borba/github-token" = {
+        owner = "borba";
+        group = "borba";
+        mode = "0400";
+      };
+      "borba/password-hash" = {
+        neededForUsers = true;
+      };
+      "borba/email" = {
+        owner = "borba";
+        group = "borba";
+        mode = "0400";
+      };
+
+      # Tailscale auth key - only on hosts with tailscale enabled
+      "tailscale-auth-key" = lib.mkIf config.services.tailscale.enable {
+        owner = "root";
+        group = "root";
+        mode = "0400";
       };
     };
-    
-    # Ensure required directories exist
-    system.activationScripts.setupSecretsDirectories = ''
-      # SSH directory
-      mkdir -p /home/borba/.ssh
-      chown borba:users /home/borba/.ssh
-      chmod 700 /home/borba/.ssh
-      
-      # SOPS age directory
-      mkdir -p /home/borba/.config/sops/age
-      chown -R borba:users /home/borba/.config/sops
+
+    # Generate git config with email from SOPS placeholder
+    environment.etc."git-email-config".text = ''
+      [user]
+        email = ${config.sops.placeholder."borba/email"}
     '';
   };
 }
