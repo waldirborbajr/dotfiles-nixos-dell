@@ -1,0 +1,26 @@
+# SOPS configuration file
+# This file configures which keys can decrypt which secrets
+
+keys:
+  # SSH host key from the target system (converted to age format)
+  # This is the age fingerprint from: /etc/ssh/ssh_host_ed25519_key
+  - &host_key age10v5xr9zlz0ltm8gk8dwu46zns7f6d5f7t5l4kygspauajn44mawq4mrr3d
+  
+  # User key (if you want to edit secrets from your workstation)
+  # Replace with your own age public key from: ssh-to-age < ~/.ssh/id_ed25519.pub
+  # - &user_borba age1ql3z7hjy54pw3hyww5ayyfg7zqgvc7w3j2elw8zmrj2kg5sfn9aqmcac8p
+
+creation_rules:
+  # Common secrets - encrypted with host key
+  - path_regex: secrets/common/secrets\.yaml$
+    key_groups:
+    - age:
+      - *host_key
+      # - *user_borba  # Uncomment after adding your user key above
+  
+  # Host-specific secrets  
+  - path_regex: secrets/(macbook|dell)/secrets\.yaml$
+    key_groups:
+    - age:
+      - *host_key
+      # - *user_borba  # Uncomment after adding your user key above

@@ -13,8 +13,8 @@ output.txt
 result
 DUMP.log
 
-# SOPS secrets - DO NOT COMMIT
-.sops.yaml
+# SOPS private keys - DO NOT COMMIT
+# Note: .sops.yaml is NOT ignored - it contains only public keys and should be committed
 keys.txt
 **/keys.txt
 **/.config/sops/age/keys.txt
