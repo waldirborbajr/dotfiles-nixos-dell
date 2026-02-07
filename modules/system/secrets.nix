@@ -26,32 +26,40 @@
 
     # Define secrets
     sops.secrets = {
-      # Root secrets
-      "github-token" = {
-        mode = "0400";
-      };
-
-      # User secrets available at /run/secrets/borba/<secret name>
-      "borba/github-token" = {
+      # SSH keys (common across hosts)
+      "ssh_private_key" = {
         owner = "borba";
         group = "borba";
         mode = "0400";
       };
-      "borba/password-hash" = {
-        neededForUsers = true;
-      };
-      "borba/email" = {
+      "ssh_public_key" = {
         owner = "borba";
         group = "borba";
-        mode = "0400";
+        mode = "0444";
       };
 
-      # Tailscale auth key - only on hosts with tailscale enabled
-      "tailscale-auth-key" = lib.mkIf config.services.tailscale.enable {
-        owner = "root";
-        group = "root";
-        mode = "0400";
-      };
+      # Optional: Uncomment and add to secrets.yaml as needed
+      # "github-token" = {
+      #   mode = "0400";
+      # };
+      # "borba/github-token" = {
+      #   owner = "borba";
+      #   group = "borba";
+      #   mode = "0400";
+      # };
+      # "borba/password-hash" = {
+      #   neededForUsers = true;
+      # };
+      # "borba/email" = {
+      #   owner = "borba";
+      #   group = "borba";
+      #   mode = "0400";
+      # };
+      # "tailscale-auth-key" = lib.mkIf config.services.tailscale.enable {
+      #   owner = "root";
+      #   group = "root";
+      #   mode = "0400";
+      # };
     };
   };
 }
