@@ -22,7 +22,7 @@
     # SOPS age key configuration
     # Deploy by copying: sudo cp keys/age.key /etc/nixos/keys/age.key
     sops.age.keyFile = "/etc/nixos/keys/age.key";
-    sops.defaultSopsFile = ../../secrets.yaml;
+    sops.defaultSopsFile = ../../secrets/common/secrets.yaml;
 
     # Define secrets
     sops.secrets = {
