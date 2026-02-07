@@ -20,8 +20,8 @@
     environment.systemPackages = [ pkgs.sops ];
 
     # SOPS age key configuration
-    # Deploy by copying: sudo cp keys/age.key /etc/nixos/keys/age.key
-    sops.age.keyFile = "/etc/nixos/keys/age.key";
+    # Use SSH host keys for system-level secrets (automatically available)
+    sops.age.sshKeyPaths = [ "/etc/ssh/ssh_host_ed25519_key" ];
     sops.defaultSopsFile = ../../secrets/common/secrets.yaml;
 
     # Define secrets
