@@ -2,7 +2,7 @@
 [![Nix Flake](https://img.shields.io/badge/nix-flakes-blue?logo=nixos&logoColor=white)](https://nixos.org)
 [![License](https://img.shields.io/badge/license-MIT-green.svg)](./LICENSE)
 
-# BORBA JR W – NixOS Configuration ❄️
+# BORBA JR, W – NixOS Configuration ❄️
 
 # 🧊 nixos-config
 

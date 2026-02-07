@@ -71,13 +71,5 @@
         description = "Enable serial device support (for ham radio, etc)";
       };
     };
-
-    noSleep = {
-      enable = lib.mkOption {
-        type = lib.types.bool;
-        default = false;
-        description = "Disable sleep, suspend, and hibernate";
-      };
-    };
   };
 }
