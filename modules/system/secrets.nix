@@ -53,11 +53,5 @@
         mode = "0400";
       };
     };
-
-    # Generate git config with email from SOPS placeholder
-    environment.etc."git-email-config".text = ''
-      [user]
-        email = ${config.sops.placeholder."borba/email"}
-    '';
   };
 }
